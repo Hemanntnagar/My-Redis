@@ -3,6 +3,7 @@ com/myredis/network/ClientSession.class
 com/myredis/pubsub/package-info.class
 com/myredis/config/LoggingLevel.class
 com/myredis/pubsub/PubSubBroker.class
+com/myredis/command/RegistryCommandDispatcher.class
 com/myredis/command/package-info.class
 com/myredis/exception/ErrorResponseMapper.class
 com/myredis/logging/LogContext.class
@@ -22,7 +23,9 @@ com/myredis/JavaRedis.class
 com/myredis/replication/ReplicationCoordinator.class
 com/myredis/config/WorkerThreadConfiguration.class
 com/myredis/network/ClientReply$SimpleString.class
+com/myredis/command/PingCommand.class
 com/myredis/protocol/Resp2Decoder.class
+com/myredis/command/CommandArity.class
 com/myredis/transaction/package-info.class
 com/myredis/metrics/MetricsRecorder.class
 com/myredis/exception/ServerErrorHandler.class
@@ -30,12 +33,14 @@ com/myredis/network/ClientReply$Error.class
 com/myredis/exception/package-info.class
 com/myredis/logging/package-info.class
 com/myredis/config/ServerConfigurationBuilder.class
+com/myredis/command/EchoCommand.class
 com/myredis/network/package-info.class
 com/myredis/server/ServerMetadata.class
 com/myredis/datatype/package-info.class
 com/myredis/replication/package-info.class
 com/myredis/expiration/ExpirationService.class
 com/myredis/storage/package-info.class
+com/myredis/command/CommandClientRequestProcessor.class
 com/myredis/network/ConnectedClientSession.class
 com/myredis/command/Command.class
 com/myredis/server/GracefulShutdownCoordinator.class
