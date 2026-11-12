@@ -16,9 +16,18 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/IncrCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/KeyGlobMatcher.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/KeysCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LIndexCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LLenCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LPopCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LPushCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LRangeCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/LSetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ListCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MgetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MsetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/PingCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RPopCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RPushCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RandomKeyCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RegistryCommandDispatcher.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RenameCommand.java
@@ -39,6 +48,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/WorkerThreadConfiguration.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/DataType.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/ListRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/RedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/StringRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/package-info.java

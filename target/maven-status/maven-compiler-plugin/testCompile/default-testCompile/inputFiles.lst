@@ -5,6 +5,8 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/KeyGlobMatcherTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/KeyspaceCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/KeyspaceTcpIntegrationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/ListCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/ListTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/MsetMgetAppendCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/MsetMgetAppendTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingCommandTest.java

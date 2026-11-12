@@ -10,8 +10,10 @@ com/myredis/command/PingCommandTest.class
 com/myredis/command/RenameRandomKeyCommandTest$StubSession.class
 com/myredis/command/PingCommandTest$StubSession.class
 com/myredis/protocol/Resp2CrlfTest.class
+com/myredis/command/ListTcpIntegrationTest.class
 com/myredis/command/DelExistsTypeCommandTest$StubSession.class
 com/myredis/protocol/Resp2ArrayParserTest.class
+com/myredis/command/ListCommandTest.class
 com/myredis/protocol/Resp2EncoderLineTest.class
 com/myredis/config/ServerConfigurationLoaderTest.class
 com/myredis/logging/StructuredServerLoggerTest.class
@@ -20,6 +22,7 @@ com/myredis/protocol/Resp2EncoderBulkIntegerTest.class
 com/myredis/command/MsetMgetAppendTcpIntegrationTest.class
 com/myredis/command/StringCounterTcpIntegrationTest.class
 com/myredis/storage/InMemoryKeyValueStoreTest.class
+com/myredis/command/ListCommandTest$StubSession.class
 com/myredis/exception/DomainExceptionTest.class
 com/myredis/protocol/Resp2LineParserTest.class
 com/myredis/command/KeyspaceTcpIntegrationTest.class
