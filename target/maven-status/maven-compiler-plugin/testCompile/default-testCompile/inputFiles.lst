@@ -62,6 +62,7 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/PropagationCaptureTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/ReplicationStreamApplyTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/ReplicationStreamReaderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/ReplicationTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/ByteArrayKeyTest.java
