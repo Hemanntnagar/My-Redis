@@ -1,6 +1,9 @@
 com/myredis/network/TcpListenServerTest.class
+com/myredis/command/ExpirePersistCommandTest.class
+com/myredis/command/ExpirePersistCommandTest$StubSession.class
 com/myredis/protocol/Resp2DecoderTest.class
 com/myredis/server/ServerApplicationTest.class
+com/myredis/command/ExpirePersistCommandTest$MutableExpirationClock.class
 com/myredis/command/KeyspaceCommandTest.class
 com/myredis/command/SortedSetTcpIntegrationTest.class
 com/myredis/protocol/Resp2ArrayEncoderTest.class

@@ -2,6 +2,7 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/EchoCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/ExpirePersistCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/HashCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/HashTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/KeyGlobMatcherTest.java
