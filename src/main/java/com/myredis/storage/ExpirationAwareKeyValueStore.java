@@ -6,9 +6,11 @@ import com.myredis.expiration.ExpirationClock;
 import com.myredis.expiration.InMemoryExpirationService;
 import com.myredis.expiration.SystemExpirationClock;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * {@link KeyValueStore} decorator that keeps expiration metadata in sync and purges expired keys on access.
@@ -70,7 +72,15 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
 
     @Override
     public List<byte[]> snapshotKeys() {
-        return delegate.snapshotKeys();
+        List<byte[]> keys = delegate.snapshotKeys();
+        List<byte[]> live = new ArrayList<>(keys.size());
+        for (byte[] key : keys) {
+            purgeIfExpired(key);
+            if (delegate.exists(key)) {
+                live.add(key);
+            }
+        }
+        return live;
     }
 
     @Override
@@ -90,12 +100,40 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
 
     void purgeIfExpired(byte[] key) {
         long now = clock.currentTimeMillis();
-        if (!expiration.isExpired(key, now)) {
-            return;
-        }
-        if (delegate.exists(key)) {
+        if (expiration.tryRemoveIfExpired(key, now)) {
             delegate.delete(key);
         }
-        expiration.cancel(key);
+    }
+
+    /**
+     * Active expiration: scans a bounded number of metadata entries and deletes expired keys.
+     *
+     * @return how many keys were removed in this cycle
+     */
+    public int activeExpireCycle(int maxScans, int maxDeletes) {
+        if (maxScans < 1 || maxDeletes < 1) {
+            return 0;
+        }
+        long now = clock.currentTimeMillis();
+        int[] deleted = {0};
+        AtomicBoolean stop = new AtomicBoolean();
+        expiration.scanMetadata(
+                maxScans,
+                (key, metadata) -> {
+                    if (stop.get()) {
+                        return;
+                    }
+                    if (!metadata.isExpiredAt(now)) {
+                        return;
+                    }
+                    if (expiration.tryRemoveIfExpired(key, now)) {
+                        delegate.delete(key);
+                        deleted[0]++;
+                        if (deleted[0] >= maxDeletes) {
+                            stop.set(true);
+                        }
+                    }
+                });
+        return deleted[0];
     }
 }

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 
 /**
  * Thread-safe in-memory {@link ExpirationService} storing {@link KeyExpirationMetadata} per key.
@@ -59,6 +60,41 @@ public final class InMemoryExpirationService implements ExpirationService {
 
     public void clearAll() {
         metadataByKey.clear();
+    }
+
+    public int trackedKeyCount() {
+        return metadataByKey.size();
+    }
+
+    /**
+     * Removes expiration metadata when the key is expired at {@code now}. Uses compare-and-remove so a
+     * concurrent {@code EXPIRE} or {@code PERSIST} is not overwritten.
+     */
+    public boolean tryRemoveIfExpired(byte[] key, long nowEpochMillis) {
+        Objects.requireNonNull(key, "key");
+        BinaryKey binaryKey = new BinaryKey(key);
+        KeyExpirationMetadata current = metadataByKey.get(binaryKey);
+        if (current == null || !current.isExpiredAt(nowEpochMillis)) {
+            return false;
+        }
+        return metadataByKey.remove(binaryKey, current);
+    }
+
+    /**
+     * Visits at most {@code maxScans} metadata entries in arbitrary order without holding a global lock.
+     */
+    public void scanMetadata(int maxScans, BiConsumer<byte[], KeyExpirationMetadata> visitor) {
+        if (maxScans < 1) {
+            return;
+        }
+        int scanned = 0;
+        for (Map.Entry<BinaryKey, KeyExpirationMetadata> entry : metadataByKey.entrySet()) {
+            if (scanned >= maxScans) {
+                return;
+            }
+            scanned++;
+            visitor.accept(entry.getKey().bytes().clone(), entry.getValue());
+        }
     }
 
     private record BinaryKey(byte[] bytes) {

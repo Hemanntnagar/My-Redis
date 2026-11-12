@@ -46,6 +46,7 @@ public final class ServerApplication {
         ServerStartupReporter startupReporter = new ServerStartupReporter(logger);
         startupReporter.report(configuration);
 
+        context.expirationCleanup().start();
         context.databaseServer().start();
 
         GracefulShutdownCoordinator shutdownCoordinator =
@@ -53,6 +54,7 @@ public final class ServerApplication {
                         context.databaseServer(),
                         logger,
                         () -> {
+                            context.expirationCleanup().close();
                             try {
                                 context.persistence().flush();
                             } catch (PersistenceException failure) {

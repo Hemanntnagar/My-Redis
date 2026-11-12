@@ -5,6 +5,7 @@ import com.myredis.exception.ServerErrorHandler;
 import com.myredis.logging.StructuredServerLogger;
 import com.myredis.metrics.MetricsRecorder;
 import com.myredis.persistence.PersistenceManager;
+import com.myredis.expiration.BackgroundExpirationCleanup;
 
 import java.util.Objects;
 
@@ -20,6 +21,7 @@ public final class ServerContext {
     private final MetricsRecorder metrics;
     private final PersistenceManager persistence;
     private final DatabaseServer databaseServer;
+    private final BackgroundExpirationCleanup expirationCleanup;
 
     public ServerContext(
             ServerConfiguration configuration,
@@ -27,13 +29,15 @@ public final class ServerContext {
             ServerErrorHandler errorHandler,
             MetricsRecorder metrics,
             PersistenceManager persistence,
-            DatabaseServer databaseServer) {
+            DatabaseServer databaseServer,
+            BackgroundExpirationCleanup expirationCleanup) {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
         this.errorHandler = Objects.requireNonNull(errorHandler, "errorHandler");
         this.metrics = Objects.requireNonNull(metrics, "metrics");
         this.persistence = Objects.requireNonNull(persistence, "persistence");
         this.databaseServer = Objects.requireNonNull(databaseServer, "databaseServer");
+        this.expirationCleanup = Objects.requireNonNull(expirationCleanup, "expirationCleanup");
     }
 
     public ServerConfiguration configuration() {
@@ -58,5 +62,9 @@ public final class ServerContext {
 
     public DatabaseServer databaseServer() {
         return databaseServer;
+    }
+
+    public BackgroundExpirationCleanup expirationCleanup() {
+        return expirationCleanup;
     }
 }
