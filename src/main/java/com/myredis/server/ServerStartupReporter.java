@@ -28,7 +28,7 @@ public final class ServerStartupReporter {
         System.out.println("  persistence dir: " + configuration.persistenceDirectory());
         System.out.println("  logging level: " + configuration.loggingLevel());
         System.out.println("  tcp backlog: " + configuration.tcpBacklog());
-        System.out.println("  (command pipeline not wired yet)");
+        System.out.println("  commands: PING, ECHO (RESP2 over TCP)");
 
         logger.logInfo(
                 "server_start",

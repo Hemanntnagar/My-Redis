@@ -33,4 +33,15 @@ Each package currently exposes `package-info.java` and a small set of foundation
 
 ## Limitations
 
-- No networking, storage engine, or command implementations yet
+- In-memory storage and most Redis commands are not implemented yet
+- Built-in commands: `PING`, `ECHO`
+
+## Manual check (redis-cli)
+
+```bash
+./mvnw -q -DskipTests package dependency:build-classpath -Dmdep.outputFile=target/cp.txt
+MYREDIS_HOST=127.0.0.1 MYREDIS_PORT=6379 java -cp "target/classes:$(cat target/cp.txt)" com.myredis.JavaRedis
+# in another terminal:
+redis-cli -p 6379 PING
+redis-cli -p 6379 ECHO hello
+```
