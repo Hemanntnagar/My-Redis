@@ -1,8 +1,10 @@
 package com.myredis.server;
 
+import com.myredis.command.CommandClientRequestProcessor;
 import com.myredis.config.ServerConfiguration;
 import com.myredis.exception.ConnectionException;
 import com.myredis.logging.StructuredServerLogger;
+import com.myredis.network.ClientRequestProcessor;
 import com.myredis.network.TcpListenServer;
 
 import java.util.Objects;
@@ -15,9 +17,17 @@ public final class LifecycleDatabaseServer implements DatabaseServer {
     private final TcpListenServer listenServer;
 
     public LifecycleDatabaseServer(ServerConfiguration configuration, StructuredServerLogger logger) {
+        this(configuration, logger, CommandClientRequestProcessor.withBuiltinCommands());
+    }
+
+    public LifecycleDatabaseServer(
+            ServerConfiguration configuration,
+            StructuredServerLogger logger,
+            ClientRequestProcessor requestProcessor) {
         Objects.requireNonNull(configuration, "configuration");
         Objects.requireNonNull(logger, "logger");
-        this.listenServer = new TcpListenServer(configuration, logger);
+        Objects.requireNonNull(requestProcessor, "requestProcessor");
+        this.listenServer = new TcpListenServer(configuration, logger, requestProcessor);
     }
 
     @Override

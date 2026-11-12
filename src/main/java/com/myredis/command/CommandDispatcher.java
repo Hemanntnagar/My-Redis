@@ -1,6 +1,7 @@
 package com.myredis.command;
 
 import com.myredis.exception.CommandException;
+import com.myredis.network.ClientReply;
 import com.myredis.network.ClientSession;
 
 import java.util.List;
@@ -10,6 +11,6 @@ import java.util.List;
  */
 public interface CommandDispatcher {
 
-    void dispatch(ClientSession session, String commandName, List<byte[]> arguments)
+    ClientReply dispatch(ClientSession session, String commandName, List<byte[]> arguments)
             throws CommandException;
 }
