@@ -5,8 +5,10 @@ import com.myredis.command.RegistryCommandDispatcher;
 import com.myredis.exception.PersistenceException;
 import com.myredis.expiration.ExpirationClock;
 import com.myredis.expiration.InMemoryExpirationService;
+import com.myredis.persistence.aof.AofRecoveryHeader;
 import com.myredis.persistence.aof.AofReplayer;
 import com.myredis.persistence.aof.AppendOnlyFile;
+import com.myredis.persistence.snapshot.SnapshotFileIntegrity;
 import com.myredis.storage.ExpirationAwareKeyValueStore;
 
 import java.util.Objects;
@@ -45,17 +47,41 @@ public final class CompositePersistenceManager implements PersistenceManager, Sn
 
     @Override
     public void load() throws PersistenceException {
+        byte[] snapshotBytes = snapshot.readSnapshotBytesIfPresent();
         snapshot.load();
         if (appendOnlyFile == null) {
+            validateLoadedKeyspace();
             return;
         }
         byte[] bytes = appendOnlyFile.readFileBytes();
         if (bytes.length == 0) {
+            validateLoadedKeyspace();
             return;
         }
+        AofRecoveryHeader header = AofRecoveryHeader.parse(bytes);
+        int snapshotCrc =
+                snapshotBytes == null ? 0 : SnapshotFileIntegrity.crc32OfFileBytes(snapshotBytes);
+        if (snapshotBytes != null
+                && header.baselineSnapshotCrc32() != 0
+                && header.baselineSnapshotCrc32() != snapshotCrc) {
+            throw new PersistenceException(
+                    "ERR AOF baseline snapshot CRC does not match dump.myredis; run SAVE and retry");
+        }
+        int skip =
+                header.recordsToSkipAfterSnapshotLoad(snapshotCrc, snapshotBytes != null);
         CommandDispatcher replayDispatcher =
                 RegistryCommandDispatcher.withBuiltinCommands(store, expiration, replayClock, snapshot);
-        AofReplayer.replay(bytes, replayDispatcher);
+        AofReplayer.replay(bytes, replayDispatcher, skip);
+        validateLoadedKeyspace();
+    }
+
+    private void validateLoadedKeyspace() throws PersistenceException {
+        if (store.keyCount() < 0) {
+            throw new PersistenceException("ERR invalid keyspace size after recovery");
+        }
+        if (expiration.trackedKeyCount() > store.keyCount()) {
+            throw new PersistenceException("ERR expiration metadata inconsistent with keyspace");
+        }
     }
 
     @Override
@@ -113,7 +139,9 @@ public final class CompositePersistenceManager implements PersistenceManager, Sn
 
     private void syncAofAfterSnapshot() throws PersistenceException {
         if (appendOnlyFile != null) {
-            appendOnlyFile.rewriteBlocking(store, expiration);
+            byte[] onDisk = snapshot.readSnapshotBytesIfPresent();
+            int baselineCrc = onDisk == null ? 0 : SnapshotFileIntegrity.crc32OfFileBytes(onDisk);
+            appendOnlyFile.rewriteBlocking(store, expiration, baselineCrc);
         }
     }
 }

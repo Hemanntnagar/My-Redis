@@ -39,6 +39,7 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionManagerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionStateTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/TcpListenServerTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/persistence/CompositeRecoveryIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/persistence/aof/AofCrashRecoveryTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/persistence/aof/AofRecordFramerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/persistence/snapshot/SnapshotCodecTest.java
@@ -56,3 +57,4 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/InMemoryKeyValueStoreTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/KeyspaceConcurrencyStressTest.java

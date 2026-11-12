@@ -71,6 +71,7 @@ A missing `dump.myredis` is not an error; the server starts with an empty databa
 | Process crash before `flush` | In-memory changes since the last successful snapshot are lost. |
 | **BGSAVE** during writes | Snapshot reflects a best-effort point-in-time; concurrent commands may interleave. |
 | Expiration | TTL metadata is stored; expired keys are not written when captured via `KeyspaceSnapshotter` (lazy expiry on access). After load, passive/active expiry behave as usual. |
-| Replication / AOF | Not implemented; snapshot is the only durability mechanism. |
+| AOF enabled | Snapshot is the bulk image; AOF carries incremental writes after the last `SAVE` baseline. See [RECOVERY.md](RECOVERY.md). |
+| Replication | Not implemented. |
 
-This is **snapshot persistence**, not write-ahead logging: you can lose data written after the last successful save.
+With AOF disabled, this is **snapshot-only** persistence: you can lose data written after the last successful save.

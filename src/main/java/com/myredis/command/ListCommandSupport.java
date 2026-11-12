@@ -26,18 +26,43 @@ final class ListCommandSupport {
     }
 
     private static long push(KeyValueStore store, byte[] key, byte[][] elements, boolean head) throws CommandException {
-        Optional<RedisValue> stored = store.get(key);
-        if (stored.isEmpty()) {
-            ListRedisValue list = new ListRedisValue();
-            long length = head ? list.pushHead(elements) : list.pushTail(elements);
-            try {
-                store.put(key, list);
-            } catch (StorageException failure) {
-                throw new CommandException(failure.clientMessage());
-            }
-            return length;
+        long[] length = {0L};
+        try {
+            store.merge(
+                    key,
+                    existing -> {
+                        if (existing == null) {
+                            ListRedisValue list = new ListRedisValue();
+                            length[0] = head ? list.pushHead(elements) : list.pushTail(elements);
+                            return list;
+                        }
+                        try {
+                            length[0] =
+                                    mutateList(existing, list -> head ? list.pushHead(elements) : list.pushTail(elements));
+                        } catch (CommandException failure) {
+                            throw new ListStateException(failure);
+                        }
+                        return existing;
+                    });
+        } catch (ListStateException state) {
+            throw state.failure();
+        } catch (StorageException failure) {
+            throw new CommandException(failure.clientMessage());
         }
-        return mutateList(stored.get(), list -> head ? list.pushHead(elements) : list.pushTail(elements));
+        return length[0];
+    }
+
+    private static final class ListStateException extends RuntimeException {
+        private final CommandException failure;
+
+        private ListStateException(CommandException failure) {
+            super(failure);
+            this.failure = failure;
+        }
+
+        private CommandException failure() {
+            return failure;
+        }
     }
 
     static Optional<byte[]> popHead(ListRedisValue list) {

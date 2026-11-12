@@ -18,7 +18,12 @@ public final class AofReplayer {
     public record ReplaySummary(int recordsApplied, int incompleteTrailingBytes) {}
 
     public static ReplaySummary replay(byte[] fileBytes, CommandDispatcher dispatcher) throws PersistenceException {
-        AofRecordFramer.ReadResult read = AofRecordFramer.readAllRecords(fileBytes);
+        return replay(fileBytes, dispatcher, 0);
+    }
+
+    public static ReplaySummary replay(byte[] fileBytes, CommandDispatcher dispatcher, int skipRecords)
+            throws PersistenceException {
+        AofRecordFramer.ReadResult read = AofRecordFramer.readAllRecords(fileBytes, skipRecords);
         int applied = 0;
         for (byte[] payload : read.commandPayloads()) {
             try {

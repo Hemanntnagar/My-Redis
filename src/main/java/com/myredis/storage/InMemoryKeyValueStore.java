@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.UnaryOperator;
 
 /**
  * Thread-safe in-memory {@link KeyValueStore} backed by a concurrent hash map.
@@ -77,11 +78,21 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
             return;
         }
         BinaryKey from = new BinaryKey(source);
-        RedisValue value = entries.remove(from);
-        if (value == null) {
+        BinaryKey to = new BinaryKey(destination);
+        RedisValue[] moved = {null};
+        entries.compute(
+                from,
+                (key, value) -> {
+                    if (value == null) {
+                        return null;
+                    }
+                    moved[0] = value;
+                    return null;
+                });
+        if (moved[0] == null) {
             throw missingKey();
         }
-        entries.put(new BinaryKey(destination), value);
+        entries.put(to, moved[0]);
     }
 
     @Override
@@ -96,15 +107,46 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
         }
         BinaryKey from = new BinaryKey(source);
         BinaryKey to = new BinaryKey(destination);
-        RedisValue value = entries.remove(from);
-        if (value == null) {
+        if (entries.containsKey(to)) {
+            if (!entries.containsKey(from)) {
+                throw missingKey();
+            }
+            return false;
+        }
+        RedisValue[] moved = {null};
+        entries.compute(
+                from,
+                (key, value) -> {
+                    if (value == null) {
+                        return null;
+                    }
+                    moved[0] = value;
+                    return null;
+                });
+        if (moved[0] == null) {
             throw missingKey();
         }
-        if (entries.putIfAbsent(to, value) == null) {
+        if (entries.putIfAbsent(to, moved[0]) == null) {
             return true;
         }
-        entries.put(from, value);
+        entries.put(from, moved[0]);
         return false;
+    }
+
+    @Override
+    public Optional<RedisValue> merge(byte[] key, UnaryOperator<RedisValue> remapper) throws StorageException {
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(remapper, "remapper");
+        BinaryKey binaryKey = new BinaryKey(key);
+        RedisValue[] result = {null};
+        entries.compute(
+                binaryKey,
+                (ignored, existing) -> {
+                    RedisValue updated = remapper.apply(existing);
+                    result[0] = updated;
+                    return updated;
+                });
+        return Optional.ofNullable(result[0]);
     }
 
     private static StorageException missingKey() {

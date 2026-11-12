@@ -131,6 +131,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/UnconfiguredClientRequestProcessor.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/CompositePersistenceManager.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/KeyspaceIntegrityDigest.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/NoOpPersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/PersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/SnapshotCommandSupport.java
@@ -138,6 +139,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofFormat.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofFsyncPolicy.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRecordFramer.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRecoveryHeader.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofReplayer.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRespCommandCodec.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRewriteGenerator.java
@@ -148,6 +150,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/DatabaseSnapshot.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/KeyspaceSnapshotter.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotEntry.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotFileIntegrity.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotFormat.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotReader.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotWriter.java
@@ -192,6 +195,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/ExpirationAwareKeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/InMemoryKeyValueStore.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/KeyStripedLock.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/KeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/transaction/TransactionManager.java

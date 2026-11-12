@@ -10,8 +10,6 @@ import com.myredis.storage.KeyValueStore;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
 /** {@code APPEND} — appends a value to a string key, or creates the key; returns the new length. */
 public final class AppendCommand implements Command {
 
@@ -37,26 +35,46 @@ public final class AppendCommand implements Command {
         if (value == null) {
             throw new CommandException("ERR invalid value");
         }
-        Optional<RedisValue> stored = store.get(key);
-        byte[] result;
-        if (stored.isEmpty()) {
-            result = value.clone();
-        } else {
-            RedisValue existing = stored.get();
-            if (!(existing instanceof StringRedisValue stringValue)) {
-                throw new CommandException(
-                        "WRONGTYPE Operation against a key holding the wrong kind of value");
-            }
-            byte[] current = stringValue.bytes();
-            result = new byte[current.length + value.length];
-            System.arraycopy(current, 0, result, 0, current.length);
-            System.arraycopy(value, 0, result, current.length, value.length);
-        }
+        int[] length = {0};
         try {
-            store.put(key, new StringRedisValue(result));
+            store.merge(
+                    key,
+                    existing -> {
+                        byte[] result;
+                        if (existing == null) {
+                            result = value.clone();
+                        } else {
+                            if (!(existing instanceof StringRedisValue stringValue)) {
+                                throw new AppendStateException(
+                                        new CommandException(
+                                                "WRONGTYPE Operation against a key holding the wrong kind of value"));
+                            }
+                            byte[] current = stringValue.bytes();
+                            result = new byte[current.length + value.length];
+                            System.arraycopy(current, 0, result, 0, current.length);
+                            System.arraycopy(value, 0, result, current.length, value.length);
+                        }
+                        length[0] = result.length;
+                        return new StringRedisValue(result);
+                    });
+        } catch (AppendStateException state) {
+            throw state.failure();
         } catch (StorageException failure) {
             throw new CommandException(failure.clientMessage());
         }
-        return new ClientReply.Integer(result.length);
+        return new ClientReply.Integer(length[0]);
+    }
+
+    private static final class AppendStateException extends RuntimeException {
+        private final CommandException failure;
+
+        private AppendStateException(CommandException failure) {
+            super(failure);
+            this.failure = failure;
+        }
+
+        private CommandException failure() {
+            return failure;
+        }
     }
 }

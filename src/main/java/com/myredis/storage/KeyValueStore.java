@@ -4,7 +4,9 @@ import com.myredis.datatype.RedisValue;
 import com.myredis.exception.StorageException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 /**
  * Primary in-memory keyspace abstraction for a single logical database.
@@ -44,4 +46,22 @@ public interface KeyValueStore {
      * @throws StorageException when {@code source} is absent ({@code ERR no such key})
      */
     boolean renameIfAbsent(byte[] source, byte[] destination) throws StorageException;
+
+    /**
+     * Atomically updates or inserts the value for {@code key}. {@code null} removes the key when present.
+     */
+    default Optional<RedisValue> merge(byte[] key, UnaryOperator<RedisValue> remapper) throws StorageException {
+        Objects.requireNonNull(key, "key");
+        Objects.requireNonNull(remapper, "remapper");
+        Optional<RedisValue> existing = get(key);
+        RedisValue updated = remapper.apply(existing.orElse(null));
+        if (updated == null) {
+            if (existing.isPresent()) {
+                delete(key);
+            }
+            return Optional.empty();
+        }
+        put(key, updated);
+        return Optional.of(updated);
+    }
 }

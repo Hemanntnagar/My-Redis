@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.UnaryOperator;
 
 /**
  * {@link KeyValueStore} decorator that keeps expiration metadata in sync and purges expired keys on access.
+ * Uses striped key locks so concurrent commands do not observe torn list/set/hash mutations.
  */
 public final class ExpirationAwareKeyValueStore implements KeyValueStore {
 
     private final KeyValueStore delegate;
     private final InMemoryExpirationService expiration;
     private final ExpirationClock clock;
+    private final KeyStripedLock keyLocks = new KeyStripedLock();
 
     public ExpirationAwareKeyValueStore(KeyValueStore delegate, InMemoryExpirationService expiration) {
         this(delegate, expiration, SystemExpirationClock.INSTANCE);
@@ -36,27 +39,44 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
         return expiration;
     }
 
+  public KeyStripedLock keyLocks() {
+        return keyLocks;
+    }
+
     @Override
     public Optional<RedisValue> get(byte[] key) {
-        purgeIfExpired(key);
-        return delegate.get(key);
+        return keyLocks.callExclusiveReturning(key, () -> {
+            purgeIfExpired(key);
+            return delegate.get(key);
+        });
     }
 
     @Override
     public void put(byte[] key, RedisValue value) throws StorageException {
-        delegate.put(key, value);
+        runExclusivePropagatingStorage(key, () -> {
+            purgeIfExpired(key);
+            delegate.put(key, value);
+        });
     }
 
     @Override
     public boolean delete(byte[] key) {
-        expiration.cancel(key);
-        return delegate.delete(key);
+        return keyLocks.callExclusiveReturning(
+                key,
+                () -> {
+                    expiration.cancel(key);
+                    return delegate.delete(key);
+                });
     }
 
     @Override
     public boolean exists(byte[] key) {
-        purgeIfExpired(key);
-        return delegate.exists(key);
+        return keyLocks.callExclusiveReturning(
+                key,
+                () -> {
+                    purgeIfExpired(key);
+                    return delegate.exists(key);
+                });
     }
 
     @Override
@@ -75,27 +95,56 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
         List<byte[]> keys = delegate.snapshotKeys();
         List<byte[]> live = new ArrayList<>(keys.size());
         for (byte[] key : keys) {
-            purgeIfExpired(key);
-            if (delegate.exists(key)) {
-                live.add(key);
-            }
+            keyLocks.runExclusive(key, () -> {
+                purgeIfExpired(key);
+                if (delegate.exists(key)) {
+                    live.add(key);
+                }
+            });
         }
         return live;
     }
 
     @Override
     public void rename(byte[] source, byte[] destination) throws StorageException {
-        delegate.rename(source, destination);
-        expiration.transfer(source, destination);
+        runExclusiveTwoKeysPropagatingStorage(
+                source,
+                destination,
+                () -> {
+                    purgeIfExpired(source);
+                    purgeIfExpired(destination);
+                    delegate.rename(source, destination);
+                    expiration.transfer(source, destination);
+                });
     }
 
     @Override
     public boolean renameIfAbsent(byte[] source, byte[] destination) throws StorageException {
-        boolean renamed = delegate.renameIfAbsent(source, destination);
-        if (renamed) {
-            expiration.transfer(source, destination);
-        }
-        return renamed;
+        boolean[] renamed = {false};
+        runExclusiveTwoKeysPropagatingStorage(
+                source,
+                destination,
+                () -> {
+                    purgeIfExpired(source);
+                    purgeIfExpired(destination);
+                    renamed[0] = delegate.renameIfAbsent(source, destination);
+                    if (renamed[0]) {
+                        expiration.transfer(source, destination);
+                    }
+                });
+        return renamed[0];
+    }
+
+    @Override
+    public Optional<RedisValue> merge(byte[] key, UnaryOperator<RedisValue> remapper) throws StorageException {
+        Optional<RedisValue>[] holder = new Optional[] {Optional.empty()};
+        runExclusivePropagatingStorage(
+                key,
+                () -> {
+                    purgeIfExpired(key);
+                    holder[0] = delegate.merge(key, remapper);
+                });
+        return holder[0];
     }
 
     void purgeIfExpired(byte[] key) {
@@ -126,14 +175,85 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
                     if (!metadata.isExpiredAt(now)) {
                         return;
                     }
-                    if (expiration.tryRemoveIfExpired(key, now)) {
-                        delegate.delete(key);
-                        deleted[0]++;
-                        if (deleted[0] >= maxDeletes) {
-                            stop.set(true);
-                        }
-                    }
+                    keyLocks.runExclusive(
+                            key,
+                            () -> {
+                                if (expiration.tryRemoveIfExpired(key, now)) {
+                                    delegate.delete(key);
+                                    deleted[0]++;
+                                    if (deleted[0] >= maxDeletes) {
+                                        stop.set(true);
+                                    }
+                                }
+                            });
                 });
         return deleted[0];
+    }
+
+    private <T> T callExclusiveReturning(byte[] key, java.util.concurrent.Callable<T> action) {
+        try {
+            return keyLocks.callExclusive(key, action);
+        } catch (RuntimeException failure) {
+            throw failure;
+        } catch (Exception failure) {
+            throw new IllegalStateException(failure);
+        }
+    }
+
+    private void runExclusivePropagatingStorage(byte[] key, StorageRunnable action) throws StorageException {
+        try {
+            keyLocks.callExclusive(
+                    key,
+                    () -> {
+                        try {
+                            action.run();
+                        } catch (StorageException failure) {
+                            throw new StoragePropagation(failure);
+                        }
+                        return null;
+                    });
+        } catch (StoragePropagation failure) {
+            throw failure.cause();
+        } catch (RuntimeException failure) {
+            throw failure;
+        } catch (Exception failure) {
+            throw new StorageException("ERR storage operation failed: " + failure.getMessage());
+        }
+    }
+
+    private void runExclusiveTwoKeysPropagatingStorage(byte[] first, byte[] second, StorageRunnable action)
+            throws StorageException {
+        try {
+            keyLocks.runExclusive(
+                    first,
+                    second,
+                    () -> {
+                        try {
+                            action.run();
+                        } catch (StorageException failure) {
+                            throw new StoragePropagation(failure);
+                        }
+                    });
+        } catch (StoragePropagation failure) {
+            throw failure.cause();
+        }
+    }
+
+    @FunctionalInterface
+    private interface StorageRunnable {
+        void run() throws StorageException;
+    }
+
+    private static final class StoragePropagation extends RuntimeException {
+        private final StorageException storageFailure;
+
+        private StoragePropagation(StorageException storageFailure) {
+            super(storageFailure);
+            this.storageFailure = storageFailure;
+        }
+
+        private StorageException cause() {
+            return storageFailure;
+        }
     }
 }

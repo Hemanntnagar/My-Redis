@@ -120,12 +120,18 @@ public final class AppendOnlyFile {
 
     public void rewriteBlocking(ExpirationAwareKeyValueStore store, InMemoryExpirationService expiration)
             throws PersistenceException {
+        rewriteBlocking(store, expiration, 0);
+    }
+
+    public void rewriteBlocking(
+            ExpirationAwareKeyValueStore store, InMemoryExpirationService expiration, int baselineSnapshotCrc32)
+            throws PersistenceException {
         DatabaseSnapshot snapshot = KeyspaceSnapshotter.capture(store, expiration);
         List<List<byte[]>> commands = AofRewriteGenerator.commandsFor(snapshot);
         Path rewriteTemp = directory.resolve(AofFormat.FILE_NAME + AofFormat.REWRITE_TEMP_SUFFIX);
         try {
             Files.createDirectories(directory);
-            byte[] body = buildFileBody(commands);
+            byte[] body = buildFileBody(commands, baselineSnapshotCrc32);
             writeAndFsync(rewriteTemp, body);
             synchronized (writeLock) {
                 closeChannel();
@@ -152,10 +158,10 @@ public final class AppendOnlyFile {
         }
     }
 
-    private byte[] buildFileBody(List<List<byte[]>> commands) {
+    private byte[] buildFileBody(List<List<byte[]>> commands, int baselineSnapshotCrc32) {
         int capacity = AofRecordFramer.headerLength() + commands.size() * 128;
         ByteBuffer buffer = ByteBuffer.allocate(Math.max(capacity, 256));
-        buffer.put(AofRecordFramer.fileHeader());
+        buffer.put(AofRecordFramer.fileHeader(baselineSnapshotCrc32, commands.size()));
         for (List<byte[]> command : commands) {
             buffer.put(AofRecordFramer.frame(AofRespCommandCodec.encode(command)));
         }

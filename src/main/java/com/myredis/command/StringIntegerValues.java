@@ -22,20 +22,49 @@ final class StringIntegerValues {
     }
 
     static ClientReply incrementBy(KeyValueStore store, byte[] key, long delta) throws CommandException {
-        long current = readCounter(store, key);
-        long next;
+        long[] next = {0L};
         try {
-            next = Math.addExact(current, delta);
-        } catch (ArithmeticException failure) {
-            throw new CommandException(OVERFLOW);
-        }
-        try {
-            byte[] encoded = Long.toString(next).getBytes(StandardCharsets.US_ASCII);
-            store.put(key, new StringRedisValue(encoded));
+            store.merge(
+                    key,
+                    existing -> {
+                        long current = 0L;
+                        if (existing != null) {
+                            if (!(existing instanceof StringRedisValue stringValue)) {
+                                throw new IncrementStateException(wrongType());
+                            }
+                            try {
+                                current = parseStrict(stringValue.bytes());
+                            } catch (CommandException failure) {
+                                throw new IncrementStateException(failure);
+                            }
+                        }
+                        try {
+                            next[0] = Math.addExact(current, delta);
+                        } catch (ArithmeticException failure) {
+                            throw new IncrementStateException(new CommandException(OVERFLOW));
+                        }
+                        return new StringRedisValue(
+                                Long.toString(next[0]).getBytes(StandardCharsets.US_ASCII));
+                    });
+        } catch (IncrementStateException state) {
+            throw state.failure();
         } catch (StorageException failure) {
             throw new CommandException(failure.clientMessage());
         }
-        return new ClientReply.Integer(next);
+        return new ClientReply.Integer(next[0]);
+    }
+
+    private static final class IncrementStateException extends RuntimeException {
+        private final CommandException failure;
+
+        private IncrementStateException(CommandException failure) {
+            super(failure);
+            this.failure = failure;
+        }
+
+        private CommandException failure() {
+            return failure;
+        }
     }
 
     private static long readCounter(KeyValueStore store, byte[] key) throws CommandException {

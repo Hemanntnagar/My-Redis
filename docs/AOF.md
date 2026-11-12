@@ -10,18 +10,20 @@
 ## On-disk format
 
 - File: `appendonly.aof`
-- Fixed header (`MYRAOF` magic + version)
-- Each command is stored as a **length-prefixed** RESP2 bulk-string array so a partial last record is ignored on recovery.
+- **v2 header**: `MYRAOF` magic, format version, `baselineSnapshotCrc32`, `baselineRecordCount` (records that duplicate the on-disk snapshot after `SAVE`)
+- **v1 header**: magic + version only (legacy)
+- Each command is a **length-prefixed** RESP2 bulk-string array so a partial last record is ignored on recovery.
 
 ## Recovery
 
-On startup (when AOF is enabled):
+See [RECOVERY.md](RECOVERY.md) for the full startup sequence. Summary:
 
-1. Load RDB snapshot (`dump.myredis`) if present.
-2. Replay every complete AOF record.
-3. Ignore any incomplete trailing frame at EOF.
+1. Load `dump.myredis` when present.
+2. Verify AOF baseline CRC against the snapshot file when using v2.
+3. Replay only AOF records **after** the snapshot baseline (skip duplicate compacted commands).
+4. Ignore an incomplete trailing frame at EOF.
 
-`SAVE` / `BGSAVE` rewrite the AOF to match the snapshot so snapshot + incremental AOF stay consistent.
+`SAVE` / `BGSAVE` rewrite the AOF with a fresh baseline tied to the snapshot CRC.
 
 ## Compaction
 

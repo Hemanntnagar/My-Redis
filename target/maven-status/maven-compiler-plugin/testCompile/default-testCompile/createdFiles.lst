@@ -16,6 +16,7 @@ com/myredis/command/EchoCommandTest$StubSession.class
 com/myredis/command/PingCommandTest.class
 com/myredis/command/RenameRandomKeyCommandTest$StubSession.class
 com/myredis/command/PingCommandTest$StubSession.class
+com/myredis/storage/KeyspaceConcurrencyStressTest$StubSession.class
 com/myredis/protocol/Resp2CrlfTest.class
 com/myredis/command/HashTcpIntegrationTest.class
 com/myredis/command/ListTcpIntegrationTest.class
@@ -53,6 +54,7 @@ com/myredis/exception/ErrorResponseMapperTest.class
 com/myredis/command/DelExistsTypeTcpIntegrationTest.class
 com/myredis/command/SetGetCommandTest$StubSession.class
 com/myredis/exception/ServerErrorHandlerTest.class
+com/myredis/persistence/CompositeRecoveryIntegrationTest.class
 com/myredis/command/DelExistsTypeCommandTest.class
 com/myredis/command/EchoCommandTest.class
 com/myredis/network/ClientConnectionStateTest.class
@@ -60,6 +62,7 @@ com/myredis/protocol/Resp2BulkStringParserTest.class
 com/myredis/persistence/aof/AofCrashRecoveryTest.class
 com/myredis/command/StringCounterCommandTest$StubSession.class
 com/myredis/command/RenameRandomKeyTcpIntegrationTest.class
+com/myredis/persistence/CompositeRecoveryIntegrationTest$StubSession.class
 com/myredis/command/TtlPttlCommandTest$StubSession.class
 com/myredis/command/MsetMgetAppendCommandTest.class
 com/myredis/command/StringCounterCommandTest.class
@@ -72,6 +75,7 @@ com/myredis/protocol/Resp2IntegerParserTest.class
 com/myredis/command/MsetMgetAppendCommandTest$StubSession.class
 com/myredis/command/SaveBgsaveCommandTest.class
 com/myredis/command/SetGetTcpIntegrationTest.class
+com/myredis/storage/KeyspaceConcurrencyStressTest.class
 com/myredis/command/SortedSetCommandTest$StubSession.class
 com/myredis/command/SortedSetCommandTest.class
 com/myredis/command/SetCommandTest$StubSession.class

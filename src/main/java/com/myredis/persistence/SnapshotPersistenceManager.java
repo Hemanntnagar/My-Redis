@@ -39,6 +39,14 @@ public final class SnapshotPersistenceManager implements PersistenceManager, Sna
         this.expiration = Objects.requireNonNull(expiration, "expiration");
     }
 
+    public Path persistenceDirectory() {
+        return persistenceDirectory;
+    }
+
+    public byte[] readSnapshotBytesIfPresent() throws PersistenceException {
+        return AtomicSnapshotFiles.readIfPresent(persistenceDirectory);
+    }
+
     @Override
     public void load() throws PersistenceException {
         byte[] encoded = AtomicSnapshotFiles.readIfPresent(persistenceDirectory);
