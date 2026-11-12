@@ -7,6 +7,7 @@ com/myredis/exception/ErrorResponseMapper.class
 com/myredis/network/ClientRequestProcessor.class
 com/myredis/server/ServerApplication.class
 com/myredis/replication/ReplicationRole.class
+com/myredis/command/KeysCommand.class
 com/myredis/exception/InvalidConfigurationException.class
 com/myredis/protocol/RespArray.class
 com/myredis/network/ClientConnectionManager.class
@@ -31,12 +32,14 @@ com/myredis/storage/package-info.class
 com/myredis/command/CommandClientRequestProcessor.class
 com/myredis/command/Command.class
 com/myredis/server/GracefulShutdownCoordinator.class
+com/myredis/command/DecrByCommand.class
 com/myredis/protocol/Resp2Crlf.class
 com/myredis/transaction/TransactionManager.class
 com/myredis/config/ServerConfiguration.class
 com/myredis/command/CommandDispatcher.class
 com/myredis/command/GetCommand.class
 com/myredis/command/MsetCommand.class
+com/myredis/command/FlushDbCommand.class
 com/myredis/network/ClientReply$Array.class
 com/myredis/network/ClientReply$NullBulk.class
 com/myredis/protocol/RespBulkReply.class
@@ -46,6 +49,7 @@ com/myredis/config/ServerConfigurationDefaults.class
 com/myredis/server/ServerBootstrap.class
 com/myredis/server/ServerStartupReporter.class
 com/myredis/storage/InMemoryKeyValueStore$BinaryKey.class
+com/myredis/command/StringIntegerValues.class
 com/myredis/exception/ConnectionException.class
 com/myredis/network/ClientConnectionState.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
@@ -64,6 +68,7 @@ com/myredis/network/ClientSession.class
 com/myredis/config/LoggingLevel.class
 com/myredis/protocol/RespSimpleString.class
 com/myredis/command/RegistryCommandDispatcher.class
+com/myredis/command/DbSizeCommand.class
 com/myredis/logging/LogContext.class
 com/myredis/metrics/NoOpMetricsRecorder.class
 com/myredis/protocol/Resp2ArrayParser.class
@@ -82,8 +87,11 @@ com/myredis/exception/ServerErrorHandler.class
 com/myredis/command/EchoCommand.class
 com/myredis/network/package-info.class
 com/myredis/datatype/package-info.class
+com/myredis/command/StrlenCommand.class
 com/myredis/protocol/Resp2ArrayEncoder.class
 com/myredis/network/ConnectedClientSession.class
+com/myredis/command/IncrCommand.class
+com/myredis/command/KeyGlobMatcher.class
 com/myredis/protocol/RespEncoder.class
 com/myredis/persistence/NoOpPersistenceManager.class
 com/myredis/exception/StorageException.class
@@ -102,6 +110,7 @@ com/myredis/exception/PersistenceException.class
 com/myredis/datatype/StringRedisValue.class
 com/myredis/protocol/Resp2Encoder.class
 com/myredis/protocol/Resp2LineEncoder.class
+com/myredis/command/IncrByCommand.class
 com/myredis/network/ClientReply.class
 com/myredis/datatype/RedisValue.class
 com/myredis/config/ConfigurationSource.class
@@ -113,4 +122,5 @@ com/myredis/server/package-info.class
 com/myredis/config/DefaultServerConfiguration.class
 com/myredis/protocol/Resp2IntegerEncoder.class
 com/myredis/config/package-info.class
+com/myredis/command/DecrCommand.class
 com/myredis/protocol/Resp2Length.class
