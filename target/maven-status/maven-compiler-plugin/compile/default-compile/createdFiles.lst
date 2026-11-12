@@ -71,6 +71,7 @@ com/myredis/exception/StorageException.class
 com/myredis/command/TtlCommandSupport.class
 com/myredis/expiration/package-info.class
 com/myredis/command/HExistsCommand.class
+com/myredis/expiration/BackgroundExpirationCleanup.class
 com/myredis/network/ClientConnectionHandler.class
 com/myredis/storage/KeyValueStore.class
 com/myredis/command/DelCommand.class
@@ -85,6 +86,7 @@ com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/command/ZRevRankCommand.class
 com/myredis/command/IncrByCommand.class
 com/myredis/datatype/RedisValue.class
+com/myredis/expiration/BackgroundExpirationCleanup$Sleeper.class
 com/myredis/datatype/HashRedisValue$Field.class
 com/myredis/server/ServerContext.class
 com/myredis/server/package-info.class
@@ -168,6 +170,7 @@ com/myredis/command/EchoCommand.class
 com/myredis/command/SetValueCommandSupport.class
 com/myredis/datatype/package-info.class
 com/myredis/command/StrlenCommand.class
+com/myredis/expiration/ExpirationCleanupPolicy.class
 com/myredis/command/IncrCommand.class
 com/myredis/command/PersistCommand.class
 com/myredis/command/PexpireAtCommand.class

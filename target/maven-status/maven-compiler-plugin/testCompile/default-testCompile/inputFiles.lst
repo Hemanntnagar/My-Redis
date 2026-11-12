@@ -30,6 +30,8 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/DomainExceptionTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/ErrorResponseMapperTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/ServerErrorHandlerTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/expiration/ActiveExpirationStressTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/expiration/BackgroundExpirationCleanupTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/expiration/KeyExpirationMetadataTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/logging/StructuredServerLoggerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionHandlerTest.java
