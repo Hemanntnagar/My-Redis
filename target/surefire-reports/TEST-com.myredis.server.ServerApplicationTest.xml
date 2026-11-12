@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.myredis.server.ServerApplicationTest" time="0.333" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.myredis.server.ServerApplicationTest" time="0.365" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="001"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-26.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112153114538_3.jar /Users/sunny/Documents/My-Redis/target/surefire 2026-11-12T15-31-14_440-jvmRun1 surefire-20261112153114538_1tmp surefire_0-20261112153114538_2tmp"/>
+    <property name="sun.java.command" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112181820006_3.jar /Users/sunny/Documents/My-Redis/target/surefire 2026-11-12T18-18-19_938-jvmRun1 surefire-20261112181820006_1tmp surefire_0-20261112181820006_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/sunny/Documents/My-Redis/target/test-classes:/Users/sunny/Documents/My-Redis/target/classes:/Users/sunny/.m2/repository/org/slf4j/slf4j-api/2.0.16/slf4j-api-2.0.16.jar:/Users/sunny/.m2/repository/org/slf4j/slf4j-simple/2.0.16/slf4j-simple-2.0.16.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter/5.11.4/junit-jupiter-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.4/junit-jupiter-api-5.11.4.jar:/Users/sunny/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/sunny/.m2/repository/org/junit/platform/junit-platform-commons/1.11.4/junit-platform-commons-1.11.4.jar:/Users/sunny/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.11.4/junit-jupiter-params-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.4/junit-jupiter-engine-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/platform/junit-platform-engine/1.11.4/junit-platform-engine-1.11.4.jar:"/>
@@ -30,7 +30,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112153114538_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112181820006_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="26.0.1+8-34"/>
@@ -60,10 +60,10 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="bootstrapStartsWithStoppedServer" classname="com.myredis.server.ServerApplicationTest" time="0.013"/>
-  <testcase name="runCompletesAfterGracefulShutdown" classname="com.myredis.server.ServerApplicationTest" time="0.318">
+  <testcase name="bootstrapStartsWithStoppedServer" classname="com.myredis.server.ServerApplicationTest" time="0.039"/>
+  <testcase name="runCompletesAfterGracefulShutdown" classname="com.myredis.server.ServerApplicationTest" time="0.32">
     <system-out><![CDATA[My-Redis 0.1.0-SNAPSHOT
-  listen bind: 127.0.0.1:50030
+  listen bind: 127.0.0.1:52894
   max clients: 10000
   worker threads: 8
   persistence dir: /Users/sunny/Documents/My-Redis/data
@@ -71,18 +71,18 @@
   tcp backlog: 511
   commands: PING, ECHO, GET, SET (RESP2 over TCP)
 ]]></system-out>
-    <system-err><![CDATA[[Thread-1] INFO com.myredis.server - level=INFO event="server_start" message="My-Redis ready to accept connections" version="0.1.0-SNAPSHOT" bind="127.0.0.1:50030" max_clients="10000" worker_threads="8" logging_level="INFO"
-[Thread-1] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="50030" backlog="511" max_connections="10000"
+    <system-err><![CDATA[[Thread-1] INFO com.myredis.server - level=INFO event="server_start" message="My-Redis ready to accept connections" version="0.1.0-SNAPSHOT" bind="127.0.0.1:52894" max_clients="10000" worker_threads="8" logging_level="INFO"
+[Thread-1] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="52894" backlog="511" max_connections="10000"
 [Thread-1] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
-[Thread-1] INFO com.myredis.server - level=INFO event="server_running" message="awaiting shutdown signal" pid="83390"
+[Thread-1] INFO com.myredis.server - level=INFO event="server_running" message="awaiting shutdown signal" pid="89896"
 [main] INFO com.myredis.server - level=INFO event="server_shutdown" message="graceful shutdown initiated" reason="test"
 [main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
 [main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
 [main] INFO com.myredis.server - level=INFO event="server_shutdown_complete" message="server stopped"
 ]]></system-err>
   </testcase>
-  <testcase name="startAndShutdownReleasesShutdownLatch" classname="com.myredis.server.ServerApplicationTest" time="0.002">
-    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="50031" backlog="511" max_connections="10000"
+  <testcase name="startAndShutdownReleasesShutdownLatch" classname="com.myredis.server.ServerApplicationTest" time="0.004">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="52895" backlog="511" max_connections="10000"
 [main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
 [main] INFO com.myredis.server - level=INFO event="server_shutdown" message="graceful shutdown initiated" reason="test"
 [main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
