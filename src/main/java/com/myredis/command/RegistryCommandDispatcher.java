@@ -58,6 +58,14 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new LRangeCommand(store));
         register(registry, new LIndexCommand(store));
         register(registry, new LSetCommand(store));
+        register(registry, new SAddCommand(store));
+        register(registry, new SRemCommand(store));
+        register(registry, new SMembersCommand(store));
+        register(registry, new SIsMemberCommand(store));
+        register(registry, new SCardCommand(store));
+        register(registry, new SInterCommand(store));
+        register(registry, new SUnionCommand(store));
+        register(registry, new SDiffCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 
