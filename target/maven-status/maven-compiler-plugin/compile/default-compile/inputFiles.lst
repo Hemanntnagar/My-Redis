@@ -32,7 +32,16 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RegistryCommandDispatcher.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RenameCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RenameNxCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SAddCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SCardCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SDiffCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SInterCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SIsMemberCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SMembersCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SRemCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SUnionCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetValueCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StringIntegerValues.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StrlenCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/TypeCommand.java
@@ -50,6 +59,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/DataType.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/ListRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/RedisValue.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/SetRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/StringRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/exception/CommandException.java
