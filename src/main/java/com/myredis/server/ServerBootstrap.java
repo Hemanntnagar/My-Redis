@@ -3,10 +3,13 @@ package com.myredis.server;
 import com.myredis.config.ServerConfiguration;
 import com.myredis.exception.ServerErrorHandler;
 import com.myredis.logging.StructuredServerLogger;
+import com.myredis.command.CommandClientRequestProcessor;
 import com.myredis.metrics.MetricsRecorder;
 import com.myredis.metrics.NoOpMetricsRecorder;
 import com.myredis.persistence.NoOpPersistenceManager;
 import com.myredis.persistence.PersistenceManager;
+import com.myredis.storage.InMemoryKeyValueStore;
+import com.myredis.storage.KeyValueStore;
 
 import java.util.Objects;
 
@@ -24,7 +27,12 @@ public final class ServerBootstrap {
         ServerErrorHandler errorHandler = new ServerErrorHandler(logger);
         MetricsRecorder metrics = new NoOpMetricsRecorder();
         PersistenceManager persistence = new NoOpPersistenceManager();
-        DatabaseServer databaseServer = new LifecycleDatabaseServer(configuration, logger);
+        KeyValueStore keyValueStore = new InMemoryKeyValueStore();
+        DatabaseServer databaseServer =
+                new LifecycleDatabaseServer(
+                        configuration,
+                        logger,
+                        CommandClientRequestProcessor.withBuiltinCommands(keyValueStore));
 
         return new ServerContext(configuration, logger, errorHandler, metrics, persistence, databaseServer);
     }

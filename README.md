@@ -33,8 +33,8 @@ Each package currently exposes `package-info.java` and a small set of foundation
 
 ## Limitations
 
-- In-memory storage and most Redis commands are not implemented yet
-- Built-in commands: `PING`, `ECHO`
+- Persistence, expiration, and most Redis commands are not implemented yet
+- Built-in commands: `PING`, `ECHO`, `GET`, `SET`
 
 ## Manual check (redis-cli)
 
@@ -44,4 +44,7 @@ MYREDIS_HOST=127.0.0.1 MYREDIS_PORT=6379 java -cp "target/classes:$(cat target/c
 # in another terminal:
 redis-cli -p 6379 PING
 redis-cli -p 6379 ECHO hello
+redis-cli -p 6379 SET mykey hello
+redis-cli -p 6379 GET mykey
+redis-cli -p 6379 GET no-such-key
 ```

@@ -19,6 +19,7 @@ com/myredis/network/ClientReply$Error.class
 com/myredis/exception/package-info.class
 com/myredis/protocol/Resp2BulkStringEncoder.class
 com/myredis/logging/package-info.class
+com/myredis/command/SetCommand.class
 com/myredis/config/ServerConfigurationBuilder.class
 com/myredis/protocol/RespError.class
 com/myredis/server/ServerMetadata.class
@@ -32,6 +33,7 @@ com/myredis/protocol/Resp2Crlf.class
 com/myredis/transaction/TransactionManager.class
 com/myredis/config/ServerConfiguration.class
 com/myredis/command/CommandDispatcher.class
+com/myredis/command/GetCommand.class
 com/myredis/network/ClientReply$NullBulk.class
 com/myredis/protocol/RespBulkReply.class
 com/myredis/protocol/RespValue.class

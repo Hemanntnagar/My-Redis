@@ -3,6 +3,8 @@ package com.myredis.command;
 import com.myredis.exception.CommandException;
 import com.myredis.network.ClientReply;
 import com.myredis.network.ClientSession;
+import com.myredis.storage.InMemoryKeyValueStore;
+import com.myredis.storage.KeyValueStore;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,9 +24,15 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
     }
 
     public static RegistryCommandDispatcher withBuiltinCommands() {
+        return withBuiltinCommands(new InMemoryKeyValueStore());
+    }
+
+    public static RegistryCommandDispatcher withBuiltinCommands(KeyValueStore store) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
+        register(registry, new SetCommand(store));
+        register(registry, new GetCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 

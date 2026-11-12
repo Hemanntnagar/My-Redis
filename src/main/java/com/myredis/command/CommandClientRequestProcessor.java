@@ -4,6 +4,8 @@ import com.myredis.exception.CommandException;
 import com.myredis.network.ClientReply;
 import com.myredis.network.ClientRequestProcessor;
 import com.myredis.network.ClientSession;
+import com.myredis.storage.InMemoryKeyValueStore;
+import com.myredis.storage.KeyValueStore;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -21,7 +23,11 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands() {
-        return new CommandClientRequestProcessor(RegistryCommandDispatcher.withBuiltinCommands());
+        return withBuiltinCommands(new InMemoryKeyValueStore());
+    }
+
+    public static CommandClientRequestProcessor withBuiltinCommands(KeyValueStore store) {
+        return new CommandClientRequestProcessor(RegistryCommandDispatcher.withBuiltinCommands(store));
     }
 
     @Override
