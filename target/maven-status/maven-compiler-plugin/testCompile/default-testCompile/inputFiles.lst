@@ -1,6 +1,8 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/PackageArchitectureTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/config/ServerConfigurationLoaderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/config/ServerConfigurationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/DomainExceptionTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/ErrorResponseMapperTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/ServerErrorHandlerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/logging/StructuredServerLoggerTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
