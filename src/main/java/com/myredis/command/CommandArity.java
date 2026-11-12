@@ -26,6 +26,13 @@ public final class CommandArity {
         }
     }
 
+    public static void requireAtLeast(List<byte[]> arguments, int min, String commandName)
+            throws CommandException {
+        if (arguments.size() < min) {
+            throw wrongArity(commandName);
+        }
+    }
+
     private static CommandException wrongArity(String commandName) {
         return new CommandException("ERR wrong number of arguments for '" + commandName + "' command");
     }

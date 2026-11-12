@@ -9,5 +9,17 @@ public enum DataType {
     SET,
     SORTED_SET,
     HASH,
-    STREAM
+    STREAM;
+
+    /** Redis {@code TYPE} command name for this value kind. */
+    public String redisTypeName() {
+        return switch (this) {
+            case STRING -> "string";
+            case LIST -> "list";
+            case SET -> "set";
+            case SORTED_SET -> "zset";
+            case HASH -> "hash";
+            case STREAM -> "stream";
+        };
+    }
 }

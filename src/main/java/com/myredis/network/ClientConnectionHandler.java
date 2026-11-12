@@ -177,6 +177,7 @@ final class ClientConnectionHandler implements Runnable {
             case ClientReply.Error error -> error.message().length() + 16;
             case ClientReply.BulkString bulk -> bulk.value().length + 32;
             case ClientReply.NullBulk ignored -> 16;
+            case ClientReply.Integer integer -> 32;
         };
     }
 
@@ -186,6 +187,7 @@ final class ClientConnectionHandler implements Runnable {
             case ClientReply.Error error -> encoder.encodeError(error.message(), output);
             case ClientReply.BulkString bulk -> encoder.encodeBulkString(bulk.value(), output);
             case ClientReply.NullBulk ignored -> encoder.encodeNullBulk(output);
+            case ClientReply.Integer integer -> encoder.encodeInteger(integer.value(), output);
         }
     }
 }

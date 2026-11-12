@@ -34,7 +34,7 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ## Limitations
 
 - Persistence, expiration, and most Redis commands are not implemented yet
-- Built-in commands: `PING`, `ECHO`, `GET`, `SET`
+- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `DEL`, `EXISTS`, `TYPE`
 
 ## Manual check (redis-cli)
 
@@ -47,4 +47,7 @@ redis-cli -p 6379 ECHO hello
 redis-cli -p 6379 SET mykey hello
 redis-cli -p 6379 GET mykey
 redis-cli -p 6379 GET no-such-key
+redis-cli -p 6379 DEL mykey
+redis-cli -p 6379 EXISTS mykey other
+redis-cli -p 6379 TYPE mykey
 ```

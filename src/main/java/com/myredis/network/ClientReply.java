@@ -13,6 +13,8 @@ public sealed interface ClientReply {
 
     record NullBulk() implements ClientReply {}
 
+    record Integer(long value) implements ClientReply {}
+
     static ClientReply pong() {
         return new SimpleString("PONG");
     }
