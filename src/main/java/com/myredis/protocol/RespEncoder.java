@@ -11,5 +11,9 @@ public interface RespEncoder {
 
     void encodeError(String message, ByteBuffer output);
 
+    void encodeInteger(long value, ByteBuffer output);
+
     void encodeBulkString(byte[] value, ByteBuffer output);
+
+    void encodeNullBulk(ByteBuffer output);
 }

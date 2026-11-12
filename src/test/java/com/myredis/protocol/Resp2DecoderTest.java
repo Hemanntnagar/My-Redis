@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -35,6 +36,34 @@ class Resp2DecoderTest {
         ByteBuffer buffer = ByteBuffer.wrap("?nope\r\n".getBytes(StandardCharsets.UTF_8));
         ProtocolException failure = assertThrows(ProtocolException.class, () -> decoder.decodeNext(buffer));
         assertEquals("unknown RESP type byte", failure.clientMessage());
+    }
+
+    @Test
+    void decodesIntegerAndBulkReplies() throws ProtocolException {
+        ByteBuffer integer = ByteBuffer.wrap(":99\r\n".getBytes(StandardCharsets.UTF_8));
+        Object integerDecoded = decoder.decodeNext(integer);
+        assertInstanceOf(RespInteger.class, integerDecoded);
+        assertEquals(99L, ((RespInteger) integerDecoded).value());
+
+        byte[] binary = new byte[] {0x00, 'x'};
+        ByteBuffer bulkFrame = ByteBuffer.allocate(32);
+        Resp2BulkStringEncoder.encode(binary, bulkFrame);
+        bulkFrame.flip();
+        Object bulkDecoded = decoder.decodeNext(bulkFrame);
+        assertInstanceOf(RespBulkString.class, bulkDecoded);
+        assertArrayEquals(binary, ((RespBulkString) bulkDecoded).data());
+
+        Object nullBulk = decoder.decodeNext(ByteBuffer.wrap("$-1\r\n".getBytes(StandardCharsets.UTF_8)));
+        assertEquals(RespNullBulk.INSTANCE, nullBulk);
+    }
+
+    @Test
+    void bulkDecodeIsIncremental() throws ProtocolException {
+        byte[] frame = "$3\r\nfoo\r\n".getBytes(StandardCharsets.UTF_8);
+        ByteBuffer buffer = ByteBuffer.wrap(frame, 0, 6);
+        assertNull(decoder.decodeNext(buffer));
+        buffer = ByteBuffer.wrap(frame);
+        assertInstanceOf(RespBulkString.class, decoder.decodeNext(buffer));
     }
 
     @Test

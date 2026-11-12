@@ -11,8 +11,6 @@ import java.util.List;
  */
 public final class Resp2Decoder implements RespDecoder {
 
-    private static final byte[] INCOMPLETE = new byte[0];
-
     @Override
     public Object decodeNext(ByteBuffer input) throws ProtocolException {
         if (!input.hasRemaining()) {
@@ -23,8 +21,8 @@ public final class Resp2Decoder implements RespDecoder {
         return switch (type) {
             case '+' -> decodeSimpleString(input, true);
             case '-' -> decodeError(input, true);
-            case ':' -> decodeInteger(input);
-            case '$' -> decodeBulkString(input);
+            case ':' -> decodeInteger(input, true);
+            case '$' -> decodeBulkString(input, true);
             case '*' -> decodeArray(input);
             default -> throw new ProtocolException("unknown RESP type byte");
         };
@@ -52,27 +50,26 @@ public final class Resp2Decoder implements RespDecoder {
         return decoded;
     }
 
-    private static Object decodeInteger(ByteBuffer input) throws ProtocolException {
-        String line = Resp2Crlf.readLine(input);
-        if (line == null) {
+    private static Object decodeInteger(ByteBuffer input, boolean typeConsumed) throws ProtocolException {
+        if (typeConsumed) {
+            input.position(input.position() - 1);
+        }
+        RespInteger decoded = Resp2IntegerParser.decodeInteger(input);
+        if (decoded == null) {
             return incomplete(input);
         }
-        try {
-            return Long.parseLong(line.trim());
-        } catch (NumberFormatException failure) {
-            throw new ProtocolException("invalid integer in RESP payload");
-        }
+        return decoded;
     }
 
-    private static Object decodeBulkString(ByteBuffer input) throws ProtocolException {
-        BulkRead bulk = readBulk(input);
-        if (bulk == null) {
+    private static Object decodeBulkString(ByteBuffer input, boolean typeConsumed) throws ProtocolException {
+        if (typeConsumed) {
+            input.position(input.position() - 1);
+        }
+        RespBulkReply decoded = Resp2BulkStringParser.decodeBulkString(input);
+        if (decoded == null) {
             return incomplete(input);
         }
-        if (bulk.nullBulk) {
-            return null;
-        }
-        return bulk.bytes;
+        return decoded;
     }
 
     private static Object decodeArray(ByteBuffer input) throws ProtocolException {
@@ -98,62 +95,21 @@ public final class Resp2Decoder implements RespDecoder {
                 return incomplete(input);
             }
             input.mark();
-            byte nestedType = input.get();
-            if (nestedType != '$') {
-                throw new ProtocolException("expected bulk string in command array");
-            }
-            BulkRead bulk = readBulk(input);
-            if (bulk == null) {
+            RespBulkReply element = Resp2BulkStringParser.decodeBulkString(input);
+            if (element == null) {
                 return incomplete(input);
             }
-            if (bulk.nullBulk) {
-                elements.add(null);
-            } else {
-                elements.add(bulk.bytes);
-            }
+            elements.add(
+                    switch (element) {
+                        case RespBulkString bulk -> bulk.data();
+                        case RespNullBulk ignored -> null;
+                    });
         }
         return List.copyOf(elements);
-    }
-
-    private static BulkRead readBulk(ByteBuffer input) throws ProtocolException {
-        String line = Resp2Crlf.readLine(input);
-        if (line == null) {
-            return null;
-        }
-        int length;
-        try {
-            length = Integer.parseInt(line.trim());
-        } catch (NumberFormatException failure) {
-            throw new ProtocolException("invalid bulk string length");
-        }
-        if (length < -1) {
-            throw new ProtocolException("invalid bulk string length");
-        }
-        if (length == -1) {
-            return BulkRead.nil();
-        }
-        if (input.remaining() < length + 2) {
-            return null;
-        }
-        byte[] payload = new byte[length];
-        input.get(payload);
-        Resp2Crlf.requireTerminator(input);
-        return BulkRead.of(payload);
     }
 
     private static Object incomplete(ByteBuffer input) {
         input.reset();
         return null;
-    }
-
-    private record BulkRead(boolean nullBulk, byte[] bytes) {
-
-        static BulkRead nil() {
-            return new BulkRead(true, INCOMPLETE);
-        }
-
-        static BulkRead of(byte[] bytes) {
-            return new BulkRead(false, bytes);
-        }
     }
 }
