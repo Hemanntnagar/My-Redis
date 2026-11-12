@@ -25,3 +25,4 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineEncoderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/InMemoryKeyValueStoreTest.java

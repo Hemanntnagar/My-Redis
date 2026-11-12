@@ -39,6 +39,7 @@ com/myredis/persistence/PersistenceManager.class
 com/myredis/config/ServerConfigurationDefaults.class
 com/myredis/server/ServerBootstrap.class
 com/myredis/server/ServerStartupReporter.class
+com/myredis/storage/InMemoryKeyValueStore$BinaryKey.class
 com/myredis/exception/ConnectionException.class
 com/myredis/network/ClientConnectionState.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
@@ -63,6 +64,7 @@ com/myredis/protocol/Resp2ArrayParser.class
 com/myredis/logging/StructuredServerLogger.class
 com/myredis/config/ServerConfigurationLoader.class
 com/myredis/protocol/package-info.class
+com/myredis/storage/InMemoryKeyValueStore.class
 com/myredis/replication/ReplicationCoordinator.class
 com/myredis/config/WorkerThreadConfiguration.class
 com/myredis/network/ClientReply$SimpleString.class
@@ -88,6 +90,7 @@ com/myredis/metrics/package-info.class
 com/myredis/protocol/RespInteger.class
 com/myredis/exception/ProtocolException.class
 com/myredis/exception/PersistenceException.class
+com/myredis/datatype/StringRedisValue.class
 com/myredis/protocol/Resp2Encoder.class
 com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/network/ClientReply.class

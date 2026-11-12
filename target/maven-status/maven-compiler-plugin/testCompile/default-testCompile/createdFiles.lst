@@ -1,4 +1,5 @@
 com/myredis/network/TcpListenServerTest.class
+com/myredis/storage/InMemoryKeyValueStoreTest.class
 com/myredis/exception/DomainExceptionTest.class
 com/myredis/protocol/Resp2LineParserTest.class
 com/myredis/protocol/Resp2DecoderTest.class

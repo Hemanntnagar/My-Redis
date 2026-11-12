@@ -19,6 +19,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/DataType.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/RedisValue.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/StringRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/exception/CommandException.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/exception/ConnectionException.java
@@ -91,6 +92,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/ServerMetadata.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/ServerStartupReporter.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/package-info.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/InMemoryKeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/KeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/transaction/TransactionManager.java
