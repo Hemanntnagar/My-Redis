@@ -85,6 +85,51 @@ class Resp2DecoderTest {
     }
 
     @Test
+    void decodesMultipleCommandsFromSingleBuffer() throws ProtocolException {
+        byte[] ping = "*1\r\n$4\r\nPING\r\n".getBytes(StandardCharsets.UTF_8);
+        byte[] echo = "*2\r\n$4\r\nECHO\r\n$3\r\nhey\r\n".getBytes(StandardCharsets.UTF_8);
+        byte[] both = new byte[ping.length + echo.length];
+        System.arraycopy(ping, 0, both, 0, ping.length);
+        System.arraycopy(echo, 0, both, ping.length, echo.length);
+
+        ByteBuffer buffer = ByteBuffer.wrap(both);
+        RespArray first = assertInstanceOf(RespArray.class, decoder.decodeNext(buffer));
+        assertEquals("PING", new String(((RespBulkString) first.elements().getFirst()).data(), StandardCharsets.UTF_8));
+
+        RespArray second = assertInstanceOf(RespArray.class, decoder.decodeNext(buffer));
+        assertEquals(2, second.elements().size());
+        assertEquals("hey", new String(((RespBulkString) second.elements().get(1)).data(), StandardCharsets.UTF_8));
+        assertNull(decoder.decodeNext(buffer));
+    }
+
+    @Test
+    void decodesLargeBulkIncrementally() throws ProtocolException {
+        int payloadSize = 32 * 1024;
+        byte[] payload = new byte[payloadSize];
+        for (int index = 0; index < payload.length; index++) {
+            payload[index] = (byte) (index % 251);
+        }
+        ByteBuffer frame = ByteBuffer.allocate(payloadSize + 64);
+        Resp2BulkStringEncoder.encode(payload, frame);
+        byte[] bytes = new byte[frame.position()];
+        frame.flip();
+        frame.get(bytes);
+
+        RespBulkString decoded = null;
+        for (int end = 1; end <= bytes.length; end++) {
+            ByteBuffer partial = ByteBuffer.wrap(bytes, 0, end);
+            Object value = decoder.decodeNext(partial);
+            if (value != null) {
+                decoded = assertInstanceOf(RespBulkString.class, value);
+                assertEquals(bytes.length, partial.position());
+                break;
+            }
+            assertEquals(0, partial.position(), "incomplete frames must not advance buffer position");
+        }
+        assertArrayEquals(payload, decoded.data());
+    }
+
+    @Test
     void decodesCommandWithNullBulkArgument() throws ProtocolException {
         byte[] frame = "*2\r\n$3\r\nSET\r\n$-1\r\n".getBytes(StandardCharsets.UTF_8);
         RespArray command = assertInstanceOf(RespArray.class, decoder.decodeNext(ByteBuffer.wrap(frame)));

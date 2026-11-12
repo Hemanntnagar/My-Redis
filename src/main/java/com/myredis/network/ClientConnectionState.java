@@ -11,7 +11,7 @@ final class ClientConnectionState {
     private static final int WRITE_CAPACITY = 4 * 1024;
 
     private ByteBuffer readBuffer = ByteBuffer.allocate(INITIAL_READ_CAPACITY);
-    private final ByteBuffer writeBuffer = ByteBuffer.allocate(WRITE_CAPACITY);
+    private ByteBuffer writeBuffer = ByteBuffer.allocate(WRITE_CAPACITY);
 
     ByteBuffer readBuffer() {
         return readBuffer;
@@ -22,9 +22,17 @@ final class ClientConnectionState {
     }
 
     void prepareForRead() {
-        if (!readBuffer.hasRemaining() && readBuffer.position() > 0) {
-            readBuffer.compact();
+        if (readBuffer.hasRemaining()) {
+            return;
         }
+        if (readBuffer.position() == 0) {
+            return;
+        }
+        if (readBuffer.position() < readBuffer.capacity()) {
+            readBuffer.compact();
+            return;
+        }
+        ensureReadCapacity(1);
     }
 
     void flipReadBuffer() {
@@ -49,5 +57,13 @@ final class ClientConnectionState {
         readBuffer.flip();
         grown.put(readBuffer);
         readBuffer = grown;
+    }
+
+    void ensureWriteCapacity(int required) {
+        if (writeBuffer.capacity() >= required) {
+            return;
+        }
+        int nextCapacity = Math.max(required, writeBuffer.capacity() * 2);
+        writeBuffer = ByteBuffer.allocate(nextCapacity);
     }
 }

@@ -43,6 +43,15 @@ class Resp2BulkStringParserTest {
     }
 
     @Test
+    void rejectsLengthAboveLimit() {
+        int overLimit = Resp2Length.MAX_BULK_LENGTH + 1;
+        ByteBuffer buffer = ByteBuffer.wrap(("$" + overLimit + "\r\n").getBytes());
+        ProtocolException failure =
+                assertThrows(ProtocolException.class, () -> Resp2BulkStringParser.decodeBulkString(buffer));
+        assertEquals("bulk string length exceeds limit", failure.clientMessage());
+    }
+
+    @Test
     void rejectsInvalidLength() {
         ByteBuffer buffer = ByteBuffer.wrap("$-2\r\n".getBytes());
         ProtocolException failure =

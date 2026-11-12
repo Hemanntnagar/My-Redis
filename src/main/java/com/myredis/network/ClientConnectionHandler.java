@@ -157,6 +157,7 @@ final class ClientConnectionHandler implements Runnable {
 
     private void writeReply(SocketChannel channel, ClientConnectionState state, ClientReply reply)
             throws IOException {
+        state.ensureWriteCapacity(requiredEncodeBytes(reply));
         ByteBuffer output = state.writeBuffer();
         output.clear();
         encodeReply(reply, output);
@@ -168,6 +169,15 @@ final class ClientConnectionHandler implements Runnable {
             }
         }
         session.recordActivity();
+    }
+
+    private static int requiredEncodeBytes(ClientReply reply) {
+        return switch (reply) {
+            case ClientReply.SimpleString simple -> simple.value().length() + 16;
+            case ClientReply.Error error -> error.message().length() + 16;
+            case ClientReply.BulkString bulk -> bulk.value().length + 32;
+            case ClientReply.NullBulk ignored -> 16;
+        };
     }
 
     private void encodeReply(ClientReply reply, ByteBuffer output) {
