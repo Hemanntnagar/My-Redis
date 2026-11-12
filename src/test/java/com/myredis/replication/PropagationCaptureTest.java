@@ -69,6 +69,7 @@ class PropagationCaptureTest {
             assertEquals("SET", new String(second.get(0), StandardCharsets.UTF_8));
             assertEquals("v2", new String(second.get(2), StandardCharsets.UTF_8));
             reader.interrupt();
+            reader.join(2_000);
         } finally {
             primary.databaseServer().stop();
         }

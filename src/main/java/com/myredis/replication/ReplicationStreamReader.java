@@ -39,7 +39,15 @@ public final class ReplicationStreamReader {
             if (readBuffer.remaining() == 0) {
                 growIfNeeded(1024);
             }
-            int read = input.read(readBuffer.array(), readBuffer.position(), readBuffer.remaining());
+            int read;
+            try {
+                read = input.read(readBuffer.array(), readBuffer.position(), readBuffer.remaining());
+            } catch (IOException failure) {
+                if (isExpectedConnectionClose(failure)) {
+                    return null;
+                }
+                throw failure;
+            }
             if (read < 0) {
                 return null;
             }
@@ -48,6 +56,17 @@ public final class ReplicationStreamReader {
             }
             readBuffer.position(readBuffer.position() + read);
         }
+    }
+
+    private static boolean isExpectedConnectionClose(IOException failure) {
+        if (!(failure instanceof java.net.SocketException)) {
+            return false;
+        }
+        String message = failure.getMessage();
+        return message != null
+                && (message.contains("Socket closed")
+                        || message.contains("Connection reset")
+                        || message.contains("Closed by interrupt"));
     }
 
     private void growIfNeeded(int additional) {
