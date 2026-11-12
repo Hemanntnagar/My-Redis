@@ -26,11 +26,13 @@ com/myredis/exception/package-info.class
 com/myredis/logging/package-info.class
 com/myredis/config/ServerConfigurationBuilder.class
 com/myredis/network/package-info.class
+com/myredis/network/ActiveConnectionRegistry.class
 com/myredis/server/ServerMetadata.class
 com/myredis/datatype/package-info.class
 com/myredis/replication/package-info.class
 com/myredis/expiration/ExpirationService.class
 com/myredis/storage/package-info.class
+com/myredis/network/ConnectedClientSession.class
 com/myredis/command/Command.class
 com/myredis/server/GracefulShutdownCoordinator.class
 com/myredis/transaction/TransactionManager.class
@@ -41,6 +43,7 @@ com/myredis/persistence/NoOpPersistenceManager.class
 com/myredis/exception/StorageException.class
 com/myredis/expiration/package-info.class
 com/myredis/exception/ErrorCategory.class
+com/myredis/network/ClientConnectionHandler.class
 com/myredis/persistence/PersistenceManager.class
 com/myredis/config/ServerConfigurationDefaults.class
 com/myredis/exception/CommandException.class

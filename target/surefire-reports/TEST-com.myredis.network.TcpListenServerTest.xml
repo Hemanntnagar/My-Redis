@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.myredis.network.TcpListenServerTest" time="0.042" tests="3" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="com.myredis.network.TcpListenServerTest" time="0.373" tests="6" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="001"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-26.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112124405606_3.jar /Users/sunny/Documents/My-Redis/target/surefire 2026-11-12T12-44-05_552-jvmRun1 surefire-20261112124405606_1tmp surefire_0-20261112124405606_2tmp"/>
+    <property name="sun.java.command" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112124647325_3.jar /Users/sunny/Documents/My-Redis/target/surefire 2026-11-12T12-46-47_273-jvmRun1 surefire-20261112124647325_1tmp surefire_0-20261112124647325_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/sunny/Documents/My-Redis/target/test-classes:/Users/sunny/Documents/My-Redis/target/classes:/Users/sunny/.m2/repository/org/slf4j/slf4j-api/2.0.16/slf4j-api-2.0.16.jar:/Users/sunny/.m2/repository/org/slf4j/slf4j-simple/2.0.16/slf4j-simple-2.0.16.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter/5.11.4/junit-jupiter-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.11.4/junit-jupiter-api-5.11.4.jar:/Users/sunny/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/sunny/.m2/repository/org/junit/platform/junit-platform-commons/1.11.4/junit-platform-commons-1.11.4.jar:/Users/sunny/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.11.4/junit-jupiter-params-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.11.4/junit-jupiter-engine-5.11.4.jar:/Users/sunny/.m2/repository/org/junit/platform/junit-platform-engine/1.11.4/junit-platform-engine-1.11.4.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112124405606_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/sunny/Documents/My-Redis/target/surefire/surefirebooter-20261112124647325_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="26.0.1+8-34"/>
@@ -58,21 +58,121 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="stopIsIdempotent" classname="com.myredis.network.TcpListenServerTest" time="0.03">
-    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="65318" backlog="511"
+  <testcase name="stopReleasesTrackedClientsWithoutLeakingSlots" classname="com.myredis.network.TcpListenServerTest" time="0.054">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="49217" backlog="511" max_connections="8"
 [main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1" remote="/127.0.0.1:49218" active_connections="1"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="2" remote="/127.0.0.1:49219" active_connections="2"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="3" remote="/127.0.0.1:49220" active_connections="3"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="4" remote="/127.0.0.1:49221" active_connections="4"
 [main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
-[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49218"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49221"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49219"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49220"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
 ]]></system-err>
   </testcase>
-  <testcase name="startsAcceptsConnectionAndShutsDown" classname="com.myredis.network.TcpListenServerTest" time="0.007">
-    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="65319" backlog="511"
+  <testcase name="enforcesMaximumConcurrentConnections" classname="com.myredis.network.TcpListenServerTest" time="0.244">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="49222" backlog="511" max_connections="3"
 [main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
-[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" remote="/127.0.0.1:65320"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="5" remote="/127.0.0.1:49223" active_connections="1"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="6" remote="/127.0.0.1:49224" active_connections="2"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="7" remote="/127.0.0.1:49225" active_connections="3"
+[myredis-accept] WARN com.myredis.server - level=WARN event="client_rejected" message="connection refused at capacity" max_connections="3"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49225"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="8" remote="/127.0.0.1:49227" active_connections="3"
 [main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
-[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped"
-[myredis-client-/127.0.0.1:65320] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:65320"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49223"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49227"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49224"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
 ]]></system-err>
   </testcase>
-  <testcase name="startupFailsWhenPortAlreadyInUse" classname="com.myredis.network.TcpListenServerTest" time="0.002"/>
+  <testcase name="stopIsIdempotent" classname="com.myredis.network.TcpListenServerTest" time="0.002">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="49228" backlog="511" max_connections="10000"
+[main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
+]]></system-err>
+  </testcase>
+  <testcase name="startsAcceptsConnectionAndShutsDown" classname="com.myredis.network.TcpListenServerTest" time="0.004">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="49229" backlog="511" max_connections="10000"
+[main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
+]]></system-err>
+  </testcase>
+  <testcase name="acceptsManyConcurrentClientsOnVirtualThreads" classname="com.myredis.network.TcpListenServerTest" time="0.063">
+    <system-err><![CDATA[[main] INFO com.myredis.server - level=INFO event="server_listen_bound" message="TCP listener bound" host="127.0.0.1" port="49232" backlog="511" max_connections="128"
+[main] INFO com.myredis.server - level=INFO event="server_listen_started" message="TCP listener accepting connections"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="9" remote="/127.0.0.1:49234" active_connections="1"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="a" remote="/127.0.0.1:49233" active_connections="2"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="b" remote="/127.0.0.1:49235" active_connections="3"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="c" remote="/127.0.0.1:49236" active_connections="4"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="d" remote="/127.0.0.1:49237" active_connections="5"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="e" remote="/127.0.0.1:49238" active_connections="6"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="f" remote="/127.0.0.1:49239" active_connections="7"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="10" remote="/127.0.0.1:49240" active_connections="8"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="11" remote="/127.0.0.1:49241" active_connections="9"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="12" remote="/127.0.0.1:49242" active_connections="10"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="13" remote="/127.0.0.1:49243" active_connections="11"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="14" remote="/127.0.0.1:49244" active_connections="12"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="15" remote="/127.0.0.1:49245" active_connections="13"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="16" remote="/127.0.0.1:49246" active_connections="14"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="17" remote="/127.0.0.1:49247" active_connections="15"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="18" remote="/127.0.0.1:49248" active_connections="16"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="19" remote="/127.0.0.1:49249" active_connections="17"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1a" remote="/127.0.0.1:49250" active_connections="18"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1b" remote="/127.0.0.1:49251" active_connections="19"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1c" remote="/127.0.0.1:49252" active_connections="20"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1d" remote="/127.0.0.1:49253" active_connections="21"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1e" remote="/127.0.0.1:49254" active_connections="22"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="1f" remote="/127.0.0.1:49255" active_connections="23"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="20" remote="/127.0.0.1:49256" active_connections="24"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="21" remote="/127.0.0.1:49257" active_connections="25"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="22" remote="/127.0.0.1:49258" active_connections="26"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="23" remote="/127.0.0.1:49259" active_connections="27"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="24" remote="/127.0.0.1:49260" active_connections="28"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="25" remote="/127.0.0.1:49261" active_connections="29"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="26" remote="/127.0.0.1:49262" active_connections="30"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="27" remote="/127.0.0.1:49263" active_connections="31"
+[myredis-accept] INFO com.myredis.server - level=INFO event="client_connected" message="client accepted" session_id="28" remote="/127.0.0.1:49264" active_connections="32"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49235"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49236"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49237"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49238"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49242"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49243"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49254"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49239"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49248"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49246"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49251"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49250"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49253"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49258"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49259"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49260"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49263"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49264"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49240"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49233"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49234"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49241"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49244"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49245"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49247"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49249"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49252"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49255"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49256"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49257"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49261"
+[] INFO com.myredis.server - level=INFO event="client_disconnected" message="client connection closed" remote="/127.0.0.1:49262"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopping" message="stopping TCP listener"
+[main] INFO com.myredis.server - level=INFO event="server_listen_stopped" message="TCP listener stopped" active_connections="0"
+]]></system-err>
+  </testcase>
+  <testcase name="startupFailsWhenPortAlreadyInUse" classname="com.myredis.network.TcpListenServerTest" time="0.003"/>
 </testsuite>

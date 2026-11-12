@@ -7,27 +7,26 @@ import com.myredis.logging.StructuredServerLogger;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Blocking NIO accept loop bound to configured host and port.
+ * Each accepted client is processed on a dedicated virtual thread.
  */
 public final class TcpListenServer implements AutoCloseable {
 
     private final ServerConfiguration configuration;
     private final StructuredServerLogger logger;
     private final AtomicBoolean running = new AtomicBoolean();
-    private final AtomicInteger activeConnections = new AtomicInteger();
-    private final Set<SocketChannel> openClients = ConcurrentHashMap.newKeySet();
+    private final ActiveConnectionRegistry connections;
+
+    private final ExecutorService clientExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
     private volatile ServerSocketChannel serverChannel;
     private volatile Thread acceptThread;
@@ -36,6 +35,7 @@ public final class TcpListenServer implements AutoCloseable {
     public TcpListenServer(ServerConfiguration configuration, StructuredServerLogger logger) {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
+        this.connections = new ActiveConnectionRegistry(configuration.maxClientConnections());
     }
 
     public void start() throws ConnectionException {
@@ -58,12 +58,13 @@ public final class TcpListenServer implements AutoCloseable {
                             .put("host", boundAddress.getHostString())
                             .put("port", String.valueOf(boundAddress.getPort()))
                             .put("backlog", String.valueOf(configuration.tcpBacklog()))
+                            .put("max_connections", String.valueOf(configuration.maxClientConnections()))
                             .build());
 
             serverChannel = channel;
 
             Thread acceptLoop =
-                    new Thread(this::acceptLoop, "myredis-accept");
+                    Thread.ofVirtual().name("myredis-accept").unstarted(this::acceptLoop);
             acceptLoop.setDaemon(true);
             acceptThread = acceptLoop;
             acceptLoop.start();
@@ -103,14 +104,16 @@ public final class TcpListenServer implements AutoCloseable {
             }
         }
 
-        for (SocketChannel client : openClients) {
-            closeQuietly(client);
-        }
-        openClients.clear();
-        activeConnections.set(0);
+        connections.closeAllSessions();
+
+        clientExecutor.close();
+
         boundAddress = null;
 
-        logger.logInfo("server_listen_stopped", "TCP listener stopped", LogContext.empty());
+        logger.logInfo(
+                "server_listen_stopped",
+                "TCP listener stopped",
+                LogContext.builder().put("active_connections", String.valueOf(activeConnectionCount())).build());
     }
 
     @Override
@@ -127,6 +130,16 @@ public final class TcpListenServer implements AutoCloseable {
      */
     public InetSocketAddress boundAddress() {
         return boundAddress;
+    }
+
+    /** Number of clients currently registered with the listener. */
+    public int activeConnectionCount() {
+        return connections.activeCount();
+    }
+
+    /** Configured upper bound on simultaneous client connections. */
+    public int maxClientConnections() {
+        return connections.maxConnections();
     }
 
     private void acceptLoop() {
@@ -167,9 +180,8 @@ public final class TcpListenServer implements AutoCloseable {
             return;
         }
 
-        int active = activeConnections.incrementAndGet();
-        if (active > configuration.maxClientConnections()) {
-            activeConnections.decrementAndGet();
+        ConnectedClientSession session = connections.tryRegister(client);
+        if (session == null) {
             closeQuietly(client);
             logger.logWarning(
                     "client_rejected",
@@ -180,40 +192,18 @@ public final class TcpListenServer implements AutoCloseable {
             return;
         }
 
-        openClients.add(client);
-        SocketAddress remote = client.socket().getRemoteSocketAddress();
         logger.logInfo(
                 "client_connected",
                 "client accepted",
-                LogContext.builder().put("remote", String.valueOf(remote)).build());
+                LogContext.builder()
+                        .put("session_id", session.id())
+                        .put("remote", String.valueOf(session.remoteAddress()))
+                        .put("active_connections", String.valueOf(connections.activeCount()))
+                        .build());
 
-        Thread handler =
-                new Thread(
-                        () -> {
-                            try {
-                                ByteBuffer sink = ByteBuffer.allocate(256);
-                                while (running.get() && client.isOpen()) {
-                                    int read = client.read(sink);
-                                    if (read <= 0) {
-                                        break;
-                                    }
-                                    sink.clear();
-                                }
-                            } catch (IOException ignored) {
-                                // Client closed or listener shutting down.
-                            } finally {
-                                openClients.remove(client);
-                                closeQuietly(client);
-                                activeConnections.decrementAndGet();
-                                logger.logInfo(
-                                        "client_disconnected",
-                                        "client connection closed",
-                                        LogContext.builder().put("remote", String.valueOf(remote)).build());
-                            }
-                        },
-                        "myredis-client-" + remote);
-        handler.setDaemon(true);
-        handler.start();
+        ClientConnectionHandler handler =
+                new ClientConnectionHandler(session, connections, logger, running::get);
+        clientExecutor.submit(handler);
     }
 
     private static InetSocketAddress resolveListenAddress(String host, int port) {
