@@ -20,6 +20,7 @@ Redis-inspired in-memory database server (Java 26, Maven, RESP2).
 | `com.myredis.config` | Server configuration (bind, port, persistence flags) |
 | `com.myredis.metrics` | Operational counters and observability hooks |
 | `com.myredis.exception` | Typed errors surfaced to clients and callers |
+| `com.myredis.logging` | Structured SLF4J logging for operators |
 
 Each package currently exposes `package-info.java` and a small set of foundational interfaces. Implementations are added in later phases.
 
@@ -32,6 +33,7 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ## Implemented features
 
 - Phase 02: modular package layout and foundational interfaces
+- Structured logging and domain exceptions with client-safe error mapping
 
 ## Limitations
 

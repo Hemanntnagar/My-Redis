@@ -30,7 +30,8 @@ class PackageArchitectureTest {
             "pubsub",
             "config",
             "metrics",
-            "exception");
+            "exception",
+            "logging");
 
     private static final Set<String> FOUNDATIONAL_TYPES = Stream.of(
                     "com.myredis.server.DatabaseServer",

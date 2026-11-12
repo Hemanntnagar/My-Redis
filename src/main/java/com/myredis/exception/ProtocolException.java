@@ -5,11 +5,11 @@ package com.myredis.exception;
  */
 public final class ProtocolException extends MyRedisException {
 
-    public ProtocolException(String message) {
-        super(message);
+    public ProtocolException(String clientMessage) {
+        super(ErrorCategory.PROTOCOL, clientMessage);
     }
 
-    public ProtocolException(String message, Throwable cause) {
-        super(message, cause);
+    public ProtocolException(String clientMessage, String internalDetail, Throwable cause) {
+        super(ErrorCategory.PROTOCOL, clientMessage, internalDetail, cause);
     }
 }

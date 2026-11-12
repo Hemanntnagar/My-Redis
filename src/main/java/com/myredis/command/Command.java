@@ -1,6 +1,6 @@
 package com.myredis.command;
 
-import com.myredis.exception.MyRedisException;
+import com.myredis.exception.CommandException;
 import com.myredis.network.ClientSession;
 
 import java.util.List;
@@ -12,5 +12,5 @@ public interface Command {
 
     String name();
 
-    void execute(ClientSession session, List<byte[]> arguments) throws MyRedisException;
+    void execute(ClientSession session, List<byte[]> arguments) throws CommandException;
 }

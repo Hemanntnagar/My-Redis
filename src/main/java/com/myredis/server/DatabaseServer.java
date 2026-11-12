@@ -1,13 +1,13 @@
 package com.myredis.server;
 
-import java.io.IOException;
+import com.myredis.exception.ConnectionException;
 
 /**
  * Lifecycle of the My-Redis listener process.
  */
 public interface DatabaseServer extends AutoCloseable {
 
-    void start() throws IOException;
+    void start() throws ConnectionException;
 
     void stop();
 

@@ -1,13 +1,13 @@
 package com.myredis.persistence;
 
-import java.io.IOException;
+import com.myredis.exception.PersistenceException;
 
 /**
  * Loads and persists database state to disk.
  */
 public interface PersistenceManager {
 
-    void load() throws IOException;
+    void load() throws PersistenceException;
 
-    void flush() throws IOException;
+    void flush() throws PersistenceException;
 }
