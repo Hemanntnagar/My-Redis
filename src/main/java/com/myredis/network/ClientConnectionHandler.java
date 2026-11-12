@@ -21,7 +21,7 @@ import java.util.function.BooleanSupplier;
 final class ClientConnectionHandler implements Runnable {
 
     private final ConnectedClientSession session;
-    private final ActiveConnectionRegistry registry;
+    private final ClientConnectionManager connectionManager;
     private final StructuredServerLogger logger;
     private final BooleanSupplier serverRunning;
     private final ClientRequestProcessor requestProcessor;
@@ -30,12 +30,12 @@ final class ClientConnectionHandler implements Runnable {
 
     ClientConnectionHandler(
             ConnectedClientSession session,
-            ActiveConnectionRegistry registry,
+            ClientConnectionManager connectionManager,
             StructuredServerLogger logger,
             BooleanSupplier serverRunning,
             ClientRequestProcessor requestProcessor) {
         this.session = Objects.requireNonNull(session, "session");
-        this.registry = Objects.requireNonNull(registry, "registry");
+        this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
         this.logger = Objects.requireNonNull(logger, "logger");
         this.serverRunning = Objects.requireNonNull(serverRunning, "serverRunning");
         this.requestProcessor = Objects.requireNonNull(requestProcessor, "requestProcessor");
@@ -57,6 +57,7 @@ final class ClientConnectionHandler implements Runnable {
                 if (read == 0) {
                     continue;
                 }
+                session.recordActivity();
                 state.flipReadBuffer();
                 if (!drainDecodedRequests(channel, state)) {
                     break;
@@ -75,7 +76,7 @@ final class ClientConnectionHandler implements Runnable {
                                 .build());
             }
         } finally {
-            registry.unregister(session);
+            connectionManager.remove(session);
             logger.logInfo(
                     "client_disconnected",
                     "client connection closed",
@@ -146,6 +147,7 @@ final class ClientConnectionHandler implements Runnable {
                 return;
             }
         }
+        session.recordActivity();
     }
 
     private void encodeReply(ClientReply reply, ByteBuffer output) {

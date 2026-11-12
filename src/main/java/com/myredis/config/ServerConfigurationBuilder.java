@@ -1,5 +1,7 @@
 package com.myredis.config;
 
+import java.time.Duration;
+
 import com.myredis.exception.InvalidConfigurationException;
 
 /**
@@ -15,6 +17,7 @@ public final class ServerConfigurationBuilder {
     private String persistenceDirectory = ServerConfigurationDefaults.defaultPersistenceDirectory();
     private LoggingLevel loggingLevel = ServerConfigurationDefaults.LOGGING_LEVEL;
     private int tcpBacklog = ServerConfigurationDefaults.TCP_BACKLOG;
+    private Duration clientIdleTimeout = ServerConfigurationDefaults.CLIENT_IDLE_TIMEOUT;
 
     public ServerConfigurationBuilder host(String host) {
         this.host = host;
@@ -56,6 +59,16 @@ public final class ServerConfigurationBuilder {
         return this;
     }
 
+    public ServerConfigurationBuilder clientIdleTimeout(Duration clientIdleTimeout) {
+        this.clientIdleTimeout = clientIdleTimeout;
+        return this;
+    }
+
+    public ServerConfigurationBuilder clientIdleTimeoutMillis(long millis) {
+        this.clientIdleTimeout = Duration.ofMillis(millis);
+        return this;
+    }
+
     public ServerConfiguration build() throws InvalidConfigurationException {
         ServerConfiguration configuration =
                 new DefaultServerConfiguration(
@@ -65,7 +78,8 @@ public final class ServerConfigurationBuilder {
                         workerThreads,
                         persistenceDirectory,
                         loggingLevel,
-                        tcpBacklog);
+                        tcpBacklog,
+                        clientIdleTimeout);
         ServerConfigurationValidator.validate(configuration);
         return configuration;
     }

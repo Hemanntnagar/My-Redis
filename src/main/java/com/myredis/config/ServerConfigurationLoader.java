@@ -2,6 +2,7 @@ package com.myredis.config;
 
 import com.myredis.exception.InvalidConfigurationException;
 
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -32,6 +33,9 @@ public final class ServerConfigurationLoader {
         applyLoggingLevel(
                 builder::loggingLevel, resolveString("myredis.loggingLevel", "MYREDIS_LOGGING_LEVEL"));
         applyInt(builder::tcpBacklog, resolveString("myredis.tcpBacklog", "MYREDIS_TCP_BACKLOG"));
+        applyDurationMillis(
+                builder::clientIdleTimeout,
+                resolveString("myredis.clientIdleTimeoutMillis", "MYREDIS_CLIENT_IDLE_TIMEOUT_MS"));
 
         return builder.build();
     }
@@ -66,12 +70,29 @@ public final class ServerConfigurationLoader {
         }
     }
 
+    private static void applyDurationMillis(
+            java.util.function.Consumer<Duration> setter, Optional<String> value)
+            throws InvalidConfigurationException {
+        if (value.isPresent()) {
+            setter.accept(Duration.ofMillis(parseLong(value.get())));
+        }
+    }
+
     private static int parseInt(String raw) throws InvalidConfigurationException {
         try {
             return Integer.parseInt(raw.trim());
         } catch (NumberFormatException e) {
             throw new InvalidConfigurationException(
                     "expected integer for configuration value \"" + raw + "\"", e);
+        }
+    }
+
+    private static long parseLong(String raw) throws InvalidConfigurationException {
+        try {
+            return Long.parseLong(raw.trim());
+        } catch (NumberFormatException e) {
+            throw new InvalidConfigurationException(
+                    "expected long for configuration value \"" + raw + "\"", e);
         }
     }
 

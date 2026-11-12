@@ -169,6 +169,66 @@ class TcpListenServerTest {
     }
 
     @Test
+    void multipleClientsConnectAndDisconnectInCycles() throws Exception {
+        int port = freeLocalPort();
+        ServerConfiguration configuration =
+                ServerConfiguration.builder()
+                        .host("127.0.0.1")
+                        .port(port)
+                        .maxClientConnections(16)
+                        .build();
+        TcpListenServer server = new TcpListenServer(configuration, new StructuredServerLogger());
+        server.start();
+
+        try {
+            for (int cycle = 0; cycle < 3; cycle++) {
+                List<Socket> clients = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    Socket socket = new Socket();
+                    socket.connect(new InetSocketAddress("127.0.0.1", port), 2_000);
+                    clients.add(socket);
+                }
+                awaitActiveCount(server, 5, Duration.ofSeconds(5));
+                assertEquals(5, server.connectionManager().activeCount());
+
+                for (Socket socket : clients) {
+                    socket.close();
+                }
+                awaitActiveCount(server, 0, Duration.ofSeconds(5));
+                assertEquals(0, server.activeConnectionCount());
+            }
+        } finally {
+            server.stop();
+        }
+    }
+
+    @Test
+    void disconnectsIdleClientsWhenTimeoutConfigured() throws Exception {
+        int port = freeLocalPort();
+        ServerConfiguration configuration =
+                ServerConfiguration.builder()
+                        .host("127.0.0.1")
+                        .port(port)
+                        .clientIdleTimeoutMillis(200)
+                        .build();
+        TcpListenServer server = new TcpListenServer(configuration, new StructuredServerLogger());
+        server.start();
+
+        Socket client = new Socket();
+        try {
+            client.connect(new InetSocketAddress("127.0.0.1", port), 2_000);
+            awaitActiveCount(server, 1, Duration.ofSeconds(2));
+
+            client.setSoTimeout(500);
+            awaitActiveCount(server, 0, Duration.ofSeconds(5));
+            assertEquals(-1, client.getInputStream().read(), "idle timeout should close the socket");
+        } finally {
+            client.close();
+            server.stop();
+        }
+    }
+
+    @Test
     void stopReleasesTrackedClientsWithoutLeakingSlots() throws Exception {
         int port = freeLocalPort();
         ServerConfiguration configuration =

@@ -52,6 +52,15 @@ class ServerConfigurationLoaderTest {
         assertThrows(InvalidConfigurationException.class, ServerConfigurationLoader::load);
     }
 
+    @Test
+    void readsClientIdleTimeoutFromSystemProperty() throws InvalidConfigurationException {
+        setProperty("myredis.clientIdleTimeoutMillis", "15000");
+
+        ServerConfiguration configuration = ServerConfigurationLoader.load();
+
+        assertEquals(15_000, configuration.clientIdleTimeout().toMillis());
+    }
+
     private void setProperty(String key, String value) {
         previousProperties.putIfAbsent(key, System.getProperty(key));
         System.setProperty(key, value);

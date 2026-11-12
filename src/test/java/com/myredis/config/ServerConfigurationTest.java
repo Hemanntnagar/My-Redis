@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,6 +27,7 @@ class ServerConfigurationTest {
         assertEquals(ServerConfigurationDefaults.defaultPersistenceDirectory(), configuration.persistenceDirectory());
         assertEquals(LoggingLevel.INFO, configuration.loggingLevel());
         assertEquals(ServerConfigurationDefaults.TCP_BACKLOG, configuration.tcpBacklog());
+        assertEquals(Duration.ZERO, configuration.clientIdleTimeout());
     }
 
     @Test
@@ -37,6 +40,7 @@ class ServerConfigurationTest {
                 .persistenceDirectory("/var/lib/myredis")
                 .loggingLevel(LoggingLevel.DEBUG)
                 .tcpBacklog(128)
+                .clientIdleTimeout(Duration.ofSeconds(30))
                 .build();
 
         assertEquals("127.0.0.1", configuration.host());
@@ -46,6 +50,7 @@ class ServerConfigurationTest {
         assertEquals("/var/lib/myredis", configuration.persistenceDirectory());
         assertEquals(LoggingLevel.DEBUG, configuration.loggingLevel());
         assertEquals(128, configuration.tcpBacklog());
+        assertEquals(Duration.ofSeconds(30), configuration.clientIdleTimeout());
     }
 
     @ParameterizedTest

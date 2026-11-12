@@ -4,6 +4,7 @@ import com.myredis.exception.InvalidConfigurationException;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.time.Duration;
 
 /**
  * Validates configuration snapshots; kept separate from command and storage logic.
@@ -20,6 +21,7 @@ public final class ServerConfigurationValidator {
         validatePersistenceDirectory(configuration.persistenceDirectory());
         validateLoggingLevel(configuration.loggingLevel());
         validateTcpBacklog(configuration.tcpBacklog());
+        validateClientIdleTimeout(configuration.clientIdleTimeout());
     }
 
     static void validateHost(String host) throws InvalidConfigurationException {
@@ -95,6 +97,15 @@ public final class ServerConfigurationValidator {
     static void validateTcpBacklog(int tcpBacklog) throws InvalidConfigurationException {
         if (tcpBacklog < 1) {
             throw new InvalidConfigurationException("tcpBacklog must be at least 1, got " + tcpBacklog);
+        }
+    }
+
+    static void validateClientIdleTimeout(Duration clientIdleTimeout) throws InvalidConfigurationException {
+        if (clientIdleTimeout == null) {
+            throw new InvalidConfigurationException("clientIdleTimeout must not be null");
+        }
+        if (clientIdleTimeout.isNegative()) {
+            throw new InvalidConfigurationException("clientIdleTimeout must not be negative");
         }
     }
 }

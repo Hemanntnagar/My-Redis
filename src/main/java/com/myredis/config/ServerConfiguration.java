@@ -1,5 +1,7 @@
 package com.myredis.config;
 
+import java.time.Duration;
+
 import com.myredis.exception.InvalidConfigurationException;
 
 /**
@@ -41,6 +43,11 @@ public interface ServerConfiguration {
      * OS listen backlog for the accept socket.
      */
     int tcpBacklog();
+
+    /**
+     * Idle period after which an open client socket is closed; {@link Duration#ZERO} disables timeouts.
+     */
+    Duration clientIdleTimeout();
 
     /**
      * Snapshot with all {@link ServerConfigurationDefaults} applied and validated.

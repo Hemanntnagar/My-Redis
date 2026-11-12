@@ -1,5 +1,7 @@
 package com.myredis.config;
 
+import java.time.Duration;
+
 import com.myredis.exception.InvalidConfigurationException;
 
 /**
@@ -14,6 +16,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private final String persistenceDirectory;
     private final LoggingLevel loggingLevel;
     private final int tcpBacklog;
+    private final Duration clientIdleTimeout;
 
     DefaultServerConfiguration(
             String host,
@@ -22,7 +25,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
             WorkerThreadConfiguration workerThreads,
             String persistenceDirectory,
             LoggingLevel loggingLevel,
-            int tcpBacklog) {
+            int tcpBacklog,
+            Duration clientIdleTimeout) {
         this.host = host;
         this.port = port;
         this.maxClientConnections = maxClientConnections;
@@ -30,6 +34,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         this.persistenceDirectory = persistenceDirectory;
         this.loggingLevel = loggingLevel;
         this.tcpBacklog = tcpBacklog;
+        this.clientIdleTimeout = clientIdleTimeout;
     }
 
     @Override
@@ -65,5 +70,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     @Override
     public int tcpBacklog() {
         return tcpBacklog;
+    }
+
+    @Override
+    public Duration clientIdleTimeout() {
+        return clientIdleTimeout;
     }
 }

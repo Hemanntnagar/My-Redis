@@ -1,6 +1,7 @@
 package com.myredis.config;
 
 import java.nio.file.Path;
+import java.time.Duration;
 
 /**
  * Canonical default values for {@link ServerConfiguration}.
@@ -12,6 +13,7 @@ public final class ServerConfigurationDefaults {
     public static final int TCP_BACKLOG = 511;
     public static final int MAX_CLIENT_CONNECTIONS = 10_000;
     public static final LoggingLevel LOGGING_LEVEL = LoggingLevel.INFO;
+    public static final Duration CLIENT_IDLE_TIMEOUT = Duration.ZERO;
 
     public static final int MIN_PORT = 1;
     public static final int MAX_PORT = 65_535;

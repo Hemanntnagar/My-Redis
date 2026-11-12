@@ -30,10 +30,6 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ./mvnw test
 ```
 
-## Implemented features
-
-- Phase 02: modular package layout and foundational interfaces
-- Structured logging and domain exceptions with client-safe error mapping
 
 ## Limitations
 

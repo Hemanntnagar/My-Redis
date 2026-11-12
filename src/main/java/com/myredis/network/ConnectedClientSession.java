@@ -15,11 +15,20 @@ public final class ConnectedClientSession implements ClientSession {
     private final String id;
     private final SocketChannel channel;
     private final SocketAddress remoteAddress;
+    private volatile long lastActivityNanos = System.nanoTime();
 
     ConnectedClientSession(SocketChannel channel) {
         this.id = Long.toHexString(ID_SEQUENCE.incrementAndGet());
         this.channel = Objects.requireNonNull(channel, "channel");
         this.remoteAddress = channel.socket().getRemoteSocketAddress();
+    }
+
+    void recordActivity() {
+        lastActivityNanos = System.nanoTime();
+    }
+
+    long idleNanos() {
+        return System.nanoTime() - lastActivityNanos;
     }
 
     @Override

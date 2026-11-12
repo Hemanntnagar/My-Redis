@@ -34,8 +34,8 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/metrics/MetricsRecorder.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/metrics/NoOpMetricsRecorder.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/metrics/package-info.java
-/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ActiveConnectionRegistry.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ClientConnectionHandler.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ClientConnectionManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ClientConnectionState.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ClientReply.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/ClientRequestProcessor.java

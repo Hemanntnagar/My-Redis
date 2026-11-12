@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.time.Duration;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,12 +25,13 @@ public final class TcpListenServer implements AutoCloseable {
     private final ServerConfiguration configuration;
     private final StructuredServerLogger logger;
     private final AtomicBoolean running = new AtomicBoolean();
-    private final ActiveConnectionRegistry connections;
+    private final ClientConnectionManager connections;
 
     private final ExecutorService clientExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
     private volatile ServerSocketChannel serverChannel;
     private volatile Thread acceptThread;
+    private volatile Thread idleTimeoutThread;
     private volatile InetSocketAddress boundAddress;
 
     private final ClientRequestProcessor requestProcessor;
@@ -45,7 +47,9 @@ public final class TcpListenServer implements AutoCloseable {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
         this.requestProcessor = Objects.requireNonNull(requestProcessor, "requestProcessor");
-        this.connections = new ActiveConnectionRegistry(configuration.maxClientConnections());
+        this.connections =
+                new ClientConnectionManager(
+                        configuration.maxClientConnections(), configuration.clientIdleTimeout());
     }
 
     public void start() throws ConnectionException {
@@ -78,6 +82,8 @@ public final class TcpListenServer implements AutoCloseable {
             acceptLoop.setDaemon(true);
             acceptThread = acceptLoop;
             acceptLoop.start();
+
+            startIdleTimeoutMonitorIfNeeded();
 
             logger.logInfo("server_listen_started", "TCP listener accepting connections", LogContext.empty());
         } catch (IOException failure) {
@@ -114,7 +120,9 @@ public final class TcpListenServer implements AutoCloseable {
             }
         }
 
-        connections.closeAllSessions();
+        stopIdleTimeoutMonitor();
+
+        connections.shutdownAll();
 
         clientExecutor.close();
 
@@ -150,6 +158,52 @@ public final class TcpListenServer implements AutoCloseable {
     /** Configured upper bound on simultaneous client connections. */
     public int maxClientConnections() {
         return connections.maxConnections();
+    }
+
+    /** Live connection registry used for accept-time registration and shutdown cleanup. */
+    public ClientConnectionManager connectionManager() {
+        return connections;
+    }
+
+    private void startIdleTimeoutMonitorIfNeeded() {
+        Duration idleTimeout = configuration.clientIdleTimeout();
+        if (idleTimeout.isZero()) {
+            return;
+        }
+        Thread monitor =
+                Thread.ofVirtual().name("myredis-idle-timeout").unstarted(this::idleTimeoutLoop);
+        monitor.setDaemon(true);
+        idleTimeoutThread = monitor;
+        monitor.start();
+    }
+
+    private void stopIdleTimeoutMonitor() {
+        Thread monitor = idleTimeoutThread;
+        idleTimeoutThread = null;
+        if (monitor != null) {
+            monitor.interrupt();
+            try {
+                monitor.join(5_000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    private void idleTimeoutLoop() {
+        Duration idleTimeout = configuration.clientIdleTimeout();
+        long pollMillis = Math.min(1_000, Math.max(50, idleTimeout.toMillis() / 4));
+        while (running.get()) {
+            try {
+                Thread.sleep(pollMillis);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+            if (running.get()) {
+                connections.enforceIdleTimeouts(logger);
+            }
+        }
     }
 
     private void acceptLoop() {
@@ -190,7 +244,7 @@ public final class TcpListenServer implements AutoCloseable {
             return;
         }
 
-        ConnectedClientSession session = connections.tryRegister(client);
+        ConnectedClientSession session = connections.register(client);
         if (session == null) {
             closeQuietly(client);
             logger.logWarning(

@@ -13,6 +13,7 @@ com/myredis/replication/ReplicationRole.class
 com/myredis/exception/InvalidConfigurationException.class
 com/myredis/logging/StructuredServerLogger.class
 com/myredis/config/ServerConfigurationLoader.class
+com/myredis/network/ClientConnectionManager.class
 com/myredis/config/ServerConfigurationValidator.class
 com/myredis/server/LifecycleDatabaseServer.class
 com/myredis/protocol/package-info.class
@@ -30,7 +31,6 @@ com/myredis/exception/package-info.class
 com/myredis/logging/package-info.class
 com/myredis/config/ServerConfigurationBuilder.class
 com/myredis/network/package-info.class
-com/myredis/network/ActiveConnectionRegistry.class
 com/myredis/server/ServerMetadata.class
 com/myredis/datatype/package-info.class
 com/myredis/replication/package-info.class
