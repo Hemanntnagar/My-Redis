@@ -99,6 +99,11 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new ZCardCommand(store));
         register(registry, new TtlCommand(store, expiration, clock));
         register(registry, new PttlCommand(store, expiration, clock));
+        register(registry, new ExpireCommand(store, expiration, clock));
+        register(registry, new PexpireCommand(store, expiration, clock));
+        register(registry, new ExpireAtCommand(store, expiration, clock));
+        register(registry, new PexpireAtCommand(store, expiration, clock));
+        register(registry, new PersistCommand(store, expiration));
         return new RegistryCommandDispatcher(registry);
     }
 
