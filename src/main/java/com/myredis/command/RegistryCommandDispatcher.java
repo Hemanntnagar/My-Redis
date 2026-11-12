@@ -9,7 +9,9 @@ import com.myredis.expiration.InMemoryExpirationService;
 import com.myredis.expiration.SystemExpirationClock;
 import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
-import com.myredis.persistence.SnapshotPersistenceManager;
+import com.myredis.persistence.SnapshotCommandSupport;
+import com.myredis.persistence.aof.AppendOnlyFile;
+import com.myredis.expiration.InMemoryExpirationService;
 import com.myredis.storage.KeyValueStore;
 
 import java.util.LinkedHashMap;
@@ -51,7 +53,16 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
             KeyValueStore store,
             ExpirationService expiration,
             ExpirationClock clock,
-            SnapshotPersistenceManager persistence) {
+            SnapshotCommandSupport persistence) {
+        return withBuiltinCommands(store, expiration, clock, persistence, null);
+    }
+
+    public static RegistryCommandDispatcher withBuiltinCommands(
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock,
+            SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
@@ -116,6 +127,11 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         if (persistence != null) {
             register(registry, new SaveCommand(persistence));
             register(registry, new BgsaveCommand(persistence));
+        }
+        if (appendOnlyFile != null
+                && store instanceof ExpirationAwareKeyValueStore aware
+                && expiration instanceof InMemoryExpirationService inMemoryExpiration) {
+            register(registry, new BgrewriteaofCommand(appendOnlyFile, aware, inMemoryExpiration));
         }
         return new RegistryCommandDispatcher(registry);
     }

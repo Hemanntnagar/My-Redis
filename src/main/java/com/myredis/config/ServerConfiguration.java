@@ -35,6 +35,16 @@ public interface ServerConfiguration {
     String persistenceDirectory();
 
     /**
+     * When {@code true}, mutating commands are logged to {@code appendonly.aof}.
+     */
+    boolean aofEnabled();
+
+    /**
+     * Fsync policy for the append-only log (ignored when {@link #aofEnabled()} is {@code false}).
+     */
+    com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy();
+
+    /**
      * Server process log verbosity.
      */
     LoggingLevel loggingLevel();

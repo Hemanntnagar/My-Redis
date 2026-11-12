@@ -17,6 +17,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private final LoggingLevel loggingLevel;
     private final int tcpBacklog;
     private final Duration clientIdleTimeout;
+    private final boolean aofEnabled;
+    private final com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy;
 
     DefaultServerConfiguration(
             String host,
@@ -26,7 +28,9 @@ final class DefaultServerConfiguration implements ServerConfiguration {
             String persistenceDirectory,
             LoggingLevel loggingLevel,
             int tcpBacklog,
-            Duration clientIdleTimeout) {
+            Duration clientIdleTimeout,
+            boolean aofEnabled,
+            com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy) {
         this.host = host;
         this.port = port;
         this.maxClientConnections = maxClientConnections;
@@ -35,6 +39,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         this.loggingLevel = loggingLevel;
         this.tcpBacklog = tcpBacklog;
         this.clientIdleTimeout = clientIdleTimeout;
+        this.aofEnabled = aofEnabled;
+        this.aofFsyncPolicy = aofFsyncPolicy;
     }
 
     @Override
@@ -75,5 +81,15 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     @Override
     public Duration clientIdleTimeout() {
         return clientIdleTimeout;
+    }
+
+    @Override
+    public boolean aofEnabled() {
+        return aofEnabled;
+    }
+
+    @Override
+    public com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy() {
+        return aofFsyncPolicy;
     }
 }

@@ -60,6 +60,9 @@ public final class ServerApplication {
                             } catch (PersistenceException failure) {
                                 logger.logFailure(failure, LogContext.builder().put("phase", "persistence_flush").build());
                             }
+                            if (context.persistence() instanceof com.myredis.persistence.CompositePersistenceManager composite) {
+                                composite.close();
+                            }
                         });
 
         this.shutdownCoordinator = shutdownCoordinator;

@@ -18,6 +18,9 @@ public final class ServerConfigurationBuilder {
     private LoggingLevel loggingLevel = ServerConfigurationDefaults.LOGGING_LEVEL;
     private int tcpBacklog = ServerConfigurationDefaults.TCP_BACKLOG;
     private Duration clientIdleTimeout = ServerConfigurationDefaults.CLIENT_IDLE_TIMEOUT;
+    private boolean aofEnabled = ServerConfigurationDefaults.AOF_ENABLED;
+    private com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy =
+            ServerConfigurationDefaults.AOF_FSYNC_POLICY;
 
     public ServerConfigurationBuilder host(String host) {
         this.host = host;
@@ -69,6 +72,16 @@ public final class ServerConfigurationBuilder {
         return this;
     }
 
+    public ServerConfigurationBuilder aofEnabled(boolean aofEnabled) {
+        this.aofEnabled = aofEnabled;
+        return this;
+    }
+
+    public ServerConfigurationBuilder aofFsyncPolicy(com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy) {
+        this.aofFsyncPolicy = aofFsyncPolicy;
+        return this;
+    }
+
     public ServerConfiguration build() throws InvalidConfigurationException {
         ServerConfiguration configuration =
                 new DefaultServerConfiguration(
@@ -79,7 +92,9 @@ public final class ServerConfigurationBuilder {
                         persistenceDirectory,
                         loggingLevel,
                         tcpBacklog,
-                        clientIdleTimeout);
+                        clientIdleTimeout,
+                        aofEnabled,
+                        aofFsyncPolicy);
         ServerConfigurationValidator.validate(configuration);
         return configuration;
     }

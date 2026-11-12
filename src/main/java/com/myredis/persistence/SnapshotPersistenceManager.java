@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Snapshot persistence: atomic {@code dump.myredis} files with checksum validation.
  */
-public final class SnapshotPersistenceManager implements PersistenceManager {
+public final class SnapshotPersistenceManager implements PersistenceManager, SnapshotCommandSupport {
 
     private final Path persistenceDirectory;
     private final ExpirationAwareKeyValueStore store;

@@ -28,6 +28,8 @@ class ServerConfigurationTest {
         assertEquals(LoggingLevel.INFO, configuration.loggingLevel());
         assertEquals(ServerConfigurationDefaults.TCP_BACKLOG, configuration.tcpBacklog());
         assertEquals(Duration.ZERO, configuration.clientIdleTimeout());
+        assertEquals(ServerConfigurationDefaults.AOF_ENABLED, configuration.aofEnabled());
+        assertEquals(ServerConfigurationDefaults.AOF_FSYNC_POLICY, configuration.aofFsyncPolicy());
     }
 
     @Test

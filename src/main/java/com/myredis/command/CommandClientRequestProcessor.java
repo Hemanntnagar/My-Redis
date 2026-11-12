@@ -12,8 +12,12 @@ import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
 import com.myredis.storage.KeyValueStore;
 
+import com.myredis.persistence.aof.AppendOnlyFile;
+import com.myredis.persistence.aof.WriteCommandClassifier;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -22,9 +26,15 @@ import java.util.Objects;
 public final class CommandClientRequestProcessor implements ClientRequestProcessor {
 
     private final CommandDispatcher dispatcher;
+    private final AppendOnlyFile appendOnlyFile;
 
     public CommandClientRequestProcessor(CommandDispatcher dispatcher) {
+        this(dispatcher, null);
+    }
+
+    public CommandClientRequestProcessor(CommandDispatcher dispatcher, AppendOnlyFile appendOnlyFile) {
         this.dispatcher = Objects.requireNonNull(dispatcher, "dispatcher");
+        this.appendOnlyFile = appendOnlyFile;
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands() {
@@ -41,12 +51,22 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands(
-            com.myredis.persistence.SnapshotPersistenceManager persistence,
+            com.myredis.persistence.SnapshotCommandSupport persistence,
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock) {
+        return withBuiltinCommands(persistence, null, store, expiration, clock);
+    }
+
+    public static CommandClientRequestProcessor withBuiltinCommands(
+            com.myredis.persistence.SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile,
             KeyValueStore store,
             ExpirationService expiration,
             ExpirationClock clock) {
         return new CommandClientRequestProcessor(
-                RegistryCommandDispatcher.withBuiltinCommands(store, expiration, clock, persistence));
+                RegistryCommandDispatcher.withBuiltinCommands(store, expiration, clock, persistence, appendOnlyFile),
+                appendOnlyFile);
     }
 
     @Override
@@ -57,9 +77,29 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
         String commandName = new String(commandParts.getFirst(), StandardCharsets.UTF_8);
         List<byte[]> arguments = commandParts.size() == 1 ? List.of() : commandParts.subList(1, commandParts.size());
         try {
-            return dispatcher.dispatch(session, commandName, arguments);
+            ClientReply reply = dispatcher.dispatch(session, commandName, arguments);
+            appendSuccessfulWrite(commandName, commandParts, reply);
+            return reply;
         } catch (CommandException failure) {
             return ClientReply.error(failure.clientMessage());
+        }
+    }
+
+    private void appendSuccessfulWrite(String commandName, List<byte[]> commandParts, ClientReply reply) {
+        if (appendOnlyFile == null || reply instanceof ClientReply.Error) {
+            return;
+        }
+        if (!WriteCommandClassifier.isWriteCommand(commandName)) {
+            return;
+        }
+        try {
+            appendOnlyFile.append(commandParts);
+        } catch (com.myredis.exception.PersistenceException failure) {
+            System.err.println(
+                    "AOF append failed for "
+                            + commandName.toUpperCase(Locale.ROOT)
+                            + ": "
+                            + failure.clientMessage());
         }
     }
 }

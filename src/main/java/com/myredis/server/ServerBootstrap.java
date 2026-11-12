@@ -1,13 +1,16 @@
 package com.myredis.server;
 
 import com.myredis.config.ServerConfiguration;
+import com.myredis.exception.PersistenceException;
 import com.myredis.exception.ServerErrorHandler;
 import com.myredis.logging.StructuredServerLogger;
 import com.myredis.command.CommandClientRequestProcessor;
 import com.myredis.metrics.MetricsRecorder;
 import com.myredis.metrics.NoOpMetricsRecorder;
+import com.myredis.persistence.CompositePersistenceManager;
 import com.myredis.persistence.PersistenceManager;
 import com.myredis.persistence.SnapshotPersistenceManager;
+import com.myredis.persistence.aof.AppendOnlyFile;
 import com.myredis.expiration.BackgroundExpirationCleanup;
 import com.myredis.expiration.ExpirationCleanupPolicy;
 import com.myredis.expiration.InMemoryExpirationService;
@@ -35,16 +38,36 @@ public final class ServerBootstrap {
         ExpirationAwareKeyValueStore keyValueStore =
                 new ExpirationAwareKeyValueStore(
                         new InMemoryKeyValueStore(), expiration, SystemExpirationClock.INSTANCE);
-        PersistenceManager persistence =
+        SnapshotPersistenceManager snapshot =
                 new SnapshotPersistenceManager(configuration.persistenceDirectory(), keyValueStore, expiration);
+        AppendOnlyFile appendOnlyFile = null;
+        if (configuration.aofEnabled()) {
+            try {
+                appendOnlyFile =
+                        AppendOnlyFile.open(
+                                java.nio.file.Path.of(configuration.persistenceDirectory()),
+                                configuration.aofFsyncPolicy());
+            } catch (PersistenceException failure) {
+                throw new IllegalStateException("failed to open AOF: " + failure.clientMessage(), failure);
+            }
+        }
+        PersistenceManager persistence =
+                new CompositePersistenceManager(
+                        snapshot,
+                        appendOnlyFile,
+                        keyValueStore,
+                        expiration,
+                        SystemExpirationClock.INSTANCE);
         BackgroundExpirationCleanup expirationCleanup =
                 new BackgroundExpirationCleanup(keyValueStore, expiration, ExpirationCleanupPolicy.defaults());
+        CompositePersistenceManager compositePersistence = (CompositePersistenceManager) persistence;
         DatabaseServer databaseServer =
                 new LifecycleDatabaseServer(
                         configuration,
                         logger,
                         CommandClientRequestProcessor.withBuiltinCommands(
-                                (SnapshotPersistenceManager) persistence,
+                                compositePersistence,
+                                appendOnlyFile,
                                 keyValueStore,
                                 expiration,
                                 SystemExpirationClock.INSTANCE));

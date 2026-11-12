@@ -14,6 +14,9 @@ public final class ServerConfigurationDefaults {
     public static final int MAX_CLIENT_CONNECTIONS = 10_000;
     public static final LoggingLevel LOGGING_LEVEL = LoggingLevel.INFO;
     public static final Duration CLIENT_IDLE_TIMEOUT = Duration.ZERO;
+    public static final boolean AOF_ENABLED = false;
+    public static final com.myredis.persistence.aof.AofFsyncPolicy AOF_FSYNC_POLICY =
+            com.myredis.persistence.aof.AofFsyncPolicy.EVERY_SEC;
 
     public static final int MIN_PORT = 1;
     public static final int MAX_PORT = 65_535;

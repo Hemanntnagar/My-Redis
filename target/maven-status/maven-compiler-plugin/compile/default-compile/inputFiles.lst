@@ -1,5 +1,6 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/JavaRedis.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/AppendCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BgrewriteaofCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BgsaveCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/Command.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandArity.java
@@ -129,9 +130,19 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/TcpListenServer.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/UnconfiguredClientRequestProcessor.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/package-info.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/CompositePersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/NoOpPersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/PersistenceManager.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/SnapshotCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/SnapshotPersistenceManager.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofFormat.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofFsyncPolicy.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRecordFramer.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofReplayer.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRespCommandCodec.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AofRewriteGenerator.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/AppendOnlyFile.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/aof/WriteCommandClassifier.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/AtomicSnapshotFiles.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/DatabaseSnapshot.java

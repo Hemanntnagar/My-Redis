@@ -22,6 +22,7 @@ public final class ServerConfigurationValidator {
         validateLoggingLevel(configuration.loggingLevel());
         validateTcpBacklog(configuration.tcpBacklog());
         validateClientIdleTimeout(configuration.clientIdleTimeout());
+        validateAofFsyncPolicy(configuration.aofFsyncPolicy());
     }
 
     static void validateHost(String host) throws InvalidConfigurationException {
@@ -106,6 +107,13 @@ public final class ServerConfigurationValidator {
         }
         if (clientIdleTimeout.isNegative()) {
             throw new InvalidConfigurationException("clientIdleTimeout must not be negative");
+        }
+    }
+
+    static void validateAofFsyncPolicy(com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy)
+            throws InvalidConfigurationException {
+        if (aofFsyncPolicy == null) {
+            throw new InvalidConfigurationException("aofFsyncPolicy must not be null");
         }
     }
 }

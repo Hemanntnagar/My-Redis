@@ -36,6 +36,9 @@ public final class ServerConfigurationLoader {
         applyDurationMillis(
                 builder::clientIdleTimeout,
                 resolveString("myredis.clientIdleTimeoutMillis", "MYREDIS_CLIENT_IDLE_TIMEOUT_MS"));
+        applyBoolean(builder::aofEnabled, resolveString("myredis.aofEnabled", "MYREDIS_AOF_ENABLED"));
+        applyAofFsyncPolicy(
+                builder::aofFsyncPolicy, resolveString("myredis.aofFsyncPolicy", "MYREDIS_AOF_FSYNC_POLICY"));
 
         return builder.build();
     }
@@ -53,6 +56,21 @@ public final class ServerConfigurationLoader {
 
     private static void applyString(java.util.function.Consumer<String> setter, Optional<String> value) {
         value.ifPresent(setter);
+    }
+
+    private static void applyBoolean(java.util.function.Consumer<Boolean> setter, Optional<String> value)
+            throws InvalidConfigurationException {
+        if (value.isPresent()) {
+            setter.accept(parseBoolean(value.get()));
+        }
+    }
+
+    private static void applyAofFsyncPolicy(
+            java.util.function.Consumer<com.myredis.persistence.aof.AofFsyncPolicy> setter, Optional<String> value)
+            throws InvalidConfigurationException {
+        if (value.isPresent()) {
+            setter.accept(parseAofFsyncPolicy(value.get()));
+        }
     }
 
     private static void applyInt(java.util.function.IntConsumer setter, Optional<String> value)
@@ -101,6 +119,24 @@ public final class ServerConfigurationLoader {
             return LoggingLevel.valueOf(raw.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new InvalidConfigurationException("unknown logging level \"" + raw + "\"", e);
+        }
+    }
+
+    private static boolean parseBoolean(String raw) throws InvalidConfigurationException {
+        String normalized = raw.trim().toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "true", "1", "yes", "on" -> true;
+            case "false", "0", "no", "off" -> false;
+            default -> throw new InvalidConfigurationException("expected boolean for configuration value \"" + raw + "\"");
+        };
+    }
+
+    private static com.myredis.persistence.aof.AofFsyncPolicy parseAofFsyncPolicy(String raw)
+            throws InvalidConfigurationException {
+        try {
+            return com.myredis.persistence.aof.AofFsyncPolicy.valueOf(raw.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidConfigurationException("unknown AOF fsync policy \"" + raw + "\"", e);
         }
     }
 }
