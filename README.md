@@ -34,7 +34,7 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ## Limitations
 
 - Persistence, expiration, and most Redis commands are not implemented yet
-- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `MGET`, `MSET`, `APPEND`, `INCR`, `DECR`, `INCRBY`, `DECRBY`, `STRLEN`, `KEYS`, `DBSIZE`, `FLUSHDB`, `RENAME`, `RENAMENX`, `RANDOMKEY`, `LPUSH`, `RPUSH`, `LPOP`, `RPOP`, `LLEN`, `LRANGE`, `LINDEX`, `LSET`, `SADD`, `SREM`, `SMEMBERS`, `SISMEMBER`, `SCARD`, `SINTER`, `SUNION`, `SDIFF`, `DEL`, `EXISTS`, `TYPE`
+- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `MGET`, `MSET`, `APPEND`, `INCR`, `DECR`, `INCRBY`, `DECRBY`, `STRLEN`, `KEYS`, `DBSIZE`, `FLUSHDB`, `RENAME`, `RENAMENX`, `RANDOMKEY`, `LPUSH`, `RPUSH`, `LPOP`, `RPOP`, `LLEN`, `LRANGE`, `LINDEX`, `LSET`, `SADD`, `SREM`, `SMEMBERS`, `SISMEMBER`, `SCARD`, `SINTER`, `SUNION`, `SDIFF`, `HSET`, `HGET`, `HMGET`, `HGETALL`, `HDEL`, `HEXISTS`, `HLEN`, `HKEYS`, `HVALS`, `DEL`, `EXISTS`, `TYPE`
 
 ## Manual check (redis-cli)
 
@@ -65,4 +65,6 @@ redis-cli -p 6379 RPUSH mylist a b
 redis-cli -p 6379 LRANGE mylist 0 -1
 redis-cli -p 6379 SADD myset a b
 redis-cli -p 6379 SMEMBERS myset
+redis-cli -p 6379 HSET user name alice
+redis-cli -p 6379 HGET user name
 ```
