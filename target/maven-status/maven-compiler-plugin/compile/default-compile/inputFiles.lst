@@ -12,6 +12,16 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ExistsCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/FlushDbCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/GetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HDelCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HExistsCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HGetAllCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HGetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HKeysCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HLenCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HMGetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HSetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HValsCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/HashCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/IncrByCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/IncrCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/KeyGlobMatcher.java
@@ -57,6 +67,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/WorkerThreadConfiguration.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/DataType.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/HashRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/ListRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/RedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/SetRedisValue.java
