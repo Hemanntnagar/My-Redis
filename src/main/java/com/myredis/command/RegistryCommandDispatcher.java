@@ -39,6 +39,11 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new MsetCommand(store));
         register(registry, new MgetCommand(store));
         register(registry, new AppendCommand(store));
+        register(registry, new IncrCommand(store));
+        register(registry, new DecrCommand(store));
+        register(registry, new IncrByCommand(store));
+        register(registry, new DecrByCommand(store));
+        register(registry, new StrlenCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 
