@@ -8,14 +8,17 @@ com/myredis/protocol/Resp2IntegerEncoderTest.class
 com/myredis/command/PingEchoTcpIntegrationTest.class
 com/myredis/network/ClientConnectionHandlerTest.class
 com/myredis/exception/ErrorResponseMapperTest.class
+com/myredis/protocol/Resp2ArrayEncoderTest.class
 com/myredis/exception/ServerErrorHandlerTest.class
 com/myredis/protocol/Resp2BulkStringEncoderTest.class
 com/myredis/command/EchoCommandTest$StubSession.class
 com/myredis/command/PingCommandTest.class
 com/myredis/command/EchoCommandTest.class
+com/myredis/network/ClientConnectionStateTest.class
 com/myredis/protocol/Resp2BulkStringParserTest.class
 com/myredis/command/PingCommandTest$StubSession.class
 com/myredis/protocol/Resp2CrlfTest.class
+com/myredis/protocol/Resp2ArrayParserTest.class
 com/myredis/protocol/Resp2EncoderLineTest.class
 com/myredis/config/ServerConfigurationLoaderTest.class
 com/myredis/network/ClientConnectionManagerTest.class

@@ -10,7 +10,10 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/logging/StructuredServerLoggerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionHandlerTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionManagerTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/ClientConnectionStateTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/network/TcpListenServerTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2ArrayEncoderTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2ArrayParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2BulkStringEncoderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2BulkStringParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2CrlfTest.java

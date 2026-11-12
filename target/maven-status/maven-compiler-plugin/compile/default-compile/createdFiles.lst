@@ -1,3 +1,4 @@
+com/myredis/protocol/RespNullArray.class
 com/myredis/pubsub/package-info.class
 com/myredis/pubsub/PubSubBroker.class
 com/myredis/command/package-info.class
@@ -6,6 +7,7 @@ com/myredis/network/ClientRequestProcessor.class
 com/myredis/server/ServerApplication.class
 com/myredis/replication/ReplicationRole.class
 com/myredis/exception/InvalidConfigurationException.class
+com/myredis/protocol/RespArray.class
 com/myredis/network/ClientConnectionManager.class
 com/myredis/config/ServerConfigurationValidator.class
 com/myredis/server/LifecycleDatabaseServer.class
@@ -32,6 +34,7 @@ com/myredis/config/ServerConfiguration.class
 com/myredis/command/CommandDispatcher.class
 com/myredis/network/ClientReply$NullBulk.class
 com/myredis/protocol/RespBulkReply.class
+com/myredis/protocol/RespValue.class
 com/myredis/persistence/PersistenceManager.class
 com/myredis/config/ServerConfigurationDefaults.class
 com/myredis/server/ServerBootstrap.class
@@ -41,6 +44,7 @@ com/myredis/network/ClientConnectionState.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
 com/myredis/protocol/Resp2LineParser.class
 com/myredis/exception/MyRedisException.class
+com/myredis/protocol/Resp2ValueDecoder.class
 com/myredis/persistence/package-info.class
 com/myredis/server/DatabaseServer.class
 com/myredis/network/TcpListenServer.class
@@ -55,6 +59,7 @@ com/myredis/protocol/RespSimpleString.class
 com/myredis/command/RegistryCommandDispatcher.class
 com/myredis/logging/LogContext.class
 com/myredis/metrics/NoOpMetricsRecorder.class
+com/myredis/protocol/Resp2ArrayParser.class
 com/myredis/logging/StructuredServerLogger.class
 com/myredis/config/ServerConfigurationLoader.class
 com/myredis/protocol/package-info.class
@@ -68,6 +73,7 @@ com/myredis/exception/ServerErrorHandler.class
 com/myredis/command/EchoCommand.class
 com/myredis/network/package-info.class
 com/myredis/datatype/package-info.class
+com/myredis/protocol/Resp2ArrayEncoder.class
 com/myredis/network/ConnectedClientSession.class
 com/myredis/protocol/RespEncoder.class
 com/myredis/persistence/NoOpPersistenceManager.class
