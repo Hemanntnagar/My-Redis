@@ -40,6 +40,7 @@ com/myredis/command/CommandDispatcher.class
 com/myredis/command/GetCommand.class
 com/myredis/command/MsetCommand.class
 com/myredis/command/FlushDbCommand.class
+com/myredis/command/RandomKeyCommand.class
 com/myredis/network/ClientReply$Array.class
 com/myredis/network/ClientReply$NullBulk.class
 com/myredis/protocol/RespBulkReply.class
@@ -62,6 +63,7 @@ com/myredis/network/TcpListenServer.class
 com/myredis/protocol/Resp2IntegerParser.class
 com/myredis/logging/StructuredServerLogger$1.class
 com/myredis/protocol/RespDecoder.class
+com/myredis/command/RenameCommand.class
 com/myredis/protocol/RespNullBulk.class
 com/myredis/logging/LogContext$Builder.class
 com/myredis/network/ClientSession.class
@@ -113,6 +115,7 @@ com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/command/IncrByCommand.class
 com/myredis/network/ClientReply.class
 com/myredis/datatype/RedisValue.class
+com/myredis/command/RenameNxCommand.class
 com/myredis/config/ConfigurationSource.class
 com/myredis/server/ServerContext.class
 com/myredis/command/MgetCommand.class

@@ -9,6 +9,8 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/MsetMgetAppendTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingEchoTcpIntegrationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/RenameRandomKeyCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/RenameRandomKeyTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SetGetCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SetGetTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/StringCounterCommandTest.java

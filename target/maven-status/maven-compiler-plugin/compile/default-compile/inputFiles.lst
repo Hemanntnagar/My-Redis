@@ -19,7 +19,10 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MgetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MsetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/PingCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RandomKeyCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RegistryCommandDispatcher.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RenameCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RenameNxCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StringIntegerValues.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StrlenCommand.java
