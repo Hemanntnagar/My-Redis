@@ -1,3 +1,4 @@
+com/myredis/command/MsetMgetAppendTcpIntegrationTest.class
 com/myredis/network/TcpListenServerTest.class
 com/myredis/storage/InMemoryKeyValueStoreTest.class
 com/myredis/exception/DomainExceptionTest.class
@@ -21,6 +22,7 @@ com/myredis/command/EchoCommandTest.class
 com/myredis/network/ClientConnectionStateTest.class
 com/myredis/protocol/Resp2BulkStringParserTest.class
 com/myredis/command/PingCommandTest$StubSession.class
+com/myredis/command/MsetMgetAppendCommandTest.class
 com/myredis/protocol/Resp2CrlfTest.class
 com/myredis/command/DelExistsTypeCommandTest$StubSession.class
 com/myredis/protocol/Resp2ArrayParserTest.class
@@ -31,6 +33,7 @@ com/myredis/logging/StructuredServerLoggerTest.class
 com/myredis/command/SetGetCommandTest.class
 com/myredis/protocol/Resp2LineEncoderTest.class
 com/myredis/protocol/Resp2IntegerParserTest.class
+com/myredis/command/MsetMgetAppendCommandTest$StubSession.class
 com/myredis/config/ServerConfigurationTest.class
 com/myredis/command/SetGetTcpIntegrationTest.class
 com/myredis/protocol/Resp2EncoderBulkIntegerTest.class

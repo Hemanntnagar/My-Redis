@@ -1,4 +1,5 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/JavaRedis.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/AppendCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/Command.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandArity.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandClientRequestProcessor.java
@@ -7,6 +8,8 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/EchoCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ExistsCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/GetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MgetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/MsetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/PingCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RegistryCommandDispatcher.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
