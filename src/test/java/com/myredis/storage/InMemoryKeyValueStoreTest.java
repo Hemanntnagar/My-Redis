@@ -138,6 +138,17 @@ class InMemoryKeyValueStoreTest {
     }
 
     @Test
+    void keyCountClearAndSnapshotKeysSupportKeyspaceCommands() throws StorageException {
+        assertEquals(0L, store.keyCount());
+        store.put(KEY, new StringRedisValue("x".getBytes(StandardCharsets.UTF_8)));
+        assertEquals(1L, store.keyCount());
+        assertArrayEquals(KEY, store.snapshotKeys().getFirst());
+        store.clear();
+        assertEquals(0L, store.keyCount());
+        assertTrue(store.snapshotKeys().isEmpty());
+    }
+
+    @Test
     void returnedValueBytesAreDefensiveCopies() throws StorageException {
         byte[] original = "data".getBytes(StandardCharsets.UTF_8);
         store.put(KEY, new StringRedisValue(original));

@@ -3,7 +3,9 @@ package com.myredis.storage;
 import com.myredis.datatype.RedisValue;
 import com.myredis.exception.StorageException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,6 +45,25 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
     public boolean exists(byte[] key) {
         Objects.requireNonNull(key, "key");
         return entries.containsKey(new BinaryKey(key));
+    }
+
+    @Override
+    public long keyCount() {
+        return entries.size();
+    }
+
+    @Override
+    public void clear() {
+        entries.clear();
+    }
+
+    @Override
+    public List<byte[]> snapshotKeys() {
+        List<byte[]> keys = new ArrayList<>(entries.size());
+        for (BinaryKey key : entries.keySet()) {
+            keys.add(key.bytes().clone());
+        }
+        return keys;
     }
 
     /**
