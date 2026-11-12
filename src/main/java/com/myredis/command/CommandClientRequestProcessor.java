@@ -4,6 +4,11 @@ import com.myredis.exception.CommandException;
 import com.myredis.network.ClientReply;
 import com.myredis.network.ClientRequestProcessor;
 import com.myredis.network.ClientSession;
+import com.myredis.expiration.ExpirationClock;
+import com.myredis.expiration.ExpirationService;
+import com.myredis.expiration.InMemoryExpirationService;
+import com.myredis.expiration.SystemExpirationClock;
+import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
 import com.myredis.storage.KeyValueStore;
 
@@ -28,6 +33,11 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
 
     public static CommandClientRequestProcessor withBuiltinCommands(KeyValueStore store) {
         return new CommandClientRequestProcessor(RegistryCommandDispatcher.withBuiltinCommands(store));
+    }
+
+    public static CommandClientRequestProcessor withBuiltinCommands(
+            KeyValueStore store, ExpirationService expiration, ExpirationClock clock) {
+        return new CommandClientRequestProcessor(RegistryCommandDispatcher.withBuiltinCommands(store, expiration, clock));
     }
 
     @Override

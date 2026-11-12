@@ -8,6 +8,9 @@ import com.myredis.metrics.MetricsRecorder;
 import com.myredis.metrics.NoOpMetricsRecorder;
 import com.myredis.persistence.NoOpPersistenceManager;
 import com.myredis.persistence.PersistenceManager;
+import com.myredis.expiration.InMemoryExpirationService;
+import com.myredis.expiration.SystemExpirationClock;
+import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
 import com.myredis.storage.KeyValueStore;
 
@@ -27,12 +30,16 @@ public final class ServerBootstrap {
         ServerErrorHandler errorHandler = new ServerErrorHandler(logger);
         MetricsRecorder metrics = new NoOpMetricsRecorder();
         PersistenceManager persistence = new NoOpPersistenceManager();
-        KeyValueStore keyValueStore = new InMemoryKeyValueStore();
+        InMemoryExpirationService expiration = new InMemoryExpirationService();
+        KeyValueStore keyValueStore =
+                new ExpirationAwareKeyValueStore(
+                        new InMemoryKeyValueStore(), expiration, SystemExpirationClock.INSTANCE);
         DatabaseServer databaseServer =
                 new LifecycleDatabaseServer(
                         configuration,
                         logger,
-                        CommandClientRequestProcessor.withBuiltinCommands(keyValueStore));
+                        CommandClientRequestProcessor.withBuiltinCommands(
+                                keyValueStore, expiration, SystemExpirationClock.INSTANCE));
 
         return new ServerContext(configuration, logger, errorHandler, metrics, persistence, databaseServer);
     }

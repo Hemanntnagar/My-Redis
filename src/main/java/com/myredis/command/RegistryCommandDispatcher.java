@@ -3,6 +3,11 @@ package com.myredis.command;
 import com.myredis.exception.CommandException;
 import com.myredis.network.ClientReply;
 import com.myredis.network.ClientSession;
+import com.myredis.expiration.ExpirationClock;
+import com.myredis.expiration.ExpirationService;
+import com.myredis.expiration.InMemoryExpirationService;
+import com.myredis.expiration.SystemExpirationClock;
+import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
 import com.myredis.storage.KeyValueStore;
 
@@ -28,6 +33,16 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
     }
 
     public static RegistryCommandDispatcher withBuiltinCommands(KeyValueStore store) {
+        if (store instanceof ExpirationAwareKeyValueStore aware) {
+            return withBuiltinCommands(store, aware.expirationService(), SystemExpirationClock.INSTANCE);
+        }
+        InMemoryExpirationService expiration = new InMemoryExpirationService();
+        KeyValueStore awareStore = new ExpirationAwareKeyValueStore(store, expiration, SystemExpirationClock.INSTANCE);
+        return withBuiltinCommands(awareStore, expiration, SystemExpirationClock.INSTANCE);
+    }
+
+    public static RegistryCommandDispatcher withBuiltinCommands(
+            KeyValueStore store, ExpirationService expiration, ExpirationClock clock) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
@@ -82,6 +97,8 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new ZRevRankCommand(store));
         register(registry, new ZRangeCommand(store));
         register(registry, new ZCardCommand(store));
+        register(registry, new TtlCommand(store, expiration, clock));
+        register(registry, new PttlCommand(store, expiration, clock));
         return new RegistryCommandDispatcher(registry);
     }
 
