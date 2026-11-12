@@ -32,9 +32,19 @@ public final class TcpListenServer implements AutoCloseable {
     private volatile Thread acceptThread;
     private volatile InetSocketAddress boundAddress;
 
+    private final ClientRequestProcessor requestProcessor;
+
     public TcpListenServer(ServerConfiguration configuration, StructuredServerLogger logger) {
+        this(configuration, logger, new UnconfiguredClientRequestProcessor());
+    }
+
+    public TcpListenServer(
+            ServerConfiguration configuration,
+            StructuredServerLogger logger,
+            ClientRequestProcessor requestProcessor) {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
+        this.requestProcessor = Objects.requireNonNull(requestProcessor, "requestProcessor");
         this.connections = new ActiveConnectionRegistry(configuration.maxClientConnections());
     }
 
@@ -202,7 +212,7 @@ public final class TcpListenServer implements AutoCloseable {
                         .build());
 
         ClientConnectionHandler handler =
-                new ClientConnectionHandler(session, connections, logger, running::get);
+                new ClientConnectionHandler(session, connections, logger, running::get, requestProcessor);
         clientExecutor.submit(handler);
     }
 

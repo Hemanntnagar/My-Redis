@@ -2,8 +2,10 @@ com/myredis/server/ServerApplicationTest.class
 com/myredis/PackageArchitectureTest.class
 com/myredis/config/ServerConfigurationLoaderTest.class
 com/myredis/network/TcpListenServerTest.class
+com/myredis/network/ClientConnectionHandlerTest.class
 com/myredis/logging/StructuredServerLoggerTest.class
 com/myredis/exception/ErrorResponseMapperTest.class
 com/myredis/exception/ServerErrorHandlerTest.class
 com/myredis/config/ServerConfigurationTest.class
 com/myredis/exception/DomainExceptionTest.class
+com/myredis/protocol/Resp2DecoderTest.class
