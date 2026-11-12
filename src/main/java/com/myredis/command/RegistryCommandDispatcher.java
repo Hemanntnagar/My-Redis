@@ -50,6 +50,14 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new RenameCommand(store));
         register(registry, new RenameNxCommand(store));
         register(registry, new RandomKeyCommand(store));
+        register(registry, new LPushCommand(store));
+        register(registry, new RPushCommand(store));
+        register(registry, new LPopCommand(store));
+        register(registry, new RPopCommand(store));
+        register(registry, new LLenCommand(store));
+        register(registry, new LRangeCommand(store));
+        register(registry, new LIndexCommand(store));
+        register(registry, new LSetCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 
