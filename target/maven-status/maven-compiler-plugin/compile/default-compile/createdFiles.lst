@@ -1,7 +1,9 @@
 com/myredis/protocol/RespNullArray.class
 com/myredis/command/TypeCommand.class
 com/myredis/pubsub/package-info.class
+com/myredis/command/ZCardCommand.class
 com/myredis/pubsub/PubSubBroker.class
+com/myredis/command/SortedSetCommandSupport$ScoreMember.class
 com/myredis/command/package-info.class
 com/myredis/exception/ErrorResponseMapper.class
 com/myredis/network/ClientRequestProcessor.class
@@ -11,6 +13,7 @@ com/myredis/replication/ReplicationRole.class
 com/myredis/command/KeysCommand.class
 com/myredis/exception/InvalidConfigurationException.class
 com/myredis/protocol/RespArray.class
+com/myredis/command/ZRemCommand.class
 com/myredis/network/ClientConnectionManager.class
 com/myredis/config/ServerConfigurationValidator.class
 com/myredis/server/LifecycleDatabaseServer.class
@@ -63,12 +66,15 @@ com/myredis/command/LPopCommand.class
 com/myredis/command/HashCommandSupport.class
 com/myredis/storage/InMemoryKeyValueStore$BinaryKey.class
 com/myredis/command/StringIntegerValues.class
+com/myredis/datatype/SortedSetRedisValue$MemberKey.class
 com/myredis/exception/ConnectionException.class
 com/myredis/network/ClientConnectionState.class
+com/myredis/datatype/SortedSetRedisValue$ScoredMember.class
 com/myredis/command/RPopCommand.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
 com/myredis/protocol/Resp2LineParser.class
 com/myredis/command/HDelCommand.class
+com/myredis/command/SortedSetCommandSupport.class
 com/myredis/exception/MyRedisException.class
 com/myredis/protocol/Resp2ValueDecoder.class
 com/myredis/datatype/HashRedisValue.class
@@ -81,6 +87,7 @@ com/myredis/logging/StructuredServerLogger$1.class
 com/myredis/protocol/RespDecoder.class
 com/myredis/command/RenameCommand.class
 com/myredis/protocol/RespNullBulk.class
+com/myredis/datatype/SortedSetRedisValue.class
 com/myredis/command/HGetAllCommand.class
 com/myredis/logging/LogContext$Builder.class
 com/myredis/network/ClientSession.class
@@ -108,6 +115,7 @@ com/myredis/transaction/package-info.class
 com/myredis/command/SRemCommand.class
 com/myredis/exception/ServerErrorHandler.class
 com/myredis/command/HValsCommand.class
+com/myredis/command/ZRangeCommand.class
 com/myredis/command/EchoCommand.class
 com/myredis/network/package-info.class
 com/myredis/command/SetValueCommandSupport.class
@@ -128,6 +136,7 @@ com/myredis/command/HExistsCommand.class
 com/myredis/exception/ErrorCategory.class
 com/myredis/command/SetValueCommandSupport$MemberKey.class
 com/myredis/network/ClientConnectionHandler.class
+com/myredis/command/ZScoreCommand.class
 com/myredis/exception/CommandException.class
 com/myredis/storage/KeyValueStore.class
 com/myredis/command/DelCommand.class
@@ -142,10 +151,12 @@ com/myredis/command/LPushCommand.class
 com/myredis/protocol/Resp2Encoder.class
 com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/command/SDiffCommand.class
+com/myredis/command/ZRevRankCommand.class
 com/myredis/command/IncrByCommand.class
 com/myredis/network/ClientReply.class
 com/myredis/datatype/RedisValue.class
 com/myredis/command/RenameNxCommand.class
+com/myredis/command/ZAddCommand.class
 com/myredis/config/ConfigurationSource.class
 com/myredis/datatype/HashRedisValue$Field.class
 com/myredis/server/ServerContext.class
@@ -154,6 +165,7 @@ com/myredis/protocol/Resp2BulkStringParser.class
 com/myredis/protocol/RespBulkString.class
 com/myredis/server/package-info.class
 com/myredis/config/DefaultServerConfiguration.class
+com/myredis/command/ZRankCommand.class
 com/myredis/protocol/Resp2IntegerEncoder.class
 com/myredis/config/package-info.class
 com/myredis/command/DecrCommand.class

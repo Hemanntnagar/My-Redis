@@ -75,6 +75,13 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new HLenCommand(store));
         register(registry, new HKeysCommand(store));
         register(registry, new HValsCommand(store));
+        register(registry, new ZAddCommand(store));
+        register(registry, new ZRemCommand(store));
+        register(registry, new ZScoreCommand(store));
+        register(registry, new ZRankCommand(store));
+        register(registry, new ZRevRankCommand(store));
+        register(registry, new ZRangeCommand(store));
+        register(registry, new ZCardCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 

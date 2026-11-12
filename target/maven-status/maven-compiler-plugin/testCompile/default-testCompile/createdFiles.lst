@@ -2,6 +2,7 @@ com/myredis/network/TcpListenServerTest.class
 com/myredis/protocol/Resp2DecoderTest.class
 com/myredis/server/ServerApplicationTest.class
 com/myredis/command/KeyspaceCommandTest.class
+com/myredis/command/SortedSetTcpIntegrationTest.class
 com/myredis/protocol/Resp2ArrayEncoderTest.class
 com/myredis/protocol/Resp2BulkStringEncoderTest.class
 com/myredis/command/KeyspaceCommandTest$StubSession.class
@@ -55,4 +56,6 @@ com/myredis/protocol/Resp2LineEncoderTest.class
 com/myredis/protocol/Resp2IntegerParserTest.class
 com/myredis/command/MsetMgetAppendCommandTest$StubSession.class
 com/myredis/command/SetGetTcpIntegrationTest.class
+com/myredis/command/SortedSetCommandTest$StubSession.class
+com/myredis/command/SortedSetCommandTest.class
 com/myredis/command/SetCommandTest$StubSession.class

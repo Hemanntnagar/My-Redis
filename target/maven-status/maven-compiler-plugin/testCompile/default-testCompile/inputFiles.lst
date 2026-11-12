@@ -19,6 +19,8 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SetGetCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SetGetTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SetTcpIntegrationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SortedSetCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SortedSetTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/StringCounterCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/StringCounterTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/config/ServerConfigurationLoaderTest.java

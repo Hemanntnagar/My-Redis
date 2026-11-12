@@ -52,9 +52,17 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SUnionCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetValueCommandSupport.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SortedSetCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StringIntegerValues.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/StrlenCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/TypeCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZAddCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZCardCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZRangeCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZRankCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZRemCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZRevRankCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ZScoreCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/ConfigurationSource.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/DefaultServerConfiguration.java
@@ -71,6 +79,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/ListRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/RedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/SetRedisValue.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/SortedSetRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/StringRedisValue.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/datatype/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/exception/CommandException.java
