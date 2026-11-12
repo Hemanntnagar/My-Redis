@@ -60,6 +60,7 @@ com/myredis/command/KeyGlobMatcherTest.class
 com/myredis/network/ClientConnectionHandlerTest.class
 com/myredis/command/TtlPttlCommandTest.class
 com/myredis/exception/ErrorResponseMapperTest.class
+com/myredis/storage/ByteArrayKeyTest.class
 com/myredis/command/DelExistsTypeTcpIntegrationTest.class
 com/myredis/command/SetGetCommandTest$StubSession.class
 com/myredis/exception/ServerErrorHandlerTest.class
@@ -83,6 +84,7 @@ com/myredis/persistence/aof/AofCrashRecoveryTest$StubSession.class
 com/myredis/command/SetGetCommandTest.class
 com/myredis/protocol/Resp2LineEncoderTest.class
 com/myredis/protocol/Resp2IntegerParserTest.class
+com/myredis/command/AsciiLongCodecTest.class
 com/myredis/command/MsetMgetAppendCommandTest$StubSession.class
 com/myredis/command/SaveBgsaveCommandTest.class
 com/myredis/command/SetGetTcpIntegrationTest.class

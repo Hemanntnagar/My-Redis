@@ -40,6 +40,7 @@ com/myredis/command/ExpireCommandSupport.class
 com/myredis/persistence/PersistenceManager.class
 com/myredis/config/ServerConfigurationDefaults.class
 com/myredis/server/ServerBootstrap.class
+com/myredis/storage/ByteArrayKey.class
 com/myredis/command/HGetCommand.class
 com/myredis/command/HashCommandSupport.class
 com/myredis/command/StringIntegerValues.class
@@ -48,12 +49,12 @@ com/myredis/exception/ConnectionException.class
 com/myredis/network/ClientConnectionState.class
 com/myredis/datatype/SortedSetRedisValue$ScoredMember.class
 com/myredis/server/ServerCollaborators.class
+com/myredis/benchmark/LatencyStats.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
 com/myredis/persistence/aof/AofRewriteGenerator$1.class
 com/myredis/command/SortedSetCommandSupport.class
 com/myredis/replication/ReplicaUpstreamClient$1.class
 com/myredis/server/DatabaseServer.class
-com/myredis/expiration/InMemoryExpirationService$BinaryKey.class
 com/myredis/command/LLenCommand.class
 com/myredis/pubsub/InMemoryPubSubBroker$ChannelKey.class
 com/myredis/command/CommandCommand.class
@@ -66,6 +67,7 @@ com/myredis/datatype/SortedSetRedisValue.class
 com/myredis/replication/ReplicationSyncResult$PartialSync.class
 com/myredis/protocol/RespSimpleString.class
 com/myredis/command/DbSizeCommand.class
+com/myredis/benchmark/BenchmarkConfig.class
 com/myredis/network/ClientSocketWriter.class
 com/myredis/command/ListCommandSupport.class
 com/myredis/logging/LogContext.class
@@ -148,6 +150,7 @@ com/myredis/command/TypeCommand.class
 com/myredis/pubsub/package-info.class
 com/myredis/command/ZCardCommand.class
 com/myredis/command/BgsaveCommand.class
+com/myredis/benchmark/BenchmarkReportWriter.class
 com/myredis/persistence/snapshot/AtomicSnapshotFiles.class
 com/myredis/command/SortedSetCommandSupport$ScoreMember.class
 com/myredis/network/ClientRequestProcessor.class
@@ -177,10 +180,12 @@ com/myredis/protocol/RespError.class
 com/myredis/storage/KeyStripedLock.class
 com/myredis/network/ClientReply$CompositeArray.class
 com/myredis/datatype/SetRedisValue.class
+com/myredis/benchmark/BenchmarkResult.class
 com/myredis/server/ServerMetadata.class
 com/myredis/command/ReplicaOfCommand.class
 com/myredis/replication/package-info.class
 com/myredis/command/SMembersCommand.class
+com/myredis/benchmark/RespBenchClient.class
 com/myredis/network/ClientReplyEncoder.class
 com/myredis/command/Command.class
 com/myredis/protocol/Resp2Crlf.class
@@ -191,6 +196,7 @@ com/myredis/command/FlushDbCommand.class
 com/myredis/command/RandomKeyCommand.class
 com/myredis/command/AppendCommand$AppendStateException.class
 com/myredis/command/LSetCommand.class
+com/myredis/benchmark/BenchmarkMain.class
 com/myredis/protocol/RespBulkReply.class
 com/myredis/protocol/RespValue.class
 com/myredis/metrics/AtomicMetricsRecorder.class
@@ -198,7 +204,6 @@ com/myredis/transaction/QueuedCommand.class
 com/myredis/persistence/aof/AppendOnlyFile$1.class
 com/myredis/server/ServerStartupReporter.class
 com/myredis/command/LPopCommand.class
-com/myredis/storage/InMemoryKeyValueStore$BinaryKey.class
 com/myredis/command/WatchCommand.class
 com/myredis/replication/InMemoryReplicationCoordinator.class
 com/myredis/datatype/SortedSetRedisValue$ScoredMemberSnapshot.class
@@ -210,7 +215,9 @@ com/myredis/persistence/aof/AofReplayer$ReplaySummary.class
 com/myredis/protocol/Resp2ValueDecoder.class
 com/myredis/datatype/HashRedisValue.class
 com/myredis/persistence/package-info.class
+com/myredis/command/AsciiLongCodec.class
 com/myredis/expiration/ExpirationReplies.class
+com/myredis/benchmark/BenchmarkRunner$1.class
 com/myredis/logging/StructuredServerLogger$1.class
 com/myredis/protocol/RespDecoder.class
 com/myredis/storage/ExpirationAwareKeyValueStore$StorageRunnable.class
@@ -244,12 +251,14 @@ com/myredis/command/SetValueCommandSupport.class
 com/myredis/datatype/package-info.class
 com/myredis/command/StrlenCommand.class
 com/myredis/persistence/snapshot/SnapshotFileIntegrity.class
+com/myredis/benchmark/BenchmarkWorkload.class
 com/myredis/expiration/ExpirationCleanupPolicy.class
 com/myredis/command/ReplSyncCommand.class
 com/myredis/command/IncrCommand.class
 com/myredis/command/PersistCommand.class
 com/myredis/command/PexpireAtCommand.class
 com/myredis/network/ClientReply$Sequence.class
+com/myredis/benchmark/BenchmarkEnvironment.class
 com/myredis/transaction/WatchRegistry$ChannelKey.class
 com/myredis/network/ClientReply$Integer.class
 com/myredis/command/SubscribeCommand.class
@@ -267,6 +276,7 @@ com/myredis/transaction/WatchRegistry.class
 com/myredis/storage/RedisValueMemoryEstimator.class
 com/myredis/replication/ReplicationStreamReader.class
 com/myredis/storage/ExpirationAwareKeyValueStore.class
+com/myredis/benchmark/BenchmarkRunner.class
 com/myredis/command/DiscardCommand.class
 com/myredis/command/SDiffCommand.class
 com/myredis/metrics/ServerStatistics.class

@@ -1,5 +1,15 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/JavaRedis.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkConfig.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkEnvironment.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkMain.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkReportWriter.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkResult.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkRunner.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/BenchmarkWorkload.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/LatencyStats.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/benchmark/RespBenchClient.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/AppendCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/AsciiLongCodec.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BgrewriteaofCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BgsaveCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BuiltinCommands.java
@@ -223,6 +233,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/ServerMetadata.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/ServerStartupReporter.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/server/package-info.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/ByteArrayKey.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/EvictingKeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/ExpirationAwareKeyValueStore.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/storage/InMemoryKeyValueStore.java
