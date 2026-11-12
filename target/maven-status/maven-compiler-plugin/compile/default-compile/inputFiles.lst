@@ -52,10 +52,15 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/NoOpPersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/PersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/package-info.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2Crlf.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2Decoder.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2Encoder.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2LineEncoder.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2LineParser.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/RespDecoder.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/RespEncoder.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/RespError.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/RespSimpleString.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/pubsub/PubSubBroker.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/pubsub/package-info.java

@@ -2,6 +2,7 @@ com/myredis/logging/LogContext$Builder.class
 com/myredis/network/ClientSession.class
 com/myredis/pubsub/package-info.class
 com/myredis/config/LoggingLevel.class
+com/myredis/protocol/RespSimpleString.class
 com/myredis/pubsub/PubSubBroker.class
 com/myredis/command/RegistryCommandDispatcher.class
 com/myredis/command/package-info.class
@@ -35,6 +36,7 @@ com/myredis/logging/package-info.class
 com/myredis/config/ServerConfigurationBuilder.class
 com/myredis/command/EchoCommand.class
 com/myredis/network/package-info.class
+com/myredis/protocol/RespError.class
 com/myredis/server/ServerMetadata.class
 com/myredis/datatype/package-info.class
 com/myredis/replication/package-info.class
@@ -44,6 +46,7 @@ com/myredis/command/CommandClientRequestProcessor.class
 com/myredis/network/ConnectedClientSession.class
 com/myredis/command/Command.class
 com/myredis/server/GracefulShutdownCoordinator.class
+com/myredis/protocol/Resp2Crlf.class
 com/myredis/transaction/TransactionManager.class
 com/myredis/config/ServerConfiguration.class
 com/myredis/command/CommandDispatcher.class
@@ -67,7 +70,9 @@ com/myredis/exception/PersistenceException.class
 com/myredis/exception/ConnectionException.class
 com/myredis/network/ClientConnectionState.class
 com/myredis/network/UnconfiguredClientRequestProcessor.class
+com/myredis/protocol/Resp2LineParser.class
 com/myredis/protocol/Resp2Encoder.class
+com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/network/ClientReply.class
 com/myredis/datatype/RedisValue.class
 com/myredis/exception/MyRedisException.class
