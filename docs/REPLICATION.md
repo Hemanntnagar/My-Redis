@@ -33,6 +33,13 @@ If the replica offset falls outside the backlog, a new full sync is performed.
 Mutating commands classified by `WriteCommandClassifier` increment the replication offset,
 append to the backlog, and are broadcast to all registered replica sockets.
 
+## Connection teardown
+
+`ReplicationStreamReader` treats a closed or interrupted upstream socket as end-of-stream
+(`Socket closed`, `Connection reset`, `Closed by interrupt`) and returns `null` instead of
+surfacing an uncaught `SocketException` on replica follower threads. This matches blocking
+`InputStream` behavior when the peer closes the TCP connection.
+
 ## Client commands
 
 | Command | Purpose |

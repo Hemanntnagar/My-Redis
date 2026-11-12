@@ -39,7 +39,7 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
         return expiration;
     }
 
-  public KeyStripedLock keyLocks() {
+    public KeyStripedLock keyLocks() {
         return keyLocks;
     }
 

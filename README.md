@@ -22,7 +22,19 @@ Redis-inspired in-memory database server (Java 26, Maven, RESP2).
 | `com.myredis.exception` | Typed errors surfaced to clients and callers |
 | `com.myredis.logging` | Structured SLF4J logging for operators |
 
-Each package currently exposes `package-info.java` and a small set of foundational interfaces. Implementations are added in later phases.
+Packages follow the layout guarded by `PackageArchitectureTest` (foundational interfaces plus production implementations). The `com.myredis.benchmark` package is a standalone TCP benchmark harness (not part of the server runtime).
+
+## Verification (current tree)
+
+| Check | Result |
+|-------|--------|
+| `./mvnw clean verify` | **286** unit and integration tests, 0 failures |
+| Concurrency | `KeyspaceConcurrencyStressTest`, `ActiveExpirationStressTest` |
+| Persistence | AOF recovery, composite snapshot+AOF startup, `SAVE` / `BGSAVE` |
+| Replication | `ReplicationTcpIntegrationTest`, `PropagationCaptureTest`, `ReplicationStreamReaderTest` |
+| TCP command surface | `*TcpIntegrationTest` for strings, keys, lists, pub/sub, transactions, admin |
+
+Threading model: one virtual thread per client; key mutations serialize through `KeyStripedLock` in `ExpirationAwareKeyValueStore` (see [docs/LOCKING.md](docs/LOCKING.md)).
 
 ## Build and test
 
