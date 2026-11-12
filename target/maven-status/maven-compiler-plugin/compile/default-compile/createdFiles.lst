@@ -59,6 +59,7 @@ com/myredis/server/DatabaseServer.class
 com/myredis/server/ServerContext.class
 com/myredis/server/package-info.class
 com/myredis/config/DefaultServerConfiguration.class
+com/myredis/network/TcpListenServer.class
 com/myredis/config/package-info.class
 com/myredis/logging/StructuredServerLogger$1.class
 com/myredis/protocol/RespDecoder.class
