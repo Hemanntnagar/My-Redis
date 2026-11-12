@@ -30,10 +30,12 @@ com/myredis/expiration/KeyExpirationMetadataTest.class
 com/myredis/logging/StructuredServerLoggerTest.class
 com/myredis/config/ServerConfigurationTest.class
 com/myredis/protocol/Resp2EncoderBulkIntegerTest.class
+com/myredis/command/SaveBgsaveCommandTest$StubSession.class
 com/myredis/command/MsetMgetAppendTcpIntegrationTest.class
 com/myredis/command/StringCounterTcpIntegrationTest.class
 com/myredis/storage/InMemoryKeyValueStoreTest.class
 com/myredis/command/HashCommandTest.class
+com/myredis/persistence/snapshot/SnapshotCodecTest.class
 com/myredis/command/ListCommandTest$StubSession.class
 com/myredis/command/SetTcpIntegrationTest.class
 com/myredis/exception/DomainExceptionTest.class
@@ -65,6 +67,7 @@ com/myredis/command/SetGetCommandTest.class
 com/myredis/protocol/Resp2LineEncoderTest.class
 com/myredis/protocol/Resp2IntegerParserTest.class
 com/myredis/command/MsetMgetAppendCommandTest$StubSession.class
+com/myredis/command/SaveBgsaveCommandTest.class
 com/myredis/command/SetGetTcpIntegrationTest.class
 com/myredis/command/SortedSetCommandTest$StubSession.class
 com/myredis/command/SortedSetCommandTest.class

@@ -40,6 +40,15 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
         return new CommandClientRequestProcessor(RegistryCommandDispatcher.withBuiltinCommands(store, expiration, clock));
     }
 
+    public static CommandClientRequestProcessor withBuiltinCommands(
+            com.myredis.persistence.SnapshotPersistenceManager persistence,
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock) {
+        return new CommandClientRequestProcessor(
+                RegistryCommandDispatcher.withBuiltinCommands(store, expiration, clock, persistence));
+    }
+
     @Override
     public ClientReply process(ClientSession session, List<byte[]> commandParts) {
         if (commandParts.isEmpty()) {

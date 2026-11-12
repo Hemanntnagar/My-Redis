@@ -80,6 +80,22 @@ public final class SortedSetRedisValue implements RedisValue {
         return scores.size();
     }
 
+    /** Rank-ordered scored members for snapshot persistence. */
+    public synchronized List<ScoredMemberSnapshot> snapshotByRank() {
+        List<ScoredMemberSnapshot> members = new ArrayList<>(ranked.size());
+        for (ScoredMember entry : ranked) {
+            members.add(new ScoredMemberSnapshot(entry.score(), entry.member().clone()));
+        }
+        return members;
+    }
+
+    public record ScoredMemberSnapshot(double score, byte[] member) {
+
+        public ScoredMemberSnapshot {
+            member = member.clone();
+        }
+    }
+
     public synchronized List<byte[]> rangeByRank(long start, long stop) {
         int length = scores.size();
         if (length == 0) {

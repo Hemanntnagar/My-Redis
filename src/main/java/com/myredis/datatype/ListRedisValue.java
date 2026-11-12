@@ -52,6 +52,15 @@ public final class ListRedisValue implements RedisValue {
         return elements.size();
     }
 
+    /** Head-to-tail copy for snapshot persistence. */
+    public synchronized List<byte[]> snapshotElementsInOrder() {
+        List<byte[]> ordered = new ArrayList<>(elements.size());
+        for (byte[] element : elements) {
+            ordered.add(element.clone());
+        }
+        return ordered;
+    }
+
     public synchronized List<byte[]> rangeInclusive(int start, int stop) {
         int size = elements.size();
         if (size == 0 || start > stop || start >= size) {

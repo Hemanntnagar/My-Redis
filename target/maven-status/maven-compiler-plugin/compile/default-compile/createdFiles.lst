@@ -5,8 +5,12 @@ com/myredis/command/package-info.class
 com/myredis/exception/ErrorResponseMapper.class
 com/myredis/server/ServerApplication.class
 com/myredis/protocol/RespArray.class
+com/myredis/persistence/snapshot/KeyspaceSnapshotter.class
+com/myredis/persistence/snapshot/SnapshotWriter$1.class
 com/myredis/server/LifecycleDatabaseServer.class
+com/myredis/persistence/snapshot/SnapshotReader.class
 com/myredis/exception/package-info.class
+com/myredis/persistence/snapshot/SnapshotFormat.class
 com/myredis/command/LIndexCommand.class
 com/myredis/command/SCardCommand.class
 com/myredis/expiration/ExpirationService.class
@@ -60,6 +64,7 @@ com/myredis/command/HValsCommand.class
 com/myredis/command/ZRangeCommand.class
 com/myredis/network/package-info.class
 com/myredis/datatype/ListRedisValue.class
+com/myredis/persistence/snapshot/DatabaseSnapshot.class
 com/myredis/protocol/Resp2ArrayEncoder.class
 com/myredis/network/ConnectedClientSession.class
 com/myredis/command/KeyGlobMatcher.class
@@ -73,6 +78,7 @@ com/myredis/expiration/package-info.class
 com/myredis/command/HExistsCommand.class
 com/myredis/expiration/BackgroundExpirationCleanup.class
 com/myredis/network/ClientConnectionHandler.class
+com/myredis/persistence/SnapshotPersistenceManager.class
 com/myredis/storage/KeyValueStore.class
 com/myredis/command/DelCommand.class
 com/myredis/protocol/RespInteger.class
@@ -89,6 +95,7 @@ com/myredis/datatype/RedisValue.class
 com/myredis/expiration/BackgroundExpirationCleanup$Sleeper.class
 com/myredis/datatype/HashRedisValue$Field.class
 com/myredis/server/ServerContext.class
+com/myredis/command/SaveCommand.class
 com/myredis/server/package-info.class
 com/myredis/command/ZRankCommand.class
 com/myredis/config/package-info.class
@@ -101,6 +108,8 @@ com/myredis/protocol/RespNullArray.class
 com/myredis/command/TypeCommand.class
 com/myredis/pubsub/package-info.class
 com/myredis/command/ZCardCommand.class
+com/myredis/command/BgsaveCommand.class
+com/myredis/persistence/snapshot/AtomicSnapshotFiles.class
 com/myredis/command/SortedSetCommandSupport$ScoreMember.class
 com/myredis/network/ClientRequestProcessor.class
 com/myredis/command/SInterCommand.class
@@ -118,6 +127,7 @@ com/myredis/network/ClientReply$Error.class
 com/myredis/command/TtlCommand.class
 com/myredis/protocol/Resp2BulkStringEncoder.class
 com/myredis/logging/package-info.class
+com/myredis/persistence/snapshot/SnapshotWriter.class
 com/myredis/command/SetCommand.class
 com/myredis/command/LRangeCommand.class
 com/myredis/config/ServerConfigurationBuilder.class
@@ -130,6 +140,7 @@ com/myredis/command/SMembersCommand.class
 com/myredis/command/Command.class
 com/myredis/protocol/Resp2Crlf.class
 com/myredis/command/GetCommand.class
+com/myredis/persistence/snapshot/SnapshotEntry.class
 com/myredis/command/FlushDbCommand.class
 com/myredis/command/RandomKeyCommand.class
 com/myredis/command/LSetCommand.class
@@ -138,6 +149,7 @@ com/myredis/protocol/RespValue.class
 com/myredis/server/ServerStartupReporter.class
 com/myredis/command/LPopCommand.class
 com/myredis/storage/InMemoryKeyValueStore$BinaryKey.class
+com/myredis/datatype/SortedSetRedisValue$ScoredMemberSnapshot.class
 com/myredis/command/RPopCommand.class
 com/myredis/protocol/Resp2LineParser.class
 com/myredis/command/HDelCommand.class

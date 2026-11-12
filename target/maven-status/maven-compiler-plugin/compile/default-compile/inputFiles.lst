@@ -1,5 +1,6 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/JavaRedis.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/AppendCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/BgsaveCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/Command.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandArity.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandClientRequestProcessor.java
@@ -57,6 +58,7 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SMembersCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SRemCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SUnionCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SaveCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetValueCommandSupport.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SortedSetCommandSupport.java
@@ -129,7 +131,15 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/network/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/NoOpPersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/PersistenceManager.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/SnapshotPersistenceManager.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/package-info.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/AtomicSnapshotFiles.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/DatabaseSnapshot.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/KeyspaceSnapshotter.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotEntry.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotFormat.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotReader.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/persistence/snapshot/SnapshotWriter.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2ArrayEncoder.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2ArrayParser.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/protocol/Resp2BulkStringEncoder.java

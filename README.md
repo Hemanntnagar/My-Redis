@@ -33,8 +33,8 @@ Each package currently exposes `package-info.java` and a small set of foundation
 
 ## Limitations
 
-- Persistence, expiration, and most Redis commands are not implemented yet
-- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `MGET`, `MSET`, `APPEND`, `INCR`, `DECR`, `INCRBY`, `DECRBY`, `STRLEN`, `KEYS`, `DBSIZE`, `FLUSHDB`, `RENAME`, `RENAMENX`, `RANDOMKEY`, `LPUSH`, `RPUSH`, `LPOP`, `RPOP`, `LLEN`, `LRANGE`, `LINDEX`, `LSET`, `SADD`, `SREM`, `SMEMBERS`, `SISMEMBER`, `SCARD`, `SINTER`, `SUNION`, `SDIFF`, `HSET`, `HGET`, `HMGET`, `HGETALL`, `HDEL`, `HEXISTS`, `HLEN`, `HKEYS`, `HVALS`, `ZADD`, `ZREM`, `ZSCORE`, `ZRANK`, `ZREVRANK`, `ZRANGE`, `ZCARD`, `DEL`, `EXISTS`, `TYPE`
+- AOF and replication are not implemented; durability is snapshot-only (see [docs/SNAPSHOT.md](docs/SNAPSHOT.md))
+- Built-in commands include `SAVE`, `BGSAVE`, `TTL`, `PTTL`, `EXPIRE`, `PEXPIRE`, `EXPIREAT`, `PEXPIREAT`, `PERSIST`, plus strings, lists, sets, hashes, sorted sets, and keyspace commands (`PING`, `GET`, `SET`, `KEYS`, `DEL`, …)
 
 ## Manual check (redis-cli)
 

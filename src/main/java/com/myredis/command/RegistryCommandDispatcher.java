@@ -9,6 +9,7 @@ import com.myredis.expiration.InMemoryExpirationService;
 import com.myredis.expiration.SystemExpirationClock;
 import com.myredis.storage.ExpirationAwareKeyValueStore;
 import com.myredis.storage.InMemoryKeyValueStore;
+import com.myredis.persistence.SnapshotPersistenceManager;
 import com.myredis.storage.KeyValueStore;
 
 import java.util.LinkedHashMap;
@@ -34,15 +35,23 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
 
     public static RegistryCommandDispatcher withBuiltinCommands(KeyValueStore store) {
         if (store instanceof ExpirationAwareKeyValueStore aware) {
-            return withBuiltinCommands(store, aware.expirationService(), SystemExpirationClock.INSTANCE);
+            return withBuiltinCommands(store, aware.expirationService(), SystemExpirationClock.INSTANCE, null);
         }
         InMemoryExpirationService expiration = new InMemoryExpirationService();
         KeyValueStore awareStore = new ExpirationAwareKeyValueStore(store, expiration, SystemExpirationClock.INSTANCE);
-        return withBuiltinCommands(awareStore, expiration, SystemExpirationClock.INSTANCE);
+        return withBuiltinCommands(awareStore, expiration, SystemExpirationClock.INSTANCE, null);
     }
 
     public static RegistryCommandDispatcher withBuiltinCommands(
             KeyValueStore store, ExpirationService expiration, ExpirationClock clock) {
+        return withBuiltinCommands(store, expiration, clock, null);
+    }
+
+    public static RegistryCommandDispatcher withBuiltinCommands(
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock,
+            SnapshotPersistenceManager persistence) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
@@ -104,6 +113,10 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new ExpireAtCommand(store, expiration, clock));
         register(registry, new PexpireAtCommand(store, expiration, clock));
         register(registry, new PersistCommand(store, expiration));
+        if (persistence != null) {
+            register(registry, new SaveCommand(persistence));
+            register(registry, new BgsaveCommand(persistence));
+        }
         return new RegistryCommandDispatcher(registry);
     }
 
