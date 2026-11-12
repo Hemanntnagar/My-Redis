@@ -14,6 +14,7 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/MsetMgetAppendTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingEchoTcpIntegrationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PubSubTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/RenameRandomKeyCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/RenameRandomKeyTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SaveBgsaveCommandTest.java
@@ -25,7 +26,9 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/SortedSetTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/StringCounterCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/StringCounterTcpIntegrationTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/TransactionTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/TtlPttlCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/WatchTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/config/ServerConfigurationLoaderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/config/ServerConfigurationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/exception/DomainExceptionTest.java
@@ -58,3 +61,4 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/InMemoryKeyValueStoreTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/KeyspaceConcurrencyStressTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/support/TcpRespSupport.java

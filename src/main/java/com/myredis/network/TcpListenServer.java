@@ -50,6 +50,9 @@ public final class TcpListenServer implements AutoCloseable {
         this.connections =
                 new ClientConnectionManager(
                         configuration.maxClientConnections(), configuration.clientIdleTimeout());
+        if (requestProcessor instanceof com.myredis.command.CommandClientRequestProcessor commandProcessor) {
+            commandProcessor.bindConnectionManager(connections);
+        }
     }
 
     public void start() throws ConnectionException {

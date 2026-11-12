@@ -20,6 +20,12 @@ public sealed interface ClientReply {
      */
     record Array(java.util.List<byte[]> elements) implements ClientReply {}
 
+    /** RESP2 array whose elements are arbitrary nested replies ({@code EXEC}, pub/sub acknowledgements). */
+    record CompositeArray(java.util.List<ClientReply> elements) implements ClientReply {}
+
+    /** Multiple back-to-back RESP replies on one write (e.g. {@code SUBSCRIBE} with several channels). */
+    record Sequence(java.util.List<ClientReply> replies) implements ClientReply {}
+
     static ClientReply pong() {
         return new SimpleString("PONG");
     }

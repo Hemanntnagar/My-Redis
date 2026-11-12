@@ -39,7 +39,7 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ## Limitations
 
 - AOF is optional (`myredis.aofEnabled` / `MYREDIS_AOF_ENABLED`). Replication is not implemented.
-- Built-in commands include `SAVE`, `BGSAVE`, `TTL`, `PTTL`, `EXPIRE`, `PEXPIRE`, `EXPIREAT`, `PEXPIREAT`, `PERSIST`, plus strings, lists, sets, hashes, sorted sets, and keyspace commands (`PING`, `GET`, `SET`, `KEYS`, `DEL`, …)
+- Built-in commands include `SAVE`, `BGSAVE`, `TTL`, `PTTL`, `EXPIRE`, `PEXPIRE`, `EXPIREAT`, `PEXPIREAT`, `PERSIST`, plus strings, lists, sets, hashes, sorted sets, keyspace commands (`PING`, `GET`, `SET`, `KEYS`, `DEL`, …), transactions (`MULTI`, `EXEC`, `DISCARD`, `WATCH`, `UNWATCH`), and pub/sub (`PUBLISH`, `SUBSCRIBE`, `UNSUBSCRIBE`)
 
 ## Manual check (redis-cli)
 

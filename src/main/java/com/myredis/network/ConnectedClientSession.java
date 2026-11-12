@@ -15,6 +15,7 @@ public final class ConnectedClientSession implements ClientSession {
     private final String id;
     private final SocketChannel channel;
     private final SocketAddress remoteAddress;
+    private final Object writeLock = new Object();
     private volatile long lastActivityNanos = System.nanoTime();
 
     ConnectedClientSession(SocketChannel channel) {
@@ -24,11 +25,21 @@ public final class ConnectedClientSession implements ClientSession {
     }
 
     void recordActivity() {
+        touch();
+    }
+
+    /** Updates idle tracking after successful socket I/O. */
+    public void touch() {
         lastActivityNanos = System.nanoTime();
     }
 
     long idleNanos() {
         return System.nanoTime() - lastActivityNanos;
+    }
+
+    /** Serializes socket writes from the handler and pub/sub pushes on the same connection. */
+    public Object writeLock() {
+        return writeLock;
     }
 
     @Override

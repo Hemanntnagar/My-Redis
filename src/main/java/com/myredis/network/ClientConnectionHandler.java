@@ -5,7 +5,6 @@ import com.myredis.exception.ProtocolException;
 import com.myredis.logging.LogContext;
 import com.myredis.logging.StructuredServerLogger;
 import com.myredis.protocol.Resp2Decoder;
-import com.myredis.protocol.Resp2Encoder;
 import com.myredis.protocol.RespArray;
 import com.myredis.protocol.RespBulkString;
 import com.myredis.protocol.RespNullArray;
@@ -32,7 +31,7 @@ final class ClientConnectionHandler implements Runnable {
     private final BooleanSupplier serverRunning;
     private final ClientRequestProcessor requestProcessor;
     private final Resp2Decoder decoder;
-    private final Resp2Encoder encoder;
+    private final ClientReplyEncoder encoder = new ClientReplyEncoder();
 
     ClientConnectionHandler(
             ConnectedClientSession session,
@@ -46,7 +45,6 @@ final class ClientConnectionHandler implements Runnable {
         this.serverRunning = Objects.requireNonNull(serverRunning, "serverRunning");
         this.requestProcessor = Objects.requireNonNull(requestProcessor, "requestProcessor");
         this.decoder = new Resp2Decoder();
-        this.encoder = new Resp2Encoder();
     }
 
     @Override
@@ -82,6 +80,7 @@ final class ClientConnectionHandler implements Runnable {
                                 .build());
             }
         } finally {
+            requestProcessor.onDisconnect(session);
             connectionManager.remove(session);
             logger.logInfo(
                     "client_disconnected",
@@ -157,59 +156,19 @@ final class ClientConnectionHandler implements Runnable {
 
     private void writeReply(SocketChannel channel, ClientConnectionState state, ClientReply reply)
             throws IOException {
-        state.ensureWriteCapacity(requiredEncodeBytes(reply));
+        state.ensureWriteCapacity(encoder.requiredBytes(reply));
         ByteBuffer output = state.writeBuffer();
         output.clear();
-        encodeReply(reply, output);
+        encoder.encode(reply, output);
         output.flip();
-        while (output.hasRemaining()) {
-            int written = channel.write(output);
-            if (written < 0) {
-                return;
+        synchronized (session.writeLock()) {
+            while (output.hasRemaining()) {
+                int written = channel.write(output);
+                if (written < 0) {
+                    return;
+                }
             }
         }
         session.recordActivity();
-    }
-
-    private static int requiredEncodeBytes(ClientReply reply) {
-        return switch (reply) {
-            case ClientReply.SimpleString simple -> simple.value().length() + 16;
-            case ClientReply.Error error -> error.message().length() + 16;
-            case ClientReply.BulkString bulk -> bulk.value().length + 32;
-            case ClientReply.NullBulk ignored -> 16;
-            case ClientReply.Integer integer -> 32;
-            case ClientReply.Array array -> arrayEncodeCapacity(array);
-        };
-    }
-
-    private static int arrayEncodeCapacity(ClientReply.Array array) {
-        int bytes = 32;
-        for (byte[] element : array.elements()) {
-            bytes += element == null ? 16 : element.length + 32;
-        }
-        return bytes;
-    }
-
-    private void encodeReply(ClientReply reply, ByteBuffer output) {
-        switch (reply) {
-            case ClientReply.SimpleString simple -> encoder.encodeSimpleString(simple.value(), output);
-            case ClientReply.Error error -> encoder.encodeError(error.message(), output);
-            case ClientReply.BulkString bulk -> encoder.encodeBulkString(bulk.value(), output);
-            case ClientReply.NullBulk ignored -> encoder.encodeNullBulk(output);
-            case ClientReply.Integer integer -> encoder.encodeInteger(integer.value(), output);
-            case ClientReply.Array array -> encodeArrayReply(array, output);
-        }
-    }
-
-    private void encodeArrayReply(ClientReply.Array array, ByteBuffer output) {
-        List<RespValue> elements = new ArrayList<>(array.elements().size());
-        for (byte[] element : array.elements()) {
-            if (element == null) {
-                elements.add(RespNullBulk.INSTANCE);
-            } else {
-                elements.add(new RespBulkString(element));
-            }
-        }
-        encoder.encodeArray(new RespArray(elements), output);
     }
 }

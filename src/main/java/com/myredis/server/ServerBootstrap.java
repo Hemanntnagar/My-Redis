@@ -35,9 +35,13 @@ public final class ServerBootstrap {
         ServerErrorHandler errorHandler = new ServerErrorHandler(logger);
         MetricsRecorder metrics = new NoOpMetricsRecorder();
         InMemoryExpirationService expiration = new InMemoryExpirationService();
+        com.myredis.transaction.WatchRegistry watchRegistry = new com.myredis.transaction.WatchRegistry();
         ExpirationAwareKeyValueStore keyValueStore =
                 new ExpirationAwareKeyValueStore(
-                        new InMemoryKeyValueStore(), expiration, SystemExpirationClock.INSTANCE);
+                        new com.myredis.storage.WatchNotifyingKeyValueStore(
+                                new InMemoryKeyValueStore(), watchRegistry),
+                        expiration,
+                        SystemExpirationClock.INSTANCE);
         SnapshotPersistenceManager snapshot =
                 new SnapshotPersistenceManager(configuration.persistenceDirectory(), keyValueStore, expiration);
         AppendOnlyFile appendOnlyFile = null;
@@ -61,16 +65,16 @@ public final class ServerBootstrap {
         BackgroundExpirationCleanup expirationCleanup =
                 new BackgroundExpirationCleanup(keyValueStore, expiration, ExpirationCleanupPolicy.defaults());
         CompositePersistenceManager compositePersistence = (CompositePersistenceManager) persistence;
+        CommandClientRequestProcessor requestProcessor =
+                CommandClientRequestProcessor.withBuiltinCommands(
+                        compositePersistence,
+                        appendOnlyFile,
+                        keyValueStore,
+                        expiration,
+                        SystemExpirationClock.INSTANCE,
+                        watchRegistry);
         DatabaseServer databaseServer =
-                new LifecycleDatabaseServer(
-                        configuration,
-                        logger,
-                        CommandClientRequestProcessor.withBuiltinCommands(
-                                compositePersistence,
-                                appendOnlyFile,
-                                keyValueStore,
-                                expiration,
-                                SystemExpirationClock.INSTANCE));
+                new LifecycleDatabaseServer(configuration, logger, requestProcessor);
 
         return new ServerContext(
                 configuration, logger, errorHandler, metrics, persistence, databaseServer, expirationCleanup);

@@ -12,7 +12,9 @@ import com.myredis.storage.InMemoryKeyValueStore;
 import com.myredis.persistence.SnapshotCommandSupport;
 import com.myredis.persistence.aof.AppendOnlyFile;
 import com.myredis.expiration.InMemoryExpirationService;
+import com.myredis.pubsub.PubSubBroker;
 import com.myredis.storage.KeyValueStore;
+import com.myredis.transaction.TransactionManager;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,6 +65,18 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
             ExpirationClock clock,
             SnapshotCommandSupport persistence,
             AppendOnlyFile appendOnlyFile) {
+        return assembleBuiltinCommands(store, expiration, clock, persistence, appendOnlyFile, null, null)
+                .dispatcher();
+    }
+
+    public static BuiltinCommands assembleBuiltinCommands(
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock,
+            SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile,
+            TransactionManager transactionManager,
+            PubSubBroker pubSubBroker) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
@@ -133,7 +147,30 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
                 && expiration instanceof InMemoryExpirationService inMemoryExpiration) {
             register(registry, new BgrewriteaofCommand(appendOnlyFile, aware, inMemoryExpiration));
         }
-        return new RegistryCommandDispatcher(registry);
+        if (transactionManager != null && pubSubBroker != null) {
+            register(registry, new MultiCommand(transactionManager));
+            register(registry, new DiscardCommand(transactionManager));
+            register(registry, new WatchCommand(transactionManager));
+            register(registry, new UnwatchCommand(transactionManager));
+            register(registry, new PublishCommand(pubSubBroker));
+            register(registry, new SubscribeCommand(pubSubBroker));
+            register(registry, new UnsubscribeCommand(pubSubBroker));
+            RegistryCommandDispatcher withoutExec = new RegistryCommandDispatcher(registry);
+            CommandExecutor executor =
+                    (session, commandName, arguments) -> {
+                        try {
+                            return withoutExec.dispatch(session, commandName, arguments);
+                        } catch (CommandException failure) {
+                            return ClientReply.error(failure.clientMessage());
+                        }
+                    };
+            register(registry, new ExecCommand(transactionManager, executor));
+        }
+        return new BuiltinCommands(
+                new RegistryCommandDispatcher(registry),
+                transactionManager,
+                pubSubBroker,
+                null);
     }
 
     private static void register(Map<String, Command> registry, Command command) {

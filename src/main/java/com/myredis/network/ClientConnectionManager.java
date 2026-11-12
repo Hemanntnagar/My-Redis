@@ -116,6 +116,14 @@ public final class ClientConnectionManager {
         return session != null && sessions.containsKey(session.id());
     }
 
+    /** Returns the live session for {@code sessionId}, or {@code null} when disconnected. */
+    public ConnectedClientSession findSession(String sessionId) {
+        if (sessionId == null) {
+            return null;
+        }
+        return sessions.get(sessionId);
+    }
+
     private static void closeQuietly(SocketChannel channel) {
         try {
             channel.close();
