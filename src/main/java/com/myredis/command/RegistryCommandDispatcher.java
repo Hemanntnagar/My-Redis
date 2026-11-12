@@ -47,6 +47,9 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
         register(registry, new KeysCommand(store));
         register(registry, new DbSizeCommand(store));
         register(registry, new FlushDbCommand(store));
+        register(registry, new RenameCommand(store));
+        register(registry, new RenameNxCommand(store));
+        register(registry, new RandomKeyCommand(store));
         return new RegistryCommandDispatcher(registry);
     }
 

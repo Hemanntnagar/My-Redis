@@ -66,6 +66,51 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
         return keys;
     }
 
+    @Override
+    public void rename(byte[] source, byte[] destination) throws StorageException {
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
+        if (Arrays.equals(source, destination)) {
+            if (!exists(source)) {
+                throw missingKey();
+            }
+            return;
+        }
+        BinaryKey from = new BinaryKey(source);
+        RedisValue value = entries.remove(from);
+        if (value == null) {
+            throw missingKey();
+        }
+        entries.put(new BinaryKey(destination), value);
+    }
+
+    @Override
+    public boolean renameIfAbsent(byte[] source, byte[] destination) throws StorageException {
+        Objects.requireNonNull(source, "source");
+        Objects.requireNonNull(destination, "destination");
+        if (Arrays.equals(source, destination)) {
+            if (!exists(source)) {
+                throw missingKey();
+            }
+            return false;
+        }
+        BinaryKey from = new BinaryKey(source);
+        BinaryKey to = new BinaryKey(destination);
+        RedisValue value = entries.remove(from);
+        if (value == null) {
+            throw missingKey();
+        }
+        if (entries.putIfAbsent(to, value) == null) {
+            return true;
+        }
+        entries.put(from, value);
+        return false;
+    }
+
+    private static StorageException missingKey() {
+        return new StorageException("ERR no such key");
+    }
+
     /**
      * Map key that compares byte contents instead of array references.
      */

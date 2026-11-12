@@ -34,7 +34,7 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ## Limitations
 
 - Persistence, expiration, and most Redis commands are not implemented yet
-- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `MGET`, `MSET`, `APPEND`, `INCR`, `DECR`, `INCRBY`, `DECRBY`, `STRLEN`, `KEYS`, `DBSIZE`, `FLUSHDB`, `DEL`, `EXISTS`, `TYPE`
+- Built-in commands: `PING`, `ECHO`, `GET`, `SET`, `MGET`, `MSET`, `APPEND`, `INCR`, `DECR`, `INCRBY`, `DECRBY`, `STRLEN`, `KEYS`, `DBSIZE`, `FLUSHDB`, `RENAME`, `RENAMENX`, `RANDOMKEY`, `DEL`, `EXISTS`, `TYPE`
 
 ## Manual check (redis-cli)
 
@@ -59,4 +59,6 @@ redis-cli -p 6379 STRLEN counter
 redis-cli -p 6379 DBSIZE
 redis-cli -p 6379 KEYS 'user:*'
 redis-cli -p 6379 FLUSHDB
+redis-cli -p 6379 RENAME oldkey newkey
+redis-cli -p 6379 RANDOMKEY
 ```

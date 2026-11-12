@@ -138,6 +138,29 @@ class InMemoryKeyValueStoreTest {
     }
 
     @Test
+    void renameMovesValueWithoutMutatingPayload() throws StorageException {
+        byte[] source = "from".getBytes(StandardCharsets.UTF_8);
+        byte[] destination = "to".getBytes(StandardCharsets.UTF_8);
+        byte[] payload = new byte[] {1, 2, 3};
+        store.put(source, new StringRedisValue(payload));
+        store.rename(source, destination);
+        StringRedisValue moved = (StringRedisValue) store.get(destination).orElseThrow();
+        assertArrayEquals(payload, moved.bytes());
+        assertFalse(store.exists(source));
+    }
+
+    @Test
+    void renameIfAbsentRestoresSourceWhenDestinationExists() throws StorageException {
+        byte[] source = "src".getBytes(StandardCharsets.UTF_8);
+        byte[] destination = "dst".getBytes(StandardCharsets.UTF_8);
+        store.put(source, new StringRedisValue("a".getBytes(StandardCharsets.UTF_8)));
+        store.put(destination, new StringRedisValue("b".getBytes(StandardCharsets.UTF_8)));
+        assertFalse(store.renameIfAbsent(source, destination));
+        assertTrue(store.exists(source));
+        assertEquals("a", new String(((StringRedisValue) store.get(source).orElseThrow()).bytes(), StandardCharsets.UTF_8));
+    }
+
+    @Test
     void keyCountClearAndSnapshotKeysSupportKeyspaceCommands() throws StorageException {
         assertEquals(0L, store.keyCount());
         store.put(KEY, new StringRedisValue("x".getBytes(StandardCharsets.UTF_8)));

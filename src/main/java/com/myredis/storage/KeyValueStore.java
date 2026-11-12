@@ -29,4 +29,19 @@ public interface KeyValueStore {
      * Point-in-time snapshot of all keys for pattern scanning; safe under concurrent mutations.
      */
     List<byte[]> snapshotKeys();
+
+    /**
+     * Moves the value at {@code source} to {@code destination}, overwriting an existing destination key.
+     *
+     * @throws StorageException when {@code source} is absent ({@code ERR no such key})
+     */
+    void rename(byte[] source, byte[] destination) throws StorageException;
+
+    /**
+     * Moves the value at {@code source} only when {@code destination} is absent.
+     *
+     * @return {@code true} when the rename succeeded, {@code false} when the destination key exists
+     * @throws StorageException when {@code source} is absent ({@code ERR no such key})
+     */
+    boolean renameIfAbsent(byte[] source, byte[] destination) throws StorageException;
 }
