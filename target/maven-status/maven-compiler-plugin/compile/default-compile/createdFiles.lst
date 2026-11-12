@@ -1,4 +1,5 @@
 com/myredis/protocol/RespNullArray.class
+com/myredis/command/PttlCommand.class
 com/myredis/command/TypeCommand.class
 com/myredis/pubsub/package-info.class
 com/myredis/command/ZCardCommand.class
@@ -22,6 +23,7 @@ com/myredis/JavaRedis.class
 com/myredis/protocol/Resp2Decoder.class
 com/myredis/metrics/MetricsRecorder.class
 com/myredis/network/ClientReply$Error.class
+com/myredis/command/TtlCommand.class
 com/myredis/exception/package-info.class
 com/myredis/protocol/Resp2BulkStringEncoder.class
 com/myredis/command/LIndexCommand.class
@@ -38,6 +40,7 @@ com/myredis/replication/package-info.class
 com/myredis/expiration/ExpirationService.class
 com/myredis/storage/package-info.class
 com/myredis/command/SMembersCommand.class
+com/myredis/expiration/SystemExpirationClock.class
 com/myredis/command/CommandClientRequestProcessor.class
 com/myredis/command/Command.class
 com/myredis/server/GracefulShutdownCoordinator.class
@@ -80,7 +83,9 @@ com/myredis/protocol/Resp2ValueDecoder.class
 com/myredis/datatype/HashRedisValue.class
 com/myredis/persistence/package-info.class
 com/myredis/server/DatabaseServer.class
+com/myredis/expiration/InMemoryExpirationService$BinaryKey.class
 com/myredis/command/LLenCommand.class
+com/myredis/expiration/ExpirationReplies.class
 com/myredis/network/TcpListenServer.class
 com/myredis/protocol/Resp2IntegerParser.class
 com/myredis/logging/StructuredServerLogger$1.class
@@ -95,6 +100,7 @@ com/myredis/config/LoggingLevel.class
 com/myredis/protocol/RespSimpleString.class
 com/myredis/command/RegistryCommandDispatcher.class
 com/myredis/command/DbSizeCommand.class
+com/myredis/expiration/ExpirationClock.class
 com/myredis/command/ListCommandSupport.class
 com/myredis/logging/LogContext.class
 com/myredis/metrics/NoOpMetricsRecorder.class
@@ -126,11 +132,13 @@ com/myredis/protocol/Resp2ArrayEncoder.class
 com/myredis/network/ConnectedClientSession.class
 com/myredis/command/IncrCommand.class
 com/myredis/command/KeyGlobMatcher.class
+com/myredis/expiration/KeyExpirationMetadata.class
 com/myredis/command/SIsMemberCommand.class
 com/myredis/protocol/RespEncoder.class
 com/myredis/persistence/NoOpPersistenceManager.class
 com/myredis/exception/StorageException.class
 com/myredis/network/ClientReply$Integer.class
+com/myredis/command/TtlCommandSupport.class
 com/myredis/expiration/package-info.class
 com/myredis/command/HExistsCommand.class
 com/myredis/exception/ErrorCategory.class
@@ -148,6 +156,8 @@ com/myredis/exception/PersistenceException.class
 com/myredis/datatype/StringRedisValue.class
 com/myredis/command/HLenCommand.class
 com/myredis/command/LPushCommand.class
+com/myredis/storage/ExpirationAwareKeyValueStore.class
+com/myredis/expiration/InMemoryExpirationService.class
 com/myredis/protocol/Resp2Encoder.class
 com/myredis/protocol/Resp2LineEncoder.class
 com/myredis/command/SDiffCommand.class
