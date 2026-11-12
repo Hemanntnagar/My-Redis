@@ -4,6 +4,9 @@ import com.myredis.config.ServerConfiguration;
 import com.myredis.exception.InvalidConfigurationException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,7 +14,7 @@ class ServerApplicationTest {
 
     @Test
     void startAndShutdownReleasesShutdownLatch() throws Exception {
-        ServerConfiguration configuration = ServerConfiguration.defaults();
+        ServerConfiguration configuration = localTestConfiguration();
         ServerBootstrap bootstrap = new ServerBootstrap();
         ServerContext context = bootstrap.bootstrap(configuration);
 
@@ -44,7 +47,8 @@ class ServerApplicationTest {
     @Test
     void runCompletesAfterGracefulShutdown()
             throws Exception {
-        ServerApplication application = new ServerApplication(ServerConfiguration::defaults, new ServerBootstrap());
+        ServerApplication application =
+                new ServerApplication(() -> localTestConfiguration(), new ServerBootstrap());
 
         Thread runner =
                 new Thread(
@@ -69,5 +73,15 @@ class ServerApplicationTest {
         ServerContext context = new ServerBootstrap().bootstrap(ServerConfiguration.defaults());
         LifecycleDatabaseServer server = (LifecycleDatabaseServer) context.databaseServer();
         assertFalse(server.isRunning());
+    }
+
+    static ServerConfiguration localTestConfiguration() throws InvalidConfigurationException {
+        int port;
+        try (ServerSocket socket = new ServerSocket(0)) {
+            port = socket.getLocalPort();
+        } catch (IOException failure) {
+            throw new IllegalStateException("failed to allocate ephemeral port", failure);
+        }
+        return ServerConfiguration.builder().host("127.0.0.1").port(port).build();
     }
 }

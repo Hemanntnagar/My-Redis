@@ -2,54 +2,44 @@ package com.myredis.server;
 
 import com.myredis.config.ServerConfiguration;
 import com.myredis.exception.ConnectionException;
-import com.myredis.logging.LogContext;
 import com.myredis.logging.StructuredServerLogger;
+import com.myredis.network.TcpListenServer;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Manages the listening process lifecycle; network accept loops are added in a later phase.
+ * Manages the listening process lifecycle and delegates TCP I/O to {@link TcpListenServer}.
  */
 public final class LifecycleDatabaseServer implements DatabaseServer {
 
-    private final ServerConfiguration configuration;
-    private final StructuredServerLogger logger;
-    private final AtomicBoolean running = new AtomicBoolean();
+    private final TcpListenServer listenServer;
 
     public LifecycleDatabaseServer(ServerConfiguration configuration, StructuredServerLogger logger) {
-        this.configuration = Objects.requireNonNull(configuration, "configuration");
-        this.logger = Objects.requireNonNull(logger, "logger");
+        Objects.requireNonNull(configuration, "configuration");
+        Objects.requireNonNull(logger, "logger");
+        this.listenServer = new TcpListenServer(configuration, logger);
     }
 
     @Override
     public void start() throws ConnectionException {
-        if (!running.compareAndSet(false, true)) {
-            return;
-        }
-        logger.logInfo(
-                "server_listen_prepared",
-                "listener lifecycle started",
-                LogContext.builder()
-                        .put("host", configuration.host())
-                        .put("port", String.valueOf(configuration.port()))
-                        .build());
+        listenServer.start();
     }
 
     @Override
     public void stop() {
-        if (!running.compareAndSet(true, false)) {
-            return;
-        }
-        logger.logInfo("server_listen_stopped", "listener lifecycle stopped", LogContext.empty());
+        listenServer.stop();
     }
 
     @Override
     public void close() {
-        stop();
+        listenServer.close();
     }
 
     boolean isRunning() {
-        return running.get();
+        return listenServer.isRunning();
+    }
+
+    TcpListenServer listenServer() {
+        return listenServer;
     }
 }
