@@ -1,5 +1,7 @@
 package com.myredis.expiration;
 
+import com.myredis.storage.ByteArrayKey;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -13,18 +15,18 @@ import java.util.function.BiConsumer;
  */
 public final class InMemoryExpirationService implements ExpirationService {
 
-    private final Map<BinaryKey, KeyExpirationMetadata> metadataByKey = new ConcurrentHashMap<>();
+    private final Map<ByteArrayKey, KeyExpirationMetadata> metadataByKey = new ConcurrentHashMap<>();
 
     @Override
     public void register(byte[] key, long expireAtEpochMillis) {
         Objects.requireNonNull(key, "key");
-        metadataByKey.put(new BinaryKey(key), new KeyExpirationMetadata(expireAtEpochMillis));
+        metadataByKey.put(ByteArrayKey.owned(key), new KeyExpirationMetadata(expireAtEpochMillis));
     }
 
     @Override
     public void cancel(byte[] key) {
         Objects.requireNonNull(key, "key");
-        metadataByKey.remove(new BinaryKey(key));
+        metadataByKey.remove(ByteArrayKey.probe(key));
     }
 
     @Override
@@ -35,7 +37,13 @@ public final class InMemoryExpirationService implements ExpirationService {
     @Override
     public Optional<KeyExpirationMetadata> findMetadata(byte[] key) {
         Objects.requireNonNull(key, "key");
-        return Optional.ofNullable(metadataByKey.get(new BinaryKey(key)));
+        return Optional.ofNullable(metadataByKey.get(ByteArrayKey.probe(key)));
+    }
+
+    /** Whether expiration metadata is tracked for this key (no allocation on lookup). */
+    public boolean tracksExpiration(byte[] key) {
+        Objects.requireNonNull(key, "key");
+        return metadataByKey.containsKey(ByteArrayKey.probe(key));
     }
 
     public OptionalLong expireAtMillis(byte[] key) {
@@ -52,9 +60,9 @@ public final class InMemoryExpirationService implements ExpirationService {
         if (Arrays.equals(source, destination)) {
             return;
         }
-        KeyExpirationMetadata metadata = metadataByKey.remove(new BinaryKey(source));
+        KeyExpirationMetadata metadata = metadataByKey.remove(ByteArrayKey.probe(source));
         if (metadata != null) {
-            metadataByKey.put(new BinaryKey(destination), metadata);
+            metadataByKey.put(ByteArrayKey.owned(destination), metadata);
         }
     }
 
@@ -72,7 +80,7 @@ public final class InMemoryExpirationService implements ExpirationService {
      */
     public boolean tryRemoveIfExpired(byte[] key, long nowEpochMillis) {
         Objects.requireNonNull(key, "key");
-        BinaryKey binaryKey = new BinaryKey(key);
+        ByteArrayKey binaryKey = ByteArrayKey.probe(key);
         KeyExpirationMetadata current = metadataByKey.get(binaryKey);
         if (current == null || !current.isExpiredAt(nowEpochMillis)) {
             return false;
@@ -88,7 +96,7 @@ public final class InMemoryExpirationService implements ExpirationService {
             return;
         }
         int scanned = 0;
-        for (Map.Entry<BinaryKey, KeyExpirationMetadata> entry : metadataByKey.entrySet()) {
+        for (Map.Entry<ByteArrayKey, KeyExpirationMetadata> entry : metadataByKey.entrySet()) {
             if (scanned >= maxScans) {
                 return;
             }
@@ -97,20 +105,4 @@ public final class InMemoryExpirationService implements ExpirationService {
         }
     }
 
-    private record BinaryKey(byte[] bytes) {
-
-        private BinaryKey {
-            bytes = bytes.clone();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof BinaryKey that && Arrays.equals(bytes, that.bytes);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(bytes);
-        }
-    }
 }

@@ -43,8 +43,7 @@ final class StringIntegerValues {
                         } catch (ArithmeticException failure) {
                             throw new IncrementStateException(new CommandException(OVERFLOW));
                         }
-                        return new StringRedisValue(
-                                Long.toString(next[0]).getBytes(StandardCharsets.US_ASCII));
+                        return new StringRedisValue(AsciiLongCodec.encode(next[0]));
                     });
         } catch (IncrementStateException state) {
             throw state.failure();
@@ -97,7 +96,7 @@ final class StringIntegerValues {
             }
         }
         try {
-            return Long.parseLong(new String(bytes, StandardCharsets.US_ASCII));
+            return AsciiLongCodec.parseStrict(bytes);
         } catch (NumberFormatException failure) {
             throw notInteger();
         }

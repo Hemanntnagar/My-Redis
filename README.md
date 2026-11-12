@@ -30,6 +30,15 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ./mvnw test
 ```
 
+## Benchmarks
+
+TCP workloads (`GET`, `SET`, `INCR`, mixed) with throughput, latency percentiles, and concurrent clients. See [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
+
+```bash
+./mvnw -q -DskipTests package dependency:build-classpath -Dmdep.outputFile=target/cp.txt
+java -cp "target/classes:$(cat target/cp.txt)" com.myredis.benchmark.BenchmarkMain
+```
+
 
 ## Durability and concurrency
 

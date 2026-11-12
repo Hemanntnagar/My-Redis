@@ -17,12 +17,12 @@ import java.util.function.UnaryOperator;
  */
 public final class InMemoryKeyValueStore implements KeyValueStore {
 
-    private final Map<BinaryKey, RedisValue> entries = new ConcurrentHashMap<>();
+    private final Map<ByteArrayKey, RedisValue> entries = new ConcurrentHashMap<>();
 
     @Override
     public Optional<RedisValue> get(byte[] key) {
         Objects.requireNonNull(key, "key");
-        return Optional.ofNullable(entries.get(new BinaryKey(key)));
+        return Optional.ofNullable(entries.get(ByteArrayKey.probe(key)));
     }
 
     @Override
@@ -33,19 +33,19 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
         if (value == null) {
             throw new StorageException("ERR invalid value");
         }
-        entries.put(new BinaryKey(key), value);
+        entries.put(ByteArrayKey.owned(key), value);
     }
 
     @Override
     public boolean delete(byte[] key) {
         Objects.requireNonNull(key, "key");
-        return entries.remove(new BinaryKey(key)) != null;
+        return entries.remove(ByteArrayKey.probe(key)) != null;
     }
 
     @Override
     public boolean exists(byte[] key) {
         Objects.requireNonNull(key, "key");
-        return entries.containsKey(new BinaryKey(key));
+        return entries.containsKey(ByteArrayKey.probe(key));
     }
 
     @Override
@@ -61,7 +61,7 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
     @Override
     public List<byte[]> snapshotKeys() {
         List<byte[]> keys = new ArrayList<>(entries.size());
-        for (BinaryKey key : entries.keySet()) {
+        for (ByteArrayKey key : entries.keySet()) {
             keys.add(key.bytes().clone());
         }
         return keys;
@@ -77,8 +77,8 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
             }
             return;
         }
-        BinaryKey from = new BinaryKey(source);
-        BinaryKey to = new BinaryKey(destination);
+        ByteArrayKey from = ByteArrayKey.probe(source);
+        ByteArrayKey to = ByteArrayKey.owned(destination);
         RedisValue[] moved = {null};
         entries.compute(
                 from,
@@ -105,8 +105,8 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
             }
             return false;
         }
-        BinaryKey from = new BinaryKey(source);
-        BinaryKey to = new BinaryKey(destination);
+        ByteArrayKey from = ByteArrayKey.probe(source);
+        ByteArrayKey to = ByteArrayKey.probe(destination);
         if (entries.containsKey(to)) {
             if (!entries.containsKey(from)) {
                 throw missingKey();
@@ -137,39 +137,26 @@ public final class InMemoryKeyValueStore implements KeyValueStore {
     public Optional<RedisValue> merge(byte[] key, UnaryOperator<RedisValue> remapper) throws StorageException {
         Objects.requireNonNull(key, "key");
         Objects.requireNonNull(remapper, "remapper");
-        BinaryKey binaryKey = new BinaryKey(key);
+        ByteArrayKey probe = ByteArrayKey.probe(key);
         RedisValue[] result = {null};
-        entries.compute(
-                binaryKey,
-                (ignored, existing) -> {
-                    RedisValue updated = remapper.apply(existing);
-                    result[0] = updated;
-                    return updated;
-                });
-        return Optional.ofNullable(result[0]);
+        while (true) {
+            RedisValue current = entries.get(probe);
+            RedisValue updated = remapper.apply(current);
+            result[0] = updated;
+            if (current == null) {
+                if (updated == null) {
+                    return Optional.empty();
+                }
+                if (entries.putIfAbsent(ByteArrayKey.owned(key), updated) == null) {
+                    return Optional.of(updated);
+                }
+            } else if (entries.replace(probe, current, updated)) {
+                return Optional.of(updated);
+            }
+        }
     }
 
     private static StorageException missingKey() {
         return new StorageException("ERR no such key");
-    }
-
-    /**
-     * Map key that compares byte contents instead of array references.
-     */
-    private record BinaryKey(byte[] bytes) {
-
-        private BinaryKey {
-            bytes = bytes.clone();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof BinaryKey that && Arrays.equals(bytes, that.bytes);
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(bytes);
-        }
     }
 }

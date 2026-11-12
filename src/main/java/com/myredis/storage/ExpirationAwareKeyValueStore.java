@@ -45,6 +45,9 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
 
     @Override
     public Optional<RedisValue> get(byte[] key) {
+        if (!expiration.tracksExpiration(key)) {
+            return delegate.get(key);
+        }
         return keyLocks.callExclusiveReturning(key, () -> {
             purgeIfExpired(key);
             return delegate.get(key);
@@ -71,6 +74,9 @@ public final class ExpirationAwareKeyValueStore implements KeyValueStore {
 
     @Override
     public boolean exists(byte[] key) {
+        if (!expiration.tracksExpiration(key)) {
+            return delegate.exists(key);
+        }
         return keyLocks.callExclusiveReturning(
                 key,
                 () -> {
