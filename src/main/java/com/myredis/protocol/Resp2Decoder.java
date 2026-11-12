@@ -3,7 +3,6 @@ package com.myredis.protocol;
 import com.myredis.exception.ProtocolException;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +21,8 @@ public final class Resp2Decoder implements RespDecoder {
         input.mark();
         byte type = input.get();
         return switch (type) {
-            case '+' -> decodeSimpleString(input);
-            case '-' -> decodeError(input);
+            case '+' -> decodeSimpleString(input, true);
+            case '-' -> decodeError(input, true);
             case ':' -> decodeInteger(input);
             case '$' -> decodeBulkString(input);
             case '*' -> decodeArray(input);
@@ -31,24 +30,30 @@ public final class Resp2Decoder implements RespDecoder {
         };
     }
 
-    private static Object decodeSimpleString(ByteBuffer input) throws ProtocolException {
-        String line = readLine(input);
-        if (line == null) {
+    private static Object decodeSimpleString(ByteBuffer input, boolean typeConsumed) throws ProtocolException {
+        if (typeConsumed) {
+            input.position(input.position() - 1);
+        }
+        RespSimpleString decoded = Resp2LineParser.decodeSimpleString(input);
+        if (decoded == null) {
             return incomplete(input);
         }
-        return line;
+        return decoded;
     }
 
-    private static Object decodeError(ByteBuffer input) throws ProtocolException {
-        String line = readLine(input);
-        if (line == null) {
+    private static Object decodeError(ByteBuffer input, boolean typeConsumed) throws ProtocolException {
+        if (typeConsumed) {
+            input.position(input.position() - 1);
+        }
+        RespError decoded = Resp2LineParser.decodeError(input);
+        if (decoded == null) {
             return incomplete(input);
         }
-        return line;
+        return decoded;
     }
 
     private static Object decodeInteger(ByteBuffer input) throws ProtocolException {
-        String line = readLine(input);
+        String line = Resp2Crlf.readLine(input);
         if (line == null) {
             return incomplete(input);
         }
@@ -71,7 +76,7 @@ public final class Resp2Decoder implements RespDecoder {
     }
 
     private static Object decodeArray(ByteBuffer input) throws ProtocolException {
-        String line = readLine(input);
+        String line = Resp2Crlf.readLine(input);
         if (line == null) {
             return incomplete(input);
         }
@@ -111,7 +116,7 @@ public final class Resp2Decoder implements RespDecoder {
     }
 
     private static BulkRead readBulk(ByteBuffer input) throws ProtocolException {
-        String line = readLine(input);
+        String line = Resp2Crlf.readLine(input);
         if (line == null) {
             return null;
         }
@@ -132,33 +137,8 @@ public final class Resp2Decoder implements RespDecoder {
         }
         byte[] payload = new byte[length];
         input.get(payload);
-        if (input.get() != '\r' || input.get() != '\n') {
-            throw new ProtocolException("expected CRLF after bulk payload");
-        }
+        Resp2Crlf.requireTerminator(input);
         return BulkRead.of(payload);
-    }
-
-    private static String readLine(ByteBuffer input) throws ProtocolException {
-        int start = input.position();
-        int limit = input.limit();
-        for (int index = start; index < limit; index++) {
-            if (input.get(index) != '\r') {
-                continue;
-            }
-            if (index + 1 >= limit) {
-                return null;
-            }
-            if (input.get(index + 1) != '\n') {
-                throw new ProtocolException("expected LF after CR");
-            }
-            int length = index - start;
-            byte[] lineBytes = new byte[length];
-            input.position(start);
-            input.get(lineBytes, 0, length);
-            input.position(index + 2);
-            return new String(lineBytes, StandardCharsets.UTF_8);
-        }
-        return null;
     }
 
     private static Object incomplete(ByteBuffer input) {

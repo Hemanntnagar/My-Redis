@@ -8,12 +8,34 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Resp2DecoderTest {
 
     private final Resp2Decoder decoder = new Resp2Decoder();
+
+    @Test
+    void decodesSimpleStringAndErrorReplies() throws ProtocolException {
+        ByteBuffer simple = ByteBuffer.wrap("+PONG\r\n".getBytes(StandardCharsets.UTF_8));
+        Object simpleDecoded = decoder.decodeNext(simple);
+        assertInstanceOf(RespSimpleString.class, simpleDecoded);
+        assertEquals("PONG", ((RespSimpleString) simpleDecoded).value());
+
+        ByteBuffer error = ByteBuffer.wrap("-ERR boom\r\n".getBytes(StandardCharsets.UTF_8));
+        Object errorDecoded = decoder.decodeNext(error);
+        assertInstanceOf(RespError.class, errorDecoded);
+        assertEquals("ERR boom", ((RespError) errorDecoded).message());
+    }
+
+    @Test
+    void rejectsUnknownRespTypeByte() {
+        ByteBuffer buffer = ByteBuffer.wrap("?nope\r\n".getBytes(StandardCharsets.UTF_8));
+        ProtocolException failure = assertThrows(ProtocolException.class, () -> decoder.decodeNext(buffer));
+        assertEquals("unknown RESP type byte", failure.clientMessage());
+    }
 
     @Test
     void decodesCommandArrayIncrementally() throws ProtocolException {

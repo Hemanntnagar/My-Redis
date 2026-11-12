@@ -1,5 +1,7 @@
 package com.myredis.protocol;
 
+import com.myredis.exception.ProtocolException;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -10,12 +12,20 @@ public final class Resp2Encoder implements RespEncoder {
 
     @Override
     public void encodeSimpleString(String value, ByteBuffer output) {
-        writePrefixedLine('+', value, output);
+        try {
+            Resp2LineEncoder.encodeSimpleString(value, output);
+        } catch (ProtocolException failure) {
+            throw new IllegalArgumentException(failure.getMessage(), failure);
+        }
     }
 
     @Override
     public void encodeError(String message, ByteBuffer output) {
-        writePrefixedLine('-', message, output);
+        try {
+            Resp2LineEncoder.encodeError(message, output);
+        } catch (ProtocolException failure) {
+            throw new IllegalArgumentException(failure.getMessage(), failure);
+        }
     }
 
     @Override
@@ -38,14 +48,6 @@ public final class Resp2Encoder implements RespEncoder {
         output.put((byte) '$');
         output.put((byte) '-');
         output.put((byte) '1');
-        output.put((byte) '\r');
-        output.put((byte) '\n');
-    }
-
-    private static void writePrefixedLine(char prefix, String value, ByteBuffer output) {
-        output.put((byte) prefix);
-        output.put(value.getBytes(StandardCharsets.UTF_8));
-        output.put((byte) '\r');
-        output.put((byte) '\n');
+        Resp2Crlf.writeTerminator(output);
     }
 }
