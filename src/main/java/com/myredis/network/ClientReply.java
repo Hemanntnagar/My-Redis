@@ -15,6 +15,11 @@ public sealed interface ClientReply {
 
     record Integer(long value) implements ClientReply {}
 
+    /**
+     * RESP2 array reply; {@code null} elements encode as null bulk strings (for {@code MGET}).
+     */
+    record Array(java.util.List<byte[]> elements) implements ClientReply {}
+
     static ClientReply pong() {
         return new SimpleString("PONG");
     }

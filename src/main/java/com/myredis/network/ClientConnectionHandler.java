@@ -178,7 +178,16 @@ final class ClientConnectionHandler implements Runnable {
             case ClientReply.BulkString bulk -> bulk.value().length + 32;
             case ClientReply.NullBulk ignored -> 16;
             case ClientReply.Integer integer -> 32;
+            case ClientReply.Array array -> arrayEncodeCapacity(array);
         };
+    }
+
+    private static int arrayEncodeCapacity(ClientReply.Array array) {
+        int bytes = 32;
+        for (byte[] element : array.elements()) {
+            bytes += element == null ? 16 : element.length + 32;
+        }
+        return bytes;
     }
 
     private void encodeReply(ClientReply reply, ByteBuffer output) {
@@ -188,6 +197,19 @@ final class ClientConnectionHandler implements Runnable {
             case ClientReply.BulkString bulk -> encoder.encodeBulkString(bulk.value(), output);
             case ClientReply.NullBulk ignored -> encoder.encodeNullBulk(output);
             case ClientReply.Integer integer -> encoder.encodeInteger(integer.value(), output);
+            case ClientReply.Array array -> encodeArrayReply(array, output);
         }
+    }
+
+    private void encodeArrayReply(ClientReply.Array array, ByteBuffer output) {
+        List<RespValue> elements = new ArrayList<>(array.elements().size());
+        for (byte[] element : array.elements()) {
+            if (element == null) {
+                elements.add(RespNullBulk.INSTANCE);
+            } else {
+                elements.add(new RespBulkString(element));
+            }
+        }
+        encoder.encodeArray(new RespArray(elements), output);
     }
 }

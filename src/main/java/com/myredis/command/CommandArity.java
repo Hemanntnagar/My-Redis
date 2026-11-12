@@ -33,6 +33,13 @@ public final class CommandArity {
         }
     }
 
+    public static void requireEven(List<byte[]> arguments, int min, String commandName)
+            throws CommandException {
+        if (arguments.size() < min || (arguments.size() & 1) != 0) {
+            throw wrongArity(commandName);
+        }
+    }
+
     private static CommandException wrongArity(String commandName) {
         return new CommandException("ERR wrong number of arguments for '" + commandName + "' command");
     }
