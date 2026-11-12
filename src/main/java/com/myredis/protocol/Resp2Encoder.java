@@ -45,4 +45,27 @@ public final class Resp2Encoder implements RespEncoder {
     public void encodeNullBulk(ByteBuffer output) {
         Resp2BulkStringEncoder.encodeNullBulk(output);
     }
+
+    @Override
+    public void encodeArray(RespArray value, ByteBuffer output) {
+        try {
+            Resp2ArrayEncoder.encode(value, output);
+        } catch (ProtocolException failure) {
+            throw new IllegalArgumentException(failure.getMessage(), failure);
+        }
+    }
+
+    @Override
+    public void encodeNullArray(ByteBuffer output) {
+        Resp2ArrayEncoder.encodeNullArray(output);
+    }
+
+    @Override
+    public void encodeValue(RespValue value, ByteBuffer output) {
+        try {
+            Resp2ArrayEncoder.encodeValue(value, output);
+        } catch (ProtocolException failure) {
+            throw new IllegalArgumentException(failure.getMessage(), failure);
+        }
+    }
 }

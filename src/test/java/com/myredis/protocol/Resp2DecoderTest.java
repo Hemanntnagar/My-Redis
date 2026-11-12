@@ -5,14 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class Resp2DecoderTest {
 
@@ -75,12 +72,24 @@ class Resp2DecoderTest {
 
         ByteBuffer full = ByteBuffer.wrap(frame);
         Object decoded = decoder.decodeNext(full);
-        assertTrue(decoded instanceof List<?>);
-        @SuppressWarnings("unchecked")
-        List<byte[]> parts = (List<byte[]>) decoded;
-        assertEquals(2, parts.size());
-        assertEquals("PING", new String(parts.get(0), StandardCharsets.UTF_8));
-        assertEquals("PONG", new String(parts.get(1), StandardCharsets.UTF_8));
+        RespArray command = assertInstanceOf(RespArray.class, decoded);
+        assertEquals(2, command.elements().size());
+        assertEquals("PING", new String(((RespBulkString) command.elements().get(0)).data(), StandardCharsets.UTF_8));
+        assertEquals("PONG", new String(((RespBulkString) command.elements().get(1)).data(), StandardCharsets.UTF_8));
         assertNull(decoder.decodeNext(full));
+    }
+
+    @Test
+    void decodesNullArrayDistinctFromIncomplete() throws ProtocolException {
+        assertEquals(RespNullArray.INSTANCE, decoder.decodeNext(ByteBuffer.wrap("*-1\r\n".getBytes(StandardCharsets.UTF_8))));
+    }
+
+    @Test
+    void decodesCommandWithNullBulkArgument() throws ProtocolException {
+        byte[] frame = "*2\r\n$3\r\nSET\r\n$-1\r\n".getBytes(StandardCharsets.UTF_8);
+        RespArray command = assertInstanceOf(RespArray.class, decoder.decodeNext(ByteBuffer.wrap(frame)));
+        assertEquals(2, command.elements().size());
+        assertEquals("SET", new String(((RespBulkString) command.elements().get(0)).data(), StandardCharsets.UTF_8));
+        assertEquals(RespNullBulk.INSTANCE, command.elements().get(1));
     }
 }

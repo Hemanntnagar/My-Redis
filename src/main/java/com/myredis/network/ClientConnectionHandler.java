@@ -6,10 +6,16 @@ import com.myredis.logging.LogContext;
 import com.myredis.logging.StructuredServerLogger;
 import com.myredis.protocol.Resp2Decoder;
 import com.myredis.protocol.Resp2Encoder;
+import com.myredis.protocol.RespArray;
+import com.myredis.protocol.RespBulkString;
+import com.myredis.protocol.RespNullArray;
+import com.myredis.protocol.RespNullBulk;
+import com.myredis.protocol.RespValue;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
@@ -123,16 +129,30 @@ final class ClientConnectionHandler implements Runnable {
     }
 
     private ClientReply handleDecodedRequest(Object decoded) throws ProtocolException {
-        if (!(decoded instanceof List<?> commandParts)) {
+        if (decoded instanceof RespNullArray) {
             throw new ProtocolException("expected command array");
         }
-        if (commandParts.isEmpty()) {
-            throw new ProtocolException("empty command");
+        if (!(decoded instanceof RespArray command)) {
+            throw new ProtocolException("expected command array");
         }
-        @SuppressWarnings("unchecked")
-        List<byte[]> bulkArguments = (List<byte[]>) commandParts;
+        List<byte[]> bulkArguments = toCommandArguments(command);
         ClientReply reply = requestProcessor.process(session, bulkArguments);
         return reply == null ? ClientReply.error(ErrorResponseMapper.GENERIC_CLIENT_ERROR) : reply;
+    }
+
+    private static List<byte[]> toCommandArguments(RespArray command) throws ProtocolException {
+        if (command.elements().isEmpty()) {
+            throw new ProtocolException("empty command");
+        }
+        List<byte[]> parts = new ArrayList<>(command.elements().size());
+        for (RespValue element : command.elements()) {
+            switch (element) {
+                case RespBulkString bulk -> parts.add(bulk.data());
+                case RespNullBulk ignored -> parts.add(null);
+                default -> throw new ProtocolException("command arguments must be bulk strings");
+            }
+        }
+        return parts;
     }
 
     private void writeReply(SocketChannel channel, ClientConnectionState state, ClientReply reply)

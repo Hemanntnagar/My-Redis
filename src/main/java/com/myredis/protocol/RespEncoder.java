@@ -16,4 +16,10 @@ public interface RespEncoder {
     void encodeBulkString(byte[] value, ByteBuffer output);
 
     void encodeNullBulk(ByteBuffer output);
+
+    void encodeArray(RespArray value, ByteBuffer output);
+
+    void encodeNullArray(ByteBuffer output);
+
+    void encodeValue(RespValue value, ByteBuffer output);
 }
