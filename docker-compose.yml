@@ -1,0 +1,20 @@
+services:
+  myredis:
+    build: .
+    image: my-redis:local
+    container_name: myredis
+    restart: unless-stopped
+    ports:
+      - "${MYREDIS_PUBLISH_PORT:-6379}:${MYREDIS_PORT:-6379}"
+    environment:
+      MYREDIS_HOST: "${MYREDIS_HOST:-0.0.0.0}"
+      MYREDIS_PORT: "${MYREDIS_PORT:-6379}"
+      MYREDIS_PERSISTENCE_DIRECTORY: "/data"
+      MYREDIS_AOF_ENABLED: "${MYREDIS_AOF_ENABLED:-false}"
+    volumes:
+      - myredis-data:/data
+    stop_grace_period: 30s
+
+volumes:
+  myredis-data:
+    name: myredis-data

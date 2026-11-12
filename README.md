@@ -30,6 +30,13 @@ Each package currently exposes `package-info.java` and a small set of foundation
 ./mvnw test
 ```
 
+Runnable JAR, Docker image, and Compose (persistent volume, configurable port): [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+```bash
+./mvnw -DskipTests package
+java -jar target/my-redis-0.1.0-SNAPSHOT.jar
+```
+
 ## Benchmarks
 
 TCP workloads (`GET`, `SET`, `INCR`, mixed) with throughput, latency percentiles, and concurrent clients. See [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
