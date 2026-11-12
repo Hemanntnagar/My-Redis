@@ -1,4 +1,5 @@
 com/myredis/protocol/RespNullArray.class
+com/myredis/command/TypeCommand.class
 com/myredis/pubsub/package-info.class
 com/myredis/pubsub/PubSubBroker.class
 com/myredis/command/package-info.class
@@ -72,6 +73,7 @@ com/myredis/config/WorkerThreadConfiguration.class
 com/myredis/network/ClientReply$SimpleString.class
 com/myredis/command/PingCommand.class
 com/myredis/command/CommandArity.class
+com/myredis/command/ExistsCommand.class
 com/myredis/transaction/package-info.class
 com/myredis/exception/ServerErrorHandler.class
 com/myredis/command/EchoCommand.class
@@ -82,11 +84,13 @@ com/myredis/network/ConnectedClientSession.class
 com/myredis/protocol/RespEncoder.class
 com/myredis/persistence/NoOpPersistenceManager.class
 com/myredis/exception/StorageException.class
+com/myredis/network/ClientReply$Integer.class
 com/myredis/expiration/package-info.class
 com/myredis/exception/ErrorCategory.class
 com/myredis/network/ClientConnectionHandler.class
 com/myredis/exception/CommandException.class
 com/myredis/storage/KeyValueStore.class
+com/myredis/command/DelCommand.class
 com/myredis/network/ClientReply$BulkString.class
 com/myredis/metrics/package-info.class
 com/myredis/protocol/RespInteger.class

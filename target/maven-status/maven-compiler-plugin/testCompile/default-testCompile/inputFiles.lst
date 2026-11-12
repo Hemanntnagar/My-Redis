@@ -1,4 +1,6 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/PackageArchitectureTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeCommandTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/EchoCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/PingEchoTcpIntegrationTest.java

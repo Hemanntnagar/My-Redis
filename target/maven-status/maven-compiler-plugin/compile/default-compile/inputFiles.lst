@@ -3,11 +3,14 @@
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandArity.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandClientRequestProcessor.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/CommandDispatcher.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/DelCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/EchoCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/ExistsCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/GetCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/PingCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/RegistryCommandDispatcher.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/SetCommand.java
+/Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/TypeCommand.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/command/package-info.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/ConfigurationSource.java
 /Users/sunny/Documents/My-Redis/src/main/java/com/myredis/config/DefaultServerConfiguration.java
