@@ -1,5 +1,5 @@
 /**
- * Server configuration: listen address, ports, persistence mode, and limits.
+ * Centralized server configuration: host, port, limits, workers, persistence path, and logging.
  * <p>
  * Implementations are typically immutable snapshots loaded at startup.
  */
