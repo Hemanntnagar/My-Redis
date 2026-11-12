@@ -14,6 +14,8 @@ import com.myredis.persistence.aof.AppendOnlyFile;
 import com.myredis.expiration.InMemoryExpirationService;
 import com.myredis.pubsub.PubSubBroker;
 import com.myredis.storage.KeyValueStore;
+import com.myredis.replication.ReplicaUpstreamClient;
+import com.myredis.server.ServerCollaborators;
 import com.myredis.transaction.TransactionManager;
 
 import java.util.LinkedHashMap;
@@ -77,6 +79,20 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
             AppendOnlyFile appendOnlyFile,
             TransactionManager transactionManager,
             PubSubBroker pubSubBroker) {
+        return assembleBuiltinCommands(
+                store, expiration, clock, persistence, appendOnlyFile, transactionManager, pubSubBroker, null, null);
+    }
+
+    public static BuiltinCommands assembleBuiltinCommands(
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock,
+            SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile,
+            TransactionManager transactionManager,
+            PubSubBroker pubSubBroker,
+            ServerCollaborators collaborators,
+            java.util.function.BiFunction<String, Integer, ReplicaUpstreamClient> upstreamFactory) {
         Map<String, Command> registry = new LinkedHashMap<>();
         register(registry, new PingCommand());
         register(registry, new EchoCommand());
@@ -166,11 +182,18 @@ public final class RegistryCommandDispatcher implements CommandDispatcher {
                     };
             register(registry, new ExecCommand(transactionManager, executor));
         }
+        if (collaborators != null) {
+            register(registry, new InfoCommand(collaborators));
+            register(registry, new TimeCommand());
+            register(registry, new ClientListCommand(collaborators));
+            register(registry, new ReplSyncCommand(collaborators));
+            if (upstreamFactory != null) {
+                register(registry, new ReplicaOfCommand(collaborators, upstreamFactory));
+            }
+            register(registry, new CommandCommand(Map.copyOf(registry)));
+        }
         return new BuiltinCommands(
-                new RegistryCommandDispatcher(registry),
-                transactionManager,
-                pubSubBroker,
-                null);
+                new RegistryCommandDispatcher(registry), transactionManager, pubSubBroker, null);
     }
 
     private static void register(Map<String, Command> registry, Command command) {

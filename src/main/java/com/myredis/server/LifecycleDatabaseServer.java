@@ -24,10 +24,18 @@ public final class LifecycleDatabaseServer implements DatabaseServer {
             ServerConfiguration configuration,
             StructuredServerLogger logger,
             ClientRequestProcessor requestProcessor) {
+        this(configuration, logger, requestProcessor, null);
+    }
+
+    public LifecycleDatabaseServer(
+            ServerConfiguration configuration,
+            StructuredServerLogger logger,
+            ClientRequestProcessor requestProcessor,
+            ServerCollaborators collaborators) {
         Objects.requireNonNull(configuration, "configuration");
         Objects.requireNonNull(logger, "logger");
         Objects.requireNonNull(requestProcessor, "requestProcessor");
-        this.listenServer = new TcpListenServer(configuration, logger, requestProcessor);
+        this.listenServer = new TcpListenServer(configuration, logger, requestProcessor, collaborators);
     }
 
     @Override

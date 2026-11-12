@@ -23,6 +23,9 @@ public final class ServerConfigurationValidator {
         validateTcpBacklog(configuration.tcpBacklog());
         validateClientIdleTimeout(configuration.clientIdleTimeout());
         validateAofFsyncPolicy(configuration.aofFsyncPolicy());
+        validateMaxMemory(configuration.maxMemoryBytes(), configuration.maxMemoryPolicy());
+        validateReplicaMaster(configuration.replicaMasterHost(), configuration.replicaMasterPort());
+        validateReplicationBacklogSize(configuration.replicationBacklogSize());
     }
 
     static void validateHost(String host) throws InvalidConfigurationException {
@@ -114,6 +117,32 @@ public final class ServerConfigurationValidator {
             throws InvalidConfigurationException {
         if (aofFsyncPolicy == null) {
             throw new InvalidConfigurationException("aofFsyncPolicy must not be null");
+        }
+    }
+
+    static void validateMaxMemory(long maxMemoryBytes, MaxMemoryPolicy policy) throws InvalidConfigurationException {
+        if (maxMemoryBytes < 0) {
+            throw new InvalidConfigurationException("maxMemoryBytes must not be negative");
+        }
+        if (policy == null) {
+            throw new InvalidConfigurationException("maxMemoryPolicy must not be null");
+        }
+    }
+
+    static void validateReplicaMaster(String host, int port) throws InvalidConfigurationException {
+        if (host == null || host.isBlank()) {
+            if (port != 0) {
+                throw new InvalidConfigurationException("replicaMasterPort requires replicaMasterHost");
+            }
+            return;
+        }
+        validateHost(host);
+        validatePort(port);
+    }
+
+    static void validateReplicationBacklogSize(int replicationBacklogSize) throws InvalidConfigurationException {
+        if (replicationBacklogSize < 1) {
+            throw new InvalidConfigurationException("replicationBacklogSize must be at least 1");
         }
     }
 }

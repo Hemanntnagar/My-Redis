@@ -63,6 +63,9 @@ public final class ServerApplication {
                             if (context.persistence() instanceof com.myredis.persistence.CompositePersistenceManager composite) {
                                 composite.close();
                             }
+                            if (context.collaborators() != null) {
+                                context.collaborators().close();
+                            }
                         });
 
         this.shutdownCoordinator = shutdownCoordinator;

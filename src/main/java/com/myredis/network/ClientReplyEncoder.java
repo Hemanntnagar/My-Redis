@@ -31,6 +31,7 @@ public final class ClientReplyEncoder {
                     encode(element, output);
                 }
             }
+            case ClientReply.ReplicationLinkEstablished established -> encode(established.ack(), output);
         }
     }
 
@@ -50,6 +51,7 @@ public final class ClientReplyEncoder {
                 }
                 yield bytes;
             }
+            case ClientReply.ReplicationLinkEstablished established -> requiredBytes(established.ack());
         };
     }
 
@@ -87,6 +89,7 @@ public final class ClientReplyEncoder {
             case ClientReply.Array array -> toRespArray(array);
             case ClientReply.CompositeArray composite -> new RespArray(toRespValues(composite.elements()));
             case ClientReply.Sequence ignored -> throw new IllegalArgumentException("sequence cannot be nested in RESP array");
+            case ClientReply.ReplicationLinkEstablished ignored -> throw new IllegalArgumentException("replication ack cannot be nested");
         };
     }
 
@@ -146,6 +149,7 @@ public final class ClientReplyEncoder {
                 }
                 yield bytes;
             }
+            case ClientReply.ReplicationLinkEstablished established -> estimateNested(established.ack());
         };
     }
 }

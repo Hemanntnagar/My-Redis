@@ -39,8 +39,32 @@ public final class ServerConfigurationLoader {
         applyBoolean(builder::aofEnabled, resolveString("myredis.aofEnabled", "MYREDIS_AOF_ENABLED"));
         applyAofFsyncPolicy(
                 builder::aofFsyncPolicy, resolveString("myredis.aofFsyncPolicy", "MYREDIS_AOF_FSYNC_POLICY"));
+        applyLong(builder::maxMemoryBytes, resolveString("myredis.maxMemoryBytes", "MYREDIS_MAX_MEMORY_BYTES"));
+        applyMaxMemoryPolicy(
+                builder::maxMemoryPolicy, resolveString("myredis.maxMemoryPolicy", "MYREDIS_MAX_MEMORY_POLICY"));
+        Optional<String> replicaHost =
+                resolveString("myredis.replicaMasterHost", "MYREDIS_REPLICA_MASTER_HOST");
+        Optional<String> replicaPort =
+                resolveString("myredis.replicaMasterPort", "MYREDIS_REPLICA_MASTER_PORT");
+        applyReplicaOf(builder, replicaHost, replicaPort);
+        applyInt(
+                builder::replicationBacklogSize,
+                resolveString("myredis.replicationBacklogSize", "MYREDIS_REPLICATION_BACKLOG_SIZE"));
 
         return builder.build();
+    }
+
+    private static void applyReplicaOf(
+            ServerConfigurationBuilder builder, Optional<String> host, Optional<String> port)
+            throws InvalidConfigurationException {
+        if (host.isEmpty() && port.isEmpty()) {
+            return;
+        }
+        if (host.isPresent() && port.isPresent()) {
+            builder.replicaOf(host.get(), parseInt(port.get()));
+            return;
+        }
+        throw new InvalidConfigurationException("replicaMasterHost and replicaMasterPort must be set together");
     }
 
     private static Optional<String> resolveString(String propertyKey, String environmentKey) {
@@ -77,6 +101,21 @@ public final class ServerConfigurationLoader {
             throws InvalidConfigurationException {
         if (value.isPresent()) {
             setter.accept(parseInt(value.get()));
+        }
+    }
+
+    private static void applyLong(java.util.function.LongConsumer setter, Optional<String> value)
+            throws InvalidConfigurationException {
+        if (value.isPresent()) {
+            setter.accept(parseLong(value.get()));
+        }
+    }
+
+    private static void applyMaxMemoryPolicy(
+            java.util.function.Consumer<MaxMemoryPolicy> setter, Optional<String> value)
+            throws InvalidConfigurationException {
+        if (value.isPresent()) {
+            setter.accept(parseMaxMemoryPolicy(value.get()));
         }
     }
 
@@ -137,6 +176,15 @@ public final class ServerConfigurationLoader {
             return com.myredis.persistence.aof.AofFsyncPolicy.valueOf(raw.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new InvalidConfigurationException("unknown AOF fsync policy \"" + raw + "\"", e);
+        }
+    }
+
+    private static MaxMemoryPolicy parseMaxMemoryPolicy(String raw) throws InvalidConfigurationException {
+        String normalized = raw.trim().toUpperCase(Locale.ROOT).replace('-', '_');
+        try {
+            return MaxMemoryPolicy.valueOf(normalized);
+        } catch (IllegalArgumentException failure) {
+            throw new InvalidConfigurationException("unknown maxmemory policy \"" + raw + "\"", failure);
         }
     }
 }

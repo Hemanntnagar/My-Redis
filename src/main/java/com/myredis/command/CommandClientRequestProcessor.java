@@ -19,6 +19,11 @@ import com.myredis.storage.KeyValueStore;
 import com.myredis.storage.WatchNotifyingKeyValueStore;
 import com.myredis.transaction.InMemoryTransactionManager;
 import com.myredis.transaction.TransactionManager;
+import com.myredis.metrics.ServerStatistics;
+import com.myredis.network.ConnectedClientSession;
+import com.myredis.replication.ReplicaUpstreamClient;
+import com.myredis.replication.ReplicationRole;
+import com.myredis.server.ServerCollaborators;
 import com.myredis.transaction.WatchRegistry;
 
 import java.nio.charset.StandardCharsets;
@@ -41,6 +46,7 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
     private final TransactionManager transactionManager;
     private final PubSubBroker pubSubBroker;
     private final InMemoryPubSubBroker mutablePubSubBroker;
+    private ServerCollaborators collaborators;
 
     public CommandClientRequestProcessor(CommandDispatcher dispatcher) {
         this(dispatcher, null, null, null);
@@ -62,6 +68,15 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
         this.mutablePubSubBroker = pubSubBroker instanceof InMemoryPubSubBroker broker ? broker : null;
     }
 
+    public CommandDispatcher dispatcher() {
+        return dispatcher;
+    }
+
+    public void bindCollaborators(ServerCollaborators collaborators, ClientConnectionManager connections) {
+        this.collaborators = Objects.requireNonNull(collaborators, "collaborators");
+        collaborators.bindConnections(connections);
+    }
+
     public void bindConnectionManager(ClientConnectionManager connections) {
         if (mutablePubSubBroker != null) {
             mutablePubSubBroker.bindConnectionManager(connections);
@@ -73,12 +88,12 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands(KeyValueStore store) {
-        return createBuiltIn(store, null, null, null, null, null);
+        return createBuiltIn(store, null, null, null, null, null, null, null);
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands(
             KeyValueStore store, ExpirationService expiration, ExpirationClock clock) {
-        return createBuiltIn(store, expiration, clock, null, null, null);
+        return createBuiltIn(store, expiration, clock, null, null, null, null, null);
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands(
@@ -95,7 +110,7 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
             KeyValueStore store,
             ExpirationService expiration,
             ExpirationClock clock) {
-        return createBuiltIn(store, expiration, clock, persistence, appendOnlyFile, null);
+        return createBuiltIn(store, expiration, clock, persistence, appendOnlyFile, null, null, null);
     }
 
     public static CommandClientRequestProcessor withBuiltinCommands(
@@ -105,7 +120,29 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
             ExpirationService expiration,
             ExpirationClock clock,
             WatchRegistry watchRegistry) {
-        return createBuiltIn(store, expiration, clock, persistence, appendOnlyFile, watchRegistry);
+        return createBuiltIn(store, expiration, clock, persistence, appendOnlyFile, watchRegistry, null, null);
+    }
+
+    public static CommandClientRequestProcessor withBuiltinCommands(
+            com.myredis.persistence.SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile,
+            KeyValueStore store,
+            ExpirationService expiration,
+            ExpirationClock clock,
+            WatchRegistry watchRegistry,
+            ServerCollaborators collaborators,
+            java.util.function.BiFunction<String, Integer, ReplicaUpstreamClient> upstreamFactory) {
+        return createBuiltIn(
+                store, expiration, clock, persistence, appendOnlyFile, watchRegistry, collaborators, upstreamFactory);
+    }
+
+    public static CommandDispatcher replicationDispatcher(
+            KeyValueStore store,
+            ExpirationService expiration,
+            com.myredis.persistence.SnapshotCommandSupport persistence,
+            AppendOnlyFile appendOnlyFile) {
+        return createBuiltIn(store, expiration, SystemExpirationClock.INSTANCE, persistence, appendOnlyFile, null, null, null)
+                .dispatcher();
     }
 
     private static CommandClientRequestProcessor createBuiltIn(
@@ -114,7 +151,9 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
             ExpirationClock clock,
             com.myredis.persistence.SnapshotCommandSupport persistence,
             AppendOnlyFile appendOnlyFile,
-            WatchRegistry providedWatchRegistry) {
+            WatchRegistry providedWatchRegistry,
+            ServerCollaborators collaborators,
+            java.util.function.BiFunction<String, Integer, ReplicaUpstreamClient> upstreamFactory) {
         WatchRegistry watchRegistry = providedWatchRegistry != null ? providedWatchRegistry : new WatchRegistry();
         KeyValueStore commandStore =
                 providedWatchRegistry != null ? store : watchWrappedStore(store, watchRegistry);
@@ -137,7 +176,9 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
                         persistence,
                         appendOnlyFile,
                         transactionManager,
-                        pubSubBroker);
+                        pubSubBroker,
+                        collaborators,
+                        upstreamFactory);
         return new CommandClientRequestProcessor(
                 built.dispatcher(), appendOnlyFile, built.transactionManager(), built.pubSubBroker());
     }
@@ -158,6 +199,12 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
         List<byte[]> arguments = commandParts.size() == 1 ? List.of() : commandParts.subList(1, commandParts.size());
         String upper = commandName.toUpperCase(Locale.ROOT);
         try {
+            if (collaborators != null
+                    && collaborators.replication().role() == ReplicationRole.REPLICA
+                    && WriteCommandClassifier.isWriteCommand(upper)
+                    && !"REPLICAOF".equals(upper)) {
+                return ClientReply.error("READONLY You can't write against a read only replica");
+            }
             if (pubSubBroker != null && pubSubBroker.inPubSubMode(session)) {
                 if ("PING".equals(upper)) {
                     return pubSubPingReply(session);
@@ -177,7 +224,14 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
                 return new ClientReply.SimpleString("QUEUED");
             }
             ClientReply reply = dispatcher.dispatch(session, commandName, arguments);
+            recordCommandMetrics(session, upper);
             appendSuccessfulWrite(commandName, commandParts, reply);
+            replicateWrite(commandName, commandParts, reply);
+            if (collaborators != null
+                    && "REPLSYNC".equals(upper)
+                    && collaborators.replication().holdsReplicationLink(session)) {
+                return new ClientReply.ReplicationLinkEstablished(reply);
+            }
             return reply;
         } catch (CommandException failure) {
             return ClientReply.error(failure.clientMessage());
@@ -192,6 +246,9 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
         if (pubSubBroker != null) {
             pubSubBroker.clientDisconnected(session);
         }
+        if (collaborators != null && session instanceof ConnectedClientSession connected) {
+            collaborators.replication().unregisterReplica(connected);
+        }
     }
 
     private ClientReply pubSubPingReply(ClientSession session) {
@@ -199,6 +256,30 @@ public final class CommandClientRequestProcessor implements ClientRequestProcess
                 List.of(
                         new ClientReply.BulkString("pong".getBytes(StandardCharsets.UTF_8)),
                         new ClientReply.Integer(pubSubBroker.subscriptionCount(session))));
+    }
+
+    private void recordCommandMetrics(ClientSession session, String upperCommand) {
+        if (collaborators == null) {
+            return;
+        }
+        collaborators.metrics().increment(ServerStatistics.METRIC_COMMANDS_PROCESSED);
+        collaborators.metrics().increment("cmdstat_" + upperCommand.toLowerCase(Locale.ROOT));
+        if (session instanceof ConnectedClientSession connected) {
+            connected.recordCommandProcessed();
+        }
+    }
+
+    private void replicateWrite(String commandName, List<byte[]> commandParts, ClientReply reply) {
+        if (collaborators == null || reply instanceof ClientReply.Error) {
+            return;
+        }
+        if (collaborators.replication().role() != ReplicationRole.MASTER) {
+            return;
+        }
+        if (!WriteCommandClassifier.isWriteCommand(commandName)) {
+            return;
+        }
+        collaborators.replication().propagateWrite(commandParts);
     }
 
     private void appendSuccessfulWrite(String commandName, List<byte[]> commandParts, ClientReply reply) {

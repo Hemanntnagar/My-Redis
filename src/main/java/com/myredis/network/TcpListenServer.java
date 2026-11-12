@@ -35,6 +35,7 @@ public final class TcpListenServer implements AutoCloseable {
     private volatile InetSocketAddress boundAddress;
 
     private final ClientRequestProcessor requestProcessor;
+    private final com.myredis.server.ServerCollaborators collaborators;
 
     public TcpListenServer(ServerConfiguration configuration, StructuredServerLogger logger) {
         this(configuration, logger, new UnconfiguredClientRequestProcessor());
@@ -44,14 +45,26 @@ public final class TcpListenServer implements AutoCloseable {
             ServerConfiguration configuration,
             StructuredServerLogger logger,
             ClientRequestProcessor requestProcessor) {
+        this(configuration, logger, requestProcessor, null);
+    }
+
+    public TcpListenServer(
+            ServerConfiguration configuration,
+            StructuredServerLogger logger,
+            ClientRequestProcessor requestProcessor,
+            com.myredis.server.ServerCollaborators collaborators) {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
         this.requestProcessor = Objects.requireNonNull(requestProcessor, "requestProcessor");
+        this.collaborators = collaborators;
         this.connections =
                 new ClientConnectionManager(
                         configuration.maxClientConnections(), configuration.clientIdleTimeout());
         if (requestProcessor instanceof com.myredis.command.CommandClientRequestProcessor commandProcessor) {
             commandProcessor.bindConnectionManager(connections);
+            if (collaborators != null) {
+                commandProcessor.bindCollaborators(collaborators, connections);
+            }
         }
     }
 
@@ -257,6 +270,9 @@ public final class TcpListenServer implements AutoCloseable {
                             .put("max_connections", String.valueOf(configuration.maxClientConnections()))
                             .build());
             return;
+        }
+        if (collaborators != null) {
+            collaborators.onClientConnected();
         }
 
         logger.logInfo(

@@ -26,6 +26,9 @@ public sealed interface ClientReply {
     /** Multiple back-to-back RESP replies on one write (e.g. {@code SUBSCRIBE} with several channels). */
     record Sequence(java.util.List<ClientReply> replies) implements ClientReply {}
 
+    /** Signals the connection handler to keep the socket open but stop reading client commands. */
+    record ReplicationLinkEstablished(ClientReply ack) implements ClientReply {}
+
     static ClientReply pong() {
         return new SimpleString("PONG");
     }

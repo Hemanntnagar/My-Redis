@@ -21,6 +21,11 @@ public final class ServerConfigurationBuilder {
     private boolean aofEnabled = ServerConfigurationDefaults.AOF_ENABLED;
     private com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy =
             ServerConfigurationDefaults.AOF_FSYNC_POLICY;
+    private long maxMemoryBytes = ServerConfigurationDefaults.MAX_MEMORY_BYTES;
+    private MaxMemoryPolicy maxMemoryPolicy = ServerConfigurationDefaults.MAX_MEMORY_POLICY;
+    private String replicaMasterHost = ServerConfigurationDefaults.REPLICA_MASTER_HOST;
+    private int replicaMasterPort = ServerConfigurationDefaults.REPLICA_MASTER_PORT;
+    private int replicationBacklogSize = ServerConfigurationDefaults.REPLICATION_BACKLOG_SIZE;
 
     public ServerConfigurationBuilder host(String host) {
         this.host = host;
@@ -82,6 +87,27 @@ public final class ServerConfigurationBuilder {
         return this;
     }
 
+    public ServerConfigurationBuilder maxMemoryBytes(long maxMemoryBytes) {
+        this.maxMemoryBytes = maxMemoryBytes;
+        return this;
+    }
+
+    public ServerConfigurationBuilder maxMemoryPolicy(MaxMemoryPolicy maxMemoryPolicy) {
+        this.maxMemoryPolicy = maxMemoryPolicy;
+        return this;
+    }
+
+    public ServerConfigurationBuilder replicaOf(String masterHost, int masterPort) {
+        this.replicaMasterHost = masterHost;
+        this.replicaMasterPort = masterPort;
+        return this;
+    }
+
+    public ServerConfigurationBuilder replicationBacklogSize(int replicationBacklogSize) {
+        this.replicationBacklogSize = replicationBacklogSize;
+        return this;
+    }
+
     public ServerConfiguration build() throws InvalidConfigurationException {
         ServerConfiguration configuration =
                 new DefaultServerConfiguration(
@@ -94,7 +120,12 @@ public final class ServerConfigurationBuilder {
                         tcpBacklog,
                         clientIdleTimeout,
                         aofEnabled,
-                        aofFsyncPolicy);
+                        aofFsyncPolicy,
+                        maxMemoryBytes,
+                        maxMemoryPolicy,
+                        replicaMasterHost,
+                        replicaMasterPort,
+                        replicationBacklogSize);
         ServerConfigurationValidator.validate(configuration);
         return configuration;
     }

@@ -19,6 +19,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private final Duration clientIdleTimeout;
     private final boolean aofEnabled;
     private final com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy;
+    private final long maxMemoryBytes;
+    private final MaxMemoryPolicy maxMemoryPolicy;
+    private final String replicaMasterHost;
+    private final int replicaMasterPort;
+    private final int replicationBacklogSize;
 
     DefaultServerConfiguration(
             String host,
@@ -30,7 +35,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
             int tcpBacklog,
             Duration clientIdleTimeout,
             boolean aofEnabled,
-            com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy) {
+            com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy,
+            long maxMemoryBytes,
+            MaxMemoryPolicy maxMemoryPolicy,
+            String replicaMasterHost,
+            int replicaMasterPort,
+            int replicationBacklogSize) {
         this.host = host;
         this.port = port;
         this.maxClientConnections = maxClientConnections;
@@ -41,6 +51,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         this.clientIdleTimeout = clientIdleTimeout;
         this.aofEnabled = aofEnabled;
         this.aofFsyncPolicy = aofFsyncPolicy;
+        this.maxMemoryBytes = maxMemoryBytes;
+        this.maxMemoryPolicy = maxMemoryPolicy;
+        this.replicaMasterHost = replicaMasterHost;
+        this.replicaMasterPort = replicaMasterPort;
+        this.replicationBacklogSize = replicationBacklogSize;
     }
 
     @Override
@@ -91,5 +106,30 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     @Override
     public com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy() {
         return aofFsyncPolicy;
+    }
+
+    @Override
+    public long maxMemoryBytes() {
+        return maxMemoryBytes;
+    }
+
+    @Override
+    public MaxMemoryPolicy maxMemoryPolicy() {
+        return maxMemoryPolicy;
+    }
+
+    @Override
+    public String replicaMasterHost() {
+        return replicaMasterHost;
+    }
+
+    @Override
+    public int replicaMasterPort() {
+        return replicaMasterPort;
+    }
+
+    @Override
+    public int replicationBacklogSize() {
+        return replicationBacklogSize;
     }
 }

@@ -6,6 +6,7 @@ import com.myredis.logging.StructuredServerLogger;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -122,6 +123,10 @@ public final class ClientConnectionManager {
             return null;
         }
         return sessions.get(sessionId);
+    }
+
+    public List<ConnectedClientSession> liveSessions() {
+        return List.copyOf(sessions.values());
     }
 
     private static void closeQuietly(SocketChannel channel) {

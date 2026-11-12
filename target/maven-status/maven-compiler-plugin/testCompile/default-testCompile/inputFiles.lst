@@ -1,4 +1,5 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/PackageArchitectureTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/AdminCommandsTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeCommandTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/DelExistsTypeTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/command/EchoCommandTest.java
@@ -58,7 +59,11 @@
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2IntegerParserTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineEncoderTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/protocol/Resp2LineParserTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/PropagationCaptureTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/ReplicationStreamApplyTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/replication/ReplicationTcpIntegrationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/server/ServerApplicationTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/InMemoryKeyValueStoreTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/KeyspaceConcurrencyStressTest.java
+/Users/sunny/Documents/My-Redis/src/test/java/com/myredis/storage/MemoryEvictionTest.java
 /Users/sunny/Documents/My-Redis/src/test/java/com/myredis/support/TcpRespSupport.java

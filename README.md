@@ -35,11 +35,18 @@ Each package currently exposes `package-info.java` and a small set of foundation
 
 - Startup recovery (snapshot then AOF, duplicate baseline skip): [docs/RECOVERY.md](docs/RECOVERY.md)
 - AOF: [docs/AOF.md](docs/AOF.md) — locking: [docs/LOCKING.md](docs/LOCKING.md)
+- Primary–replica replication: [docs/REPLICATION.md](docs/REPLICATION.md)
+
+## Memory and observability
+
+- `MYREDIS_MAX_MEMORY_BYTES` and `MYREDIS_MAX_MEMORY_POLICY` (`noeviction`, `allkeys-lru`, `volatile-lru`)
+- `INFO`, `TIME`, `COMMAND`, `CLIENT LIST`, `CLIENT INFO` for uptime, memory, command counters, and connections
 
 ## Limitations
 
-- AOF is optional (`myredis.aofEnabled` / `MYREDIS_AOF_ENABLED`). Replication is not implemented.
-- Built-in commands include `SAVE`, `BGSAVE`, `TTL`, `PTTL`, `EXPIRE`, `PEXPIRE`, `EXPIREAT`, `PEXPIREAT`, `PERSIST`, plus strings, lists, sets, hashes, sorted sets, keyspace commands (`PING`, `GET`, `SET`, `KEYS`, `DEL`, …), transactions (`MULTI`, `EXEC`, `DISCARD`, `WATCH`, `UNWATCH`), and pub/sub (`PUBLISH`, `SUBSCRIBE`, `UNSUBSCRIBE`)
+- AOF is optional (`myredis.aofEnabled` / `MYREDIS_AOF_ENABLED`).
+- Replication is custom (`REPLSYNC` / `REPLICAOF`); see [docs/REPLICATION.md](docs/REPLICATION.md) for gaps vs Redis.
+- Built-in commands include `SAVE`, `BGSAVE`, `TTL`, `PTTL`, `EXPIRE`, `PEXPIRE`, `EXPIREAT`, `PEXPIREAT`, `PERSIST`, plus strings, lists, sets, hashes, sorted sets, keyspace commands (`PING`, `GET`, `SET`, `KEYS`, `DEL`, …), transactions (`MULTI`, `EXEC`, `DISCARD`, `WATCH`, `UNWATCH`), pub/sub (`PUBLISH`, `SUBSCRIBE`, `UNSUBSCRIBE`), and server commands (`INFO`, `TIME`, `COMMAND`, `CLIENT`, `REPLICAOF`)
 
 ## Manual check (redis-cli)
 

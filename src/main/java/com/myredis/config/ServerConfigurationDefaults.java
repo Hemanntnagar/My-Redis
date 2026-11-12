@@ -17,6 +17,11 @@ public final class ServerConfigurationDefaults {
     public static final boolean AOF_ENABLED = false;
     public static final com.myredis.persistence.aof.AofFsyncPolicy AOF_FSYNC_POLICY =
             com.myredis.persistence.aof.AofFsyncPolicy.EVERY_SEC;
+    public static final long MAX_MEMORY_BYTES = 0L;
+    public static final MaxMemoryPolicy MAX_MEMORY_POLICY = MaxMemoryPolicy.NOEVICTION;
+    public static final int REPLICATION_BACKLOG_SIZE = 1_024;
+    public static final String REPLICA_MASTER_HOST = null;
+    public static final int REPLICA_MASTER_PORT = 0;
 
     public static final int MIN_PORT = 1;
     public static final int MAX_PORT = 65_535;

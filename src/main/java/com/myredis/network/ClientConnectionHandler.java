@@ -51,6 +51,7 @@ final class ClientConnectionHandler implements Runnable {
     public void run() {
         SocketChannel channel = session.channel();
         ClientConnectionState state = new ClientConnectionState();
+        boolean retainForReplication = false;
         try {
             while (serverRunning.getAsBoolean() && channel.isOpen()) {
                 state.prepareForRead();
@@ -63,7 +64,12 @@ final class ClientConnectionHandler implements Runnable {
                 }
                 session.recordActivity();
                 state.flipReadBuffer();
-                if (!drainDecodedRequests(channel, state)) {
+                ReplicationDrainResult drained = drainDecodedRequests(channel, state);
+                if (drained == ReplicationDrainResult.REPLICATION_LINK) {
+                    retainForReplication = true;
+                    break;
+                }
+                if (drained == ReplicationDrainResult.CLOSE) {
                     break;
                 }
                 state.compactReadBuffer();
@@ -80,19 +86,27 @@ final class ClientConnectionHandler implements Runnable {
                                 .build());
             }
         } finally {
-            requestProcessor.onDisconnect(session);
-            connectionManager.remove(session);
-            logger.logInfo(
-                    "client_disconnected",
-                    "client connection closed",
-                    LogContext.builder()
-                            .put("session_id", session.id())
-                            .put("remote", String.valueOf(session.remoteAddress()))
-                            .build());
+            if (!retainForReplication) {
+                requestProcessor.onDisconnect(session);
+                connectionManager.remove(session);
+                logger.logInfo(
+                        "client_disconnected",
+                        "client connection closed",
+                        LogContext.builder()
+                                .put("session_id", session.id())
+                                .put("remote", String.valueOf(session.remoteAddress()))
+                                .build());
+            }
         }
     }
 
-    private boolean drainDecodedRequests(SocketChannel channel, ClientConnectionState state)
+    private enum ReplicationDrainResult {
+        CONTINUE,
+        CLOSE,
+        REPLICATION_LINK
+    }
+
+    private ReplicationDrainResult drainDecodedRequests(SocketChannel channel, ClientConnectionState state)
             throws IOException {
         ByteBuffer input = state.readBuffer();
         while (input.hasRemaining()) {
@@ -102,11 +116,11 @@ final class ClientConnectionHandler implements Runnable {
                 decoded = decoder.decodeNext(input);
             } catch (ProtocolException failure) {
                 writeReply(channel, state, ClientReply.error(failure.clientMessage()));
-                return false;
+                return ReplicationDrainResult.CLOSE;
             }
             if (decoded == null) {
                 input.position(before);
-                return true;
+                return ReplicationDrainResult.CONTINUE;
             }
             ClientReply reply;
             try {
@@ -123,8 +137,11 @@ final class ClientConnectionHandler implements Runnable {
                                 .build());
             }
             writeReply(channel, state, reply);
+            if (reply instanceof ClientReply.ReplicationLinkEstablished) {
+                return ReplicationDrainResult.REPLICATION_LINK;
+            }
         }
-        return true;
+        return ReplicationDrainResult.CONTINUE;
     }
 
     private ClientReply handleDecodedRequest(Object decoded) throws ProtocolException {

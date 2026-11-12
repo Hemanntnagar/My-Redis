@@ -45,6 +45,24 @@ public interface ServerConfiguration {
     com.myredis.persistence.aof.AofFsyncPolicy aofFsyncPolicy();
 
     /**
+     * Upper bound on approximate keyspace bytes; {@code 0} disables the limit.
+     */
+    long maxMemoryBytes();
+
+    /** Eviction behavior when {@link #maxMemoryBytes()} is exceeded. */
+    MaxMemoryPolicy maxMemoryPolicy();
+
+    /**
+     * When set, this process starts as a replica of the given primary ({@code host:port}).
+     */
+    String replicaMasterHost();
+
+  int replicaMasterPort();
+
+    /** Capacity of the in-memory replication backlog for partial resynchronization. */
+    int replicationBacklogSize();
+
+    /**
      * Server process log verbosity.
      */
     LoggingLevel loggingLevel();

@@ -22,6 +22,7 @@ public final class ServerContext {
     private final PersistenceManager persistence;
     private final DatabaseServer databaseServer;
     private final BackgroundExpirationCleanup expirationCleanup;
+    private final ServerCollaborators collaborators;
 
     public ServerContext(
             ServerConfiguration configuration,
@@ -31,6 +32,26 @@ public final class ServerContext {
             PersistenceManager persistence,
             DatabaseServer databaseServer,
             BackgroundExpirationCleanup expirationCleanup) {
+        this(
+                configuration,
+                logger,
+                errorHandler,
+                metrics,
+                persistence,
+                databaseServer,
+                expirationCleanup,
+                null);
+    }
+
+    public ServerContext(
+            ServerConfiguration configuration,
+            StructuredServerLogger logger,
+            ServerErrorHandler errorHandler,
+            MetricsRecorder metrics,
+            PersistenceManager persistence,
+            DatabaseServer databaseServer,
+            BackgroundExpirationCleanup expirationCleanup,
+            ServerCollaborators collaborators) {
         this.configuration = Objects.requireNonNull(configuration, "configuration");
         this.logger = Objects.requireNonNull(logger, "logger");
         this.errorHandler = Objects.requireNonNull(errorHandler, "errorHandler");
@@ -38,6 +59,7 @@ public final class ServerContext {
         this.persistence = Objects.requireNonNull(persistence, "persistence");
         this.databaseServer = Objects.requireNonNull(databaseServer, "databaseServer");
         this.expirationCleanup = Objects.requireNonNull(expirationCleanup, "expirationCleanup");
+        this.collaborators = collaborators;
     }
 
     public ServerConfiguration configuration() {
@@ -66,5 +88,9 @@ public final class ServerContext {
 
     public BackgroundExpirationCleanup expirationCleanup() {
         return expirationCleanup;
+    }
+
+    public ServerCollaborators collaborators() {
+        return collaborators;
     }
 }
